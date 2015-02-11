@@ -3,17 +3,20 @@ import os
 
 lib = os.path.dirname(os.path.realpath(__file__))+'/libMT2W.so'
 MT2Wwrap = ctypes.CDLL(lib)
-
-MT2Wwrap.computeMT2W.argtypes = (ctypes.c_int, 
-                             ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float), 
-                             ctypes.POINTER(ctypes.c_bool),
-                             ctypes.c_float,                 ctypes.c_float,                 ctypes.c_float,                 ctypes.c_float, 
-                             ctypes.c_float,                 ctypes.c_float)
-
 MT2Wcompute_ = MT2Wwrap.computeMT2W
 
+# Arguments types
+MT2Wcompute_.argtypes = (ctypes.c_int, 
+                         ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float), ctypes.POINTER(ctypes.c_float), 
+                         ctypes.POINTER(ctypes.c_bool),
+                         ctypes.c_float,                 ctypes.c_float,                 ctypes.c_float,                 ctypes.c_float, 
+                         ctypes.c_float,                 ctypes.c_float)
+
+# Return type
+MT2Wcompute_.restype = ctypes.c_float
+
+
 def computeMT2W(jets, lepton, MET, METphi):
-    global MT2Wwrap
     
     nJets = len(jets)
     jetsFloatArray = ctypes.c_float * nJets
@@ -34,5 +37,5 @@ def computeMT2W(jets, lepton, MET, METphi):
                           jetsFloatArray(*jetsPt), jetsFloatArray(*jetsPhi), jetsFloatArray(*jetsEta), jetsFloatArray(*jetsEnergy), jetsBoolArray(*jetsBTagged),
                           ctypes.c_float(lepton.pT), ctypes.c_float(lepton.phi), ctypes.c_float(lepton.eta), ctypes.c_float(lepton.E),
                           ctypes.c_float(MET), ctypes.c_float(METphi))
-
+    
     return float(result)

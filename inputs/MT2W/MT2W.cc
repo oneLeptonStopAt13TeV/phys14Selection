@@ -193,7 +193,7 @@ double MT2W::get_mt2w()
         return error_value;
     }
 
-    if (!solved) MT2W();
+    if (!solved) MT2W_();
     return mt2w_b;
 }
 
