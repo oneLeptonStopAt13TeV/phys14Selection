@@ -1,6 +1,7 @@
 
 from Selection       import *
 from BabyTupleFormat import *
+from Variables       import *
 
 class Analyzer(Selection,BabyTupleFormat,Variables) :
    
@@ -9,6 +10,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     # ####################################### #
         
     requiredBranches = BabyTupleFormat.branchesForMiscInfos   \
+                     + Variables.branchesForVariables         \
                      + Selection.branchesForElectronSelection \
                      + Selection.branchesForMuonSelection     \
                      + Selection.branchesForJetSelection      \
@@ -52,7 +54,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         if (not passEventSelection) : return False
 
         # Compute variables
-        computeVariables(event)
+        self.computeVariables(event)
         
         # Fill event in babytuple
         self.fill(event,babyTupleTree)

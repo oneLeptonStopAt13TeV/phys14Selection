@@ -1,7 +1,4 @@
 
-from math        import sqrt, cos
-from Variables   import *
-
 ###########################################################################################
 #   ____        _           _               _         __                            _     #
 #  | __ )  __ _| |__  _   _| |_ _   _ _ __ | | ___   / _| ___  _ __ _ __ ___   __ _| |_   #
@@ -42,11 +39,12 @@ class BabyTupleFormat :
 
       'ETmiss'                  :  'F',
       'ETmissPhi'               :  'F',
-      'MT'                      :  'F'    
+      'MT'                      :  'F',    
+      'MT2W'                    :  'F'    
     }
 
     # Additional input branches needed during the filling of the babytuple
-    branchesForMiscInfos = [ "ev_id", "met_pt", "met_phi" ]
+    branchesForMiscInfos = [ "ev_id" ]
 
     def fill(self,event,babyTupleTree) :
 
@@ -76,8 +74,7 @@ class BabyTupleFormat :
         # FIXME this is a C++ way of thinking, rewrite it in python
         babyTupleTree.numberOfBTaggedJets     = 0
         for jet in self.selectedJets :
-            if (jet.CSV > 0.679) :
-                babyTupleTree.numberOfBTaggedJets += 1
+            if (jet.bTag == True) : babyTupleTree.numberOfBTaggedJets += 1
 
 
         for i, jet in enumerate(self.selectedJets) :
@@ -89,8 +86,9 @@ class BabyTupleFormat :
             babyTupleTree.jetsCSVv2[i]        = jet.CSVv2
             babyTupleTree.jetsPUid[i]         = jet.PUid
 
-        babyTupleTree.ETmiss                  = event.met
+        babyTupleTree.ETmiss                  = event.met_pt
         babyTupleTree.ETmissPhi               = event.met_phi
-        babyTupleTree.MT                      = event.MT
+        babyTupleTree.MT                      = self.MT
+        babyTupleTree.MT2W                    = self.MT2W
    
 

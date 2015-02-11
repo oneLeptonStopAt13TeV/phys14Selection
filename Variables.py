@@ -1,19 +1,24 @@
-        
+   
+from math        import sqrt, cos
+from inputs.MT2W import MT2W
 
 class Variables() :
 
-    def computeVariables(event) :
-        event.MT = computeMT(event)
+    branchesForVariables = [ "met_pt", "met_phi" ]
+    
+    def computeVariables(self,event) :
+        self.MT   = self.computeMT(event)
+        self.MT2W = MT2W.computeMT2W(self.selectedJets, self.selectedLeptons[0], event.met_pt, event.met_phi)
 
     # ########
     # #  MT  # 
     # ########
 
-    def computeMT(event) :
+    def computeMT(self,event) :
         
-        leadingLeptonPt = event.selectedLepton[0].Pt
-        deltaPhi = event.selectedLepton[0].phi - event.met_phi
+        leadingLeptonPt = self.selectedLeptons[0].pT
+        deltaPhi = self.selectedLeptons[0].phi - event.met_phi
         
-        MT = sqrt(2 * leadingLeptonPt * event.met * (1 - cos(deltaPhi) ))
+        MT = sqrt(2 * leadingLeptonPt * event.met_pt * (1 - cos(deltaPhi) ))
         
         return MT

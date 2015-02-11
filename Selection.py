@@ -22,15 +22,15 @@ class Selection :
     ############################################################################
 
     # Define structure for temporary objects storage
-    lepton = namedtuple('lepton', ['id', 'pT', 'eta', 'phi', 'iso' ])
-    jet    = namedtuple('jet',    [      'pT', 'eta', 'phi', 'CSV', 'CSVv2', 'PUid' ])
+    lepton = namedtuple('lepton', ['id', 'E', 'pT', 'eta', 'phi', 'iso' ])
+    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSV', 'CSVv2', 'PUid', 'bTag' ])
 
     # ##### #
     # Muons #
     # ##### #
 
     branchesForMuonSelection = [ "mu_n", 
-                                 "mu_id", "mu_pt", "mu_eta", "mu_phi",
+                                 "mu_id", "mu_E", "mu_pt", "mu_eta", "mu_phi",
                                  "mu_isPFMuon", "mu_isGlobalMuon", 
                                  "mu_numberOfValidMuonHits", "mu_hasInnerTrack",
                                  "mu_innerTrack_dxy", "mu_innerTrack_dz",
@@ -41,6 +41,7 @@ class Selection :
 
         n                     = event.mu_n
         id                    = event.mu_id
+        E                     = event.mu_E
         pt                    = event.mu_pt
         eta                   = event.mu_eta
         phi                   = event.mu_phi
@@ -83,6 +84,7 @@ class Selection :
             if (absIso / pt[i]   > 0.15)    : continue
 
             self.selectedLeptons.append(self.lepton( id[i],
+                                                     E[i],
                                                      pt[i],
                                                      eta[i],
                                                      phi[i],
@@ -95,7 +97,7 @@ class Selection :
     # ######### #
 
     branchesForElectronSelection = [ "el_n", 
-                                     "el_id", "el_pt", "el_eta", "el_scleta", "el_phi",
+                                     "el_id", "el_E", "el_pt", "el_eta", "el_scleta", "el_phi",
                                      "el_deltaEtaSuperClusterTrackAtVtx", 
                                      "el_deltaPhiSuperClusterTrackAtVtx", 
                                      "el_see", "el_hadronicOverEm", 
@@ -109,6 +111,7 @@ class Selection :
 
         n                  = event.el_n 
         id                 = event.el_id 
+        E                  = event.el_E
         pt                 = event.el_pt 
         eta                = event.el_eta 
         scleta             = event.el_scleta 
@@ -169,6 +172,7 @@ class Selection :
             if (absIso / pt[i] > 0.30)    : continue
             
             self.selectedLeptons.append(self.lepton(id[i],
+                                                    E[i],
                                                     pt[i],
                                                     eta[i],
                                                     phi[i],
@@ -181,13 +185,14 @@ class Selection :
     # #### #
 
     branchesForJetSelection = [ "jet_n",  
-                                "jet_pt", "jet_eta",   "jet_phi",
+                                "jet_E", "jet_pt", "jet_eta",   "jet_phi",
                                 "jet_CSV", "jet_CSVv2", 
                                 "jet_pileupJetId" ]
 
     def jetSelector(self,event) :
 
         n           = event.jet_n
+        E           = event.jet_E
         pt          = event.jet_pt
         eta         = event.jet_eta
         phi         = event.jet_phi
@@ -213,12 +218,14 @@ class Selection :
                 
             if (foundOverlapWithLepton) : continue
             
-            self.selectedJets.append(self.jet(pt[i],
+            self.selectedJets.append(self.jet(E[i],
+                                              pt[i],
                                               eta[i],
                                               phi[i],
                                               CSV[i],
                                               CSVv2[i],
-                                              pileupJetId[i]))
+                                              pileupJetId[i],
+                                              (CSV[i] > 0.679)))
                 
     ##########################################################################
     #  _____                 _              _           _   _                #
