@@ -1,6 +1,6 @@
 
 from collections import namedtuple
-from common      import commonFunctions as common
+from core        import commonFunctions as common
 
 class Selection :
     
@@ -62,7 +62,7 @@ class Selection :
             if not (isGlobal[i])   : continue
 
             # Apply pT and eta critera
-            if (pt[i]       <  10)    : continue
+            if (pt[i]       <   5)    : continue
             if (abs(eta[i]) > 2.1)    : continue
 
             # Track / hit constrains
@@ -70,8 +70,8 @@ class Selection :
             if (numberOfValidMuonHits[i] <= 0) : continue
 
             # Vertex constrain
-            if (dxy[i] >= 0.02)   : continue
-            if (dz[i]  >= 0.5)    : continue
+            if (abs(dxy[i]) >= 0.2)   : continue
+            if (abs(dz[i])  >= 0.5)   : continue
 
             # TODO/FIXME additional criteria on 
             # numberOfMatchedStation, pixelHits, numTrackerLayersWithMeasurement, Chi2 #
@@ -81,7 +81,7 @@ class Selection :
                    + max(0.0,isoNeutralHadron[i] \
                            + isoPhoton[i]        \
                      - 0.5 * isoPU[i])
-            if (absIso / pt[i]   > 0.15)    : continue
+            if (absIso / pt[i]   > 0.30)    : continue
 
             self.selectedLeptons.append(self.lepton( id[i],
                                                      E[i],
@@ -133,8 +133,8 @@ class Selection :
 
         for i in range(n) :
             # Apply pT and eta critera
-            if (pt[i]       <  10) : continue
-            if (abs(eta[i]) > 2.5) : continue
+            if (pt[i]       <   5) : continue
+            if (abs(eta[i]) > 2.1) : continue
 
             # Remove crack electron
             if (abs(scleta[i]) > 1.4442) and ((abs(scleta[i]) < 1.566)) : continue
@@ -206,7 +206,7 @@ class Selection :
             # TODO/FIXME : add Loose jet ID
 
             # Apply pT and eta requirements
-            if (pt[i]       <  20) : continue
+            if (pt[i]       <  30) : continue
             if (abs(eta[i]) > 2.4) : continue
 
             # Remove jet overlaping with leptons
@@ -214,7 +214,7 @@ class Selection :
             for lepton in self.selectedLeptons :
                 dR = common.deltaR(lepton.phi,lepton.eta,phi[i],eta[i])
                 # TODO/FIXME this criteria should be tuned ?
-                if (dR < 0.5) : foundOverlapWithLepton = True; break
+                if (dR < 0.3) : foundOverlapWithLepton = True; break
                 
             if (foundOverlapWithLepton) : continue
             
@@ -225,7 +225,7 @@ class Selection :
                                               CSV[i],
                                               CSVv2[i],
                                               pileupJetId[i],
-                                              (CSV[i] > 0.679)))
+                                              (CSVv2[i] > 0.814)))
                 
     ##########################################################################
     #  _____                 _              _           _   _                #

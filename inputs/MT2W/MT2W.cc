@@ -161,16 +161,16 @@ double MT2W::compute(int nJets,
     // -------
     else
     {
-        for (int i=0; i< nBTag; i++)
+        for (int i = 0; i < nJets; i++)
         {
             if (jetsBTagged[i] != true) continue;
             float p_jet1[4] = { jetsEnergy[i], jetsPt[i] * (float) cos(jetsPhi[i]),  jetsPt[i] * (float) sin(jetsPhi[i]),  jetsPt[i] * (float) sinh(jetsEta[i]) };
 
-            for (int j=0; j< nBTag; j++)
+            for (int j = 0; j < nJets; j++)
             {
                 if (i == j) continue;
-                
                 if (jetsBTagged[j] != true) continue;
+                
                 float p_jet2[4] = { jetsEnergy[j], jetsPt[j] * (float) cos(jetsPhi[j]),  jetsPt[j] * (float) sin(jetsPhi[j]),  jetsPt[j] * (float) sinh(jetsEta[j]) };
 
                 set_momenta(p_lepton, p_jet1, p_jet2, p_MET);
