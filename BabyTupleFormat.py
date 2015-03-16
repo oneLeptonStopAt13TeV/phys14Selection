@@ -42,7 +42,10 @@ class BabyTupleFormat :
       'MT'                       :  'F',
       'MT2W'                     :  'F',
 
-      'numberOfGeneratedLeptons' :  'I'
+      'numberOfGeneratedLeptons' :  'I',
+     
+      'crossSection'             :  'F',
+      'totalNumberOfInitialEvent':  'I'
     }
 
     # Additional input branches needed during the filling of the babytuple
@@ -94,4 +97,7 @@ class BabyTupleFormat :
         babyTupleTree.MT2W                    = self.MT2W
 
         babyTupleTree.numberOfGeneratedLeptons = self.numberOfGeneratedLeptons
+
+        babyTupleTree.crossSection              = self.dataset.xsection
+        babyTupleTree.totalNumberOfInitialEvent = self.dataset.initialNumberOfEvents
 

@@ -15,7 +15,14 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
                      + Selection.branchesForMuonSelection     \
                      + Selection.branchesForJetSelection      \
                      + Selection.branchesForEventSelection
-    
+
+    # ########### #
+    # Constructor #
+    # ########### #
+
+    def __init__(self, dataset) :
+        self.dataset = dataset
+
     # ############# #
     # Reset objects #
     # ############# #
