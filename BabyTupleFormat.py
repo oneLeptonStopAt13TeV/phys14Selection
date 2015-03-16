@@ -9,38 +9,40 @@
 ###########################################################################################
 
 class BabyTupleFormat :
-       
+
     babyTupleFormat = { 
 
-      'eventId'                 :  'I',
+      'eventId'                  :  'I',
 
-      'numberOfSelectedLeptons' :  'I',
+      'numberOfSelectedLeptons'  :  'I',
       
-      'leadingLeptonId'         :  'I',
-      'leadingLeptonPt'         :  'F',
-      'leadingLeptonPhi'        :  'F',
-      'leadingLeptonEta'        :  'F',
-      'leadingLeptonIso'        :  'F',
+      'leadingLeptonId'          :  'I',
+      'leadingLeptonPt'          :  'F',
+      'leadingLeptonPhi'         :  'F',
+      'leadingLeptonEta'         :  'F',
+      'leadingLeptonIso'         :  'F',
       
-      'secondLeptonId'          :  'I',
-      'secondLeptonPt'          :  'F',
-      'secondLeptonPhi'         :  'F',
-      'secondLeptonEta'         :  'F',
-      'secondLeptonIso'         :  'F',
+      'secondLeptonId'           :  'I',
+      'secondLeptonPt'           :  'F',
+      'secondLeptonPhi'          :  'F',
+      'secondLeptonEta'          :  'F',
+      'secondLeptonIso'          :  'F',
 
-      'numberOfSelectedJets'    :  'I',
-      'numberOfBTaggedJets'     :  'I',
-      'jetsPt'                  :  'F[6]',
-      'jetsPhi'                 :  'F[6]',
-      'jetsEta'                 :  'F[6]',
-      'jetsCSV'                 :  'F[6]',
-      'jetsCSVv2'               :  'F[6]',
-      'jetsPUid'                :  'F[6]',
+      'numberOfSelectedJets'     :  'I',
+      'numberOfBTaggedJets'      :  'I',
+      'jetsPt'                   :  'F[6]',
+      'jetsPhi'                  :  'F[6]',
+      'jetsEta'                  :  'F[6]',
+      'jetsCSV'                  :  'F[6]',
+      'jetsCSVv2'                :  'F[6]',
+      'jetsPUid'                 :  'F[6]',
 
-      'ETmiss'                  :  'F',
-      'ETmissPhi'               :  'F',
-      'MT'                      :  'F',    
-      'MT2W'                    :  'F'    
+      'ETmiss'                   :  'F',
+      'ETmissPhi'                :  'F',
+      'MT'                       :  'F',
+      'MT2W'                     :  'F',
+
+      'numberOfGeneratedLeptons' :  'I'
     }
 
     # Additional input branches needed during the filling of the babytuple
@@ -68,9 +70,9 @@ class BabyTupleFormat :
             babyTupleTree.secondLeptonEta     = -9
             babyTupleTree.secondLeptonPhi     = -9
             babyTupleTree.secondLeptonIso     = -1
-      
+
         babyTupleTree.numberOfSelectedJets    = len(self.selectedJets)
-        
+
         # FIXME this is a C++ way of thinking, rewrite it in python
         babyTupleTree.numberOfBTaggedJets     = 0
         for jet in self.selectedJets :
@@ -90,5 +92,6 @@ class BabyTupleFormat :
         babyTupleTree.ETmissPhi               = event.met_phi
         babyTupleTree.MT                      = self.MT
         babyTupleTree.MT2W                    = self.MT2W
-   
+
+        babyTupleTree.numberOfGeneratedLeptons = self.numberOfGeneratedLeptons
 
