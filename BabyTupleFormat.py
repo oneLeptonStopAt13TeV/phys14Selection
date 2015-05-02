@@ -12,6 +12,8 @@ class BabyTupleFormat :
 
     babyTupleFormat = { 
 
+      'runId'                    :  'I',
+      'lumiId'                   :  'I',
       'eventId'                  :  'I',
 
       'numberOfSelectedLeptons'  :  'I',
@@ -50,10 +52,12 @@ class BabyTupleFormat :
     }
 
     # Additional input branches needed during the filling of the babytuple
-    branchesForMiscInfos = [ "ev_id" ]
+    branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id" ]
 
     def fill(self,event,babyTupleTree) :
 
+        babyTupleTree.runId                   = event.ev_run
+        babyTupleTree.lumiId                  = event.ev_lumi
         babyTupleTree.eventId                 = event.ev_id
         babyTupleTree.numberOfSelectedLeptons = len(self.selectedLeptons)
         babyTupleTree.leadingLeptonId         = self.selectedLeptons[0].id
