@@ -8,6 +8,7 @@ class Variables() :
     
     def computeVariables(self,event) :
         self.MT   = self.computeMT(event)
+        self.HT   = self.computeHT(event)
         self.MT2W = MT2W.computeMT2W(self.selectedJets, self.selectedLeptons[0], event.met_pt, event.met_phi)
         self.numberOfGeneratedLeptons = self.getNumberOfGeneratedLeptons(event)
 
@@ -16,13 +17,26 @@ class Variables() :
     # ########
 
     def computeMT(self,event) :
-        
+
         leadingLeptonPt = self.selectedLeptons[0].pT
         deltaPhi = self.selectedLeptons[0].phi - event.met_phi
         
         MT = sqrt(2 * leadingLeptonPt * event.met_pt * (1 - cos(deltaPhi) ))
         
         return MT
+
+    # ########
+    # #  HT  #
+    # ########
+
+    def computeHT(self,event) :
+
+        HT = 0
+
+        for jet in self.selectedJets :
+            HT += jet.pT
+
+        return HT
 
     # ###############################
     # # Number of generated leptons #
@@ -43,6 +57,7 @@ class Variables() :
                 continue;
 
             mother_pdgid = pdgid[mother[i]]
+
             if (abs(mother_pdgid) != 24) :
                 continue;
 

@@ -62,7 +62,7 @@ class Selection :
             if not (isGlobal[i])   : continue
 
             # Apply pT and eta critera
-            if (pt[i]       <   5)    : continue
+            if (pt[i]       <  20)    : continue
             if (abs(eta[i]) > 2.1)    : continue
 
             # Track / hit constrains
@@ -70,18 +70,21 @@ class Selection :
             if (numberOfValidMuonHits[i] <= 0) : continue
 
             # Vertex constrain
-            if (abs(dxy[i]) >= 0.2)   : continue
-            if (abs(dz[i])  >= 0.5)   : continue
+            if (abs(dxy[i]) >= 0.02)   : continue
+            if (abs(dz[i])  >= 0.1)    : continue
 
-            # TODO/FIXME additional criteria on 
-            # numberOfMatchedStation, pixelHits, numTrackerLayersWithMeasurement, Chi2 #
+            # TODO !
+            # Missing Chi2 < 10
+            # Number of matched station > 1
+            # Number of valid pixel hits > 0
+            # Number of tracker layers with measurement > 5 
 
             # Isolation
             absIso = isoChargedHadron[i]         \
                    + max(0.0,isoNeutralHadron[i] \
                            + isoPhoton[i]        \
                      - 0.5 * isoPU[i])
-            if (absIso / pt[i]   > 0.30)    : continue
+            if (absIso / pt[i]   > 0.15)    : continue
 
             self.selectedLeptons.append(self.lepton( id[i],
                                                      E[i],
@@ -133,7 +136,7 @@ class Selection :
 
         for i in range(n) :
             # Apply pT and eta critera
-            if (pt[i]       <   5) : continue
+            if (pt[i]       <  20) : continue
             if (abs(eta[i]) > 2.1) : continue
 
             # Remove crack electron
@@ -143,21 +146,21 @@ class Selection :
             # Taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2
             # Phys14, PU20, bx25, loose
             if (abs(scleta[i]) < 1.479) :
-                if (abs(dEtaSCTrack[i]) >= 0.012 )  : continue
-                if (abs(dPhiSCTrack[i]) >= 0.073 )  : continue
+                if (abs(dEtaSCTrack[i]) >= 0.0076)  : continue
+                if (abs(dPhiSCTrack[i]) >= 0.033 )  : continue
                 if (see[i]              >= 0.01  )  : continue
-                if (hadronicOverEm[i]   >= 0.12  )  : continue
-                if (IoEmIoP[i]          >= 0.22  )  : continue
-                if (abs(dxy[i])         >= 0.02  )  : continue
-                if (abs(dz[i])          >= 0.17  )  : continue
+                if (hadronicOverEm[i]   >= 0.06  )  : continue
+                if (IoEmIoP[i]          >= 0.15  )  : continue
+                if (abs(dxy[i])         >= 0.01  )  : continue
+                if (abs(dz[i])          >= 0.07  )  : continue
             else :
-                if (abs(dEtaSCTrack[i]) >= 0.011 )  : continue
-                if (abs(dPhiSCTrack[i]) >= 0.14  )  : continue
-                if (see[i]              >= 0.03  )  : continue
-                if (hadronicOverEm[i]   >= 0.13  )  : continue
-                if (IoEmIoP[i]          >= 0.14  )  : continue
-                if (abs(dxy[i])         >= 0.10  )  : continue
-                if (abs(dz[i])          >= 0.20  )  : continue
+                if (abs(dEtaSCTrack[i]) >= 0.0091)  : continue
+                if (abs(dPhiSCTrack[i]) >= 0.04  )  : continue
+                if (see[i]              >= 0.0295)  : continue
+                if (hadronicOverEm[i]   >= 0.10  )  : continue
+                if (IoEmIoP[i]          >= 0.137 )  : continue
+                if (abs(dxy[i])         >= 0.05  )  : continue
+                if (abs(dz[i])          >= 0.18  )  : continue
             
             if not (passConversionVeto[i]    )  : continue
             if (numberOfLostHits[i]   >  1   )  : continue
@@ -169,7 +172,7 @@ class Selection :
                            + isoPhoton[i]        \
                          - 0.5 * isoPU[i])
             # WARNING : voluntary loose iso cut compared to recommended ID to investigate boosted regime
-            if (absIso / pt[i] > 0.30)    : continue
+            if (absIso / pt[i] > 0.097)    : continue
             
             self.selectedLeptons.append(self.lepton(id[i],
                                                     E[i],
@@ -203,8 +206,6 @@ class Selection :
 
         for i in range(n) :
 
-            # TODO/FIXME : add Loose jet ID
-
             # Apply pT and eta requirements
             if (pt[i]       <  30) : continue
             if (abs(eta[i]) > 2.4) : continue
@@ -213,8 +214,7 @@ class Selection :
             foundOverlapWithLepton = False
             for lepton in self.selectedLeptons :
                 dR = common.deltaR(lepton.phi,lepton.eta,phi[i],eta[i])
-                # TODO/FIXME this criteria should be tuned ?
-                if (dR < 0.3) : foundOverlapWithLepton = True; break
+                if (dR < 0.4) : foundOverlapWithLepton = True; break
                 
             if (foundOverlapWithLepton) : continue
             

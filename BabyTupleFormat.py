@@ -41,6 +41,7 @@ class BabyTupleFormat :
       'ETmissPhi'                :  'F',
       'MT'                       :  'F',
       'MT2W'                     :  'F',
+      'HT'                       :  'F',
 
       'numberOfGeneratedLeptons' :  'I',
      
@@ -95,6 +96,7 @@ class BabyTupleFormat :
         babyTupleTree.ETmissPhi               = event.met_phi
         babyTupleTree.MT                      = self.MT
         babyTupleTree.MT2W                    = self.MT2W
+        babyTupleTree.HT                      = self.HT
 
         babyTupleTree.numberOfGeneratedLeptons = self.numberOfGeneratedLeptons
 
