@@ -9,8 +9,11 @@ class Variables() :
     def computeVariables(self,event) :
         self.MT   = self.computeMT(event)
         self.HT   = self.computeHT(event)
-        self.MT2W = MT2W.computeMT2W(self.selectedJets, self.selectedLeptons[0], event.met_pt, event.met_phi)
-        self.numberOfGeneratedLeptons = self.getNumberOfGeneratedLeptons(event)
+        if len(self.selectedLeptons)>0:
+		self.MT2W = MT2W.computeMT2W(self.selectedJets, self.selectedLeptons[0], event.met_pt, event.met_phi)
+        else:
+		self.MT2W = 0
+	self.numberOfGeneratedLeptons = self.getNumberOfGeneratedLeptons(event)
 
     # ########
     # #  MT  # 
@@ -18,8 +21,8 @@ class Variables() :
 
     def computeMT(self,event) :
 
-        leadingLeptonPt = self.selectedLeptons[0].pT
-        deltaPhi = self.selectedLeptons[0].phi - event.met_phi
+        leadingLeptonPt = self.selectedLeptons[0].pT if len(self.selectedLeptons)>0 else 0
+        deltaPhi = self.selectedLeptons[0].phi - event.met_phi if len(self.selectedLeptons)>0 else 0
         
         MT = sqrt(2 * leadingLeptonPt * event.met_pt * (1 - cos(deltaPhi) ))
         

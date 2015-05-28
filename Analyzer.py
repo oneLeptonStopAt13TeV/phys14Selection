@@ -4,7 +4,23 @@ from BabyTupleFormat import *
 from Variables       import *
 
 class Analyzer(Selection,BabyTupleFormat,Variables) :
-   
+
+    ################
+    #  for sync    #
+    ################
+    def loadList(self):
+    
+        self.eventList=[]
+        f = open("eventList");
+        for line in f:
+           print line
+	   print len(line)
+	   array = [int(x) for x in line.split()]
+	   self.eventList.append(tuple(array))
+
+        #print eventList
+
+
     # ####################################### #
     # Define branches needed for the analysis #
     # ####################################### #
@@ -22,6 +38,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 
     def __init__(self, dataset) :
         self.dataset = dataset
+	self.loadList()
 
     # ############# #
     # Reset objects #
@@ -39,13 +56,16 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     #                              |_|                                         |___/  #
     ###################################################################################
 
-    def process(self,event,babyTupleTree) :
+    def process(self,event,babyTupleTree, isoStudy = False) :
 
         self.reset()
 
         # Select muons,electrons
-        self.muonSelector(event)
-        self.electronSelector(event)
+        self.muSelCode = []
+	self.muonSelector(event, self.muSelCode)
+	#print "self.mSelcode = ", self.muSelCode[0] if len(self.muSelCode) else -1
+	self.elSelCode = []
+        self.electronSelector(event, self.elSelCode)
 
         # Sort selected leptons by pT
         self.selectedLeptons = sorted(self.selectedLeptons, key=lambda lepton: lepton.pT, reverse=True)
@@ -57,13 +77,38 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         self.selectedJets = sorted(self.selectedJets, key=lambda jet: jet.pT, reverse=True)
 
         # Apply event selection
-        passEventSelection = self.eventSelector(event)
-        if (not passEventSelection) : return False
+	self.selectionCode  = []
+        #setattr(event,'selectionCode',0)
+	passEventSelection = self.eventSelector(event, self.selectionCode)
+        #print " = ", self.selectionCode[0]
+	#if (not passEventSelection) : return False
 
         # Compute variables
-        self.computeVariables(event)
-        
+	self.computeVariables(event)
+      
+        # for synchronisation
+	if (event.ev_lumi,event.ev_id)  in self.eventList:
+	    print "### ", event.ev_lumi, event.ev_id
+	    print "- electron -"
+	    self.electronDump(event)
+	    print "- muon -"
+	    self.muonDump(event)
+	    print "- pv - "
+	    self.pvDump(event)
+	    print " - selection Code - ", self.selectionCode[0]
+	    print " - muon sele Code - ", self.muSelCode[0] if len(self.muSelCode)>0 else -1
+	    print " - elec sele Code - ", self.elSelCode[0] if len(self.elSelCode)>0 else -1
+
+        # for iso study
+	if isoStudy:
+	    self.muonSelector(event,self.muSelCode2, False)
+	    self.electronSelector(event,self.elSelCode2, False)
+            # Sort selected leptons by pT
+            self.noIsoSelectedMuons = sorted(self.noIsoSelectedMuons, key=lambda lepton: lepton['pt'], reverse=True)
+            self.noIsoSelectedElectrons = sorted(self.noIsoSelectedElectrons, key=lambda lepton: lepton['pt'], reverse=True)
+
         # Fill event in babytuple
+
         self.fill(event,babyTupleTree)
         
         return True
