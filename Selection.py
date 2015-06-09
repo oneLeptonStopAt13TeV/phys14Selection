@@ -46,7 +46,7 @@ class Selection :
     branchesForMuonSelection = [ "mu_n",
                                  "mu_id", "mu_E", "mu_pt", "mu_eta", "mu_phi",
                                  "mu_isPFMuon", "mu_isGlobalMuon",
-                                 "mu_globalTrack_dxy", "mu_globalTrack_dz",
+                                 #"mu_globalTrack_dxy", "mu_globalTrack_dz",
 				 "mu_innerTrack_dxy", "mu_innerTrack_dz",
                                  "mu_pfIso03_sumChargedHadronPt", "mu_pfIso03_sumNeutralHadronEt",
                                  "mu_pfIso03_sumPhotonEt", "mu_pfIso03_sumPUPt",
@@ -71,9 +71,11 @@ class Selection :
             print "isTightMuon           =", event.mu_isTightMuon[i]
 
 
-    def muonSelector(self,event,mSelCode, iso = True) :
-    	#use also iso cut if iso == True
+    def muonSelector(self,event, muonSelCode, iso = True) :
+    	
+	#use also iso cut if iso == True
 
+	#copy info in local variables (avoid retrieved info in the loop: save time)
         n                     = event.mu_n
         id                    = event.mu_id
         E                     = event.mu_E
@@ -90,60 +92,20 @@ class Selection :
         isoPU                 = event.mu_pfIso03_sumPUPt
         isTightMuon           = event.mu_isTightMuon
 
-        muSelCode = 0
 	for i in range(n) :
-
-            isSel = True
-            # Require tight ID
-            if isTightMuon[i] != 1     :
-	        #continue
-                isSel = False
-	    else:
-	        muSelCode+=1
-	    # The following cuts are need
-	    if not (isPF[i])       : 
-	        #continue
-                isSel = False
-            else:
-	        muSelCode+=10
-	    if not (isGlobal[i])   : 
-	        #continue
-                isSel = False
-	    else: 
-	        muSelCode+=100
-	    if event.mu_numberOfMatches[i] < 2 : 
-	        #continue
-                isSel = False
-	    else: 
-	        muSelCode+=1000
-	    #print dxy[i], dz[i]
-	    if abs(dxy[i]) >= 0.02 : 
-	        #continue
-                isSel = False
-	    else:
-	        muSelCode+=10000
-	    if abs(dz[i]) >= 0.1 : 
-	        #continue	
-                isSel = False
-	    else:
-	        muSelCode+=100000
-	    #if event.mu_globalTrack_dxy[i] >= 0.02 : continue
-	    #if event.mu_globalTrack_dz[i] >= 0.1 : continue	
             # Apply pT and eta critera
-            if (pt[i]       <  20)    : 
-	        #continue
-                isSel = False
-            else:
-	        muSelCode+=1000000
-	    if (abs(eta[i]) > 2.1)    : 
-	        #continue
-	        isSel = False	
-	    else:
-	        muSelCode+=10000000
+            if (pt[i]       <  20)    : continue
+	    if (abs(eta[i]) > 2.1)    :  continue
+            # Require tight ID
+            if isTightMuon[i] != 1 : continue
+	    # The following cuts are need
+	    if not (isPF[i])       : continue
+	    if not (isGlobal[i])   : continue
+	    if event.mu_numberOfMatches[i] < 2 : continue
             # Vertex constrain
-            # Already present in tight-id
-	    #if (abs(dxy[i]) >= 0.02)   : continue
-            #if (abs(dz[i])  >= 0.1)    : continue
+	    if abs(dxy[i]) >= 0.02 : continue
+	    if abs(dz[i]) >= 0.1 : continue	
+
 
             # Isolation
             absIso = isoChargedHadron[i]         \
@@ -152,36 +114,22 @@ class Selection :
                      - 0.5 * isoPU[i])
             
 	    if iso:
-	        rIso = 99999 
-		if pt[i] !=0:
-		   rIso = absIso / pt[i] 
-		#or (absIso / pt[i]   > 0.15)    : 
-		if (rIso  > 0.15)    : 
-		    #continue
-	            isSel = False	
-                else:
-		    muSelCode+=100000000
-		    if isSel:
-		        self.selectedMuons = self.selectedMuons + 1
-	                self.selectedLeptons.append(self.lepton( id[i],
+		if (absIso / pt[i])  > 0.15    : continue
+		self.selectedMuons = self.selectedMuons + 1
+	        self.selectedLeptons.append(self.lepton( id[i],
                                                      E[i],
                                                      pt[i],
                                                      eta[i],
                                                      phi[i],
                                                      absIso
                                                      ))
-            	#print "y a des muons!"
 	    else :
-	        if isSel:
-	            self.noIsoSelectedMuons.append(
+	        self.noIsoSelectedMuons.append(
 			{'miniIso':event.mu_miniIso[i],
 			'relIsoDB':absIso/pt[i],
 			'pt':pt[i],
 			'eta':eta[i]})
 	
-	    if i == 0 : 
-	        mSelCode.append(muSelCode)
-                #print "muSelCode = ", muSelCode
 
     # ######### #
     # Electrons #
@@ -251,19 +199,19 @@ class Selection :
 
             # Apply pT and eta critera
             if (pt[i]       <  20) : continue
-            #else : elSelCode+=1
 	    if (abs(eta[i]) > 2.1) : continue
-            #else : elSelCode+=10
 
             # Remove crack electron
             #if (abs(scleta[i]) > 1.4442) and ((abs(scleta[i]) < 1.566)) : continue
 
+	    #############
             # Isolation
-            # TODO / FIXME : check this is good (deltaBeta correction ?)
-            
+	    #############
+
+	    ## this part could certainly be optimzed
 	    #taken form https://indico.cern.ch/event/367861/contribution/2/material/slides/0.pdf (slide 7)
 	    effAreaList = [ (0.8,0.1013), (1.3,0.0988), (2.0,0.0572), (2.2,0.0842), (2.5,0.1530)] 
-	    #effArea = 0
+	    effArea = 0
 	    for eff_eta,eff_val in effAreaList:
 	    	if abs(eta[i]) < eff_eta: 
 			effArea = eff_val
@@ -276,7 +224,6 @@ class Selection :
                          - event.ev_rho * effArea)
 
             relIso = absIso / pt[i]
-
 
 	    relIsoDB = (isoChargedHadron[i]         \
                    + max(0.0,isoNeutralHadron[i] \
@@ -307,26 +254,6 @@ class Selection :
                 if (IoEmIoP[i]          >= 0.137468 ) : continue
                 if (abs(dxy[i])         >= 0.051682 ) : continue
                 if (abs(dz[i])          >= 0.180720 ) : continue
-
-	   #https://twiki.cern.ch/twiki/bin/rdiff/CMS/CutBasedElectronIdentificationRun2 - r17
-           # if (abs(scleta[i]) <= 1.479) :
-           #     if (relIso              >= 0.107587 )  : continue
-           #     if (abs(dEtaSCTrack[i]) >= 0.007641)  : continue
-           #     if (abs(dPhiSCTrack[i]) >= 0.032643 )  : continue
-           #     if (see[i]              >= 0.009996 )  : continue
-           #     if (hadronicOverEm[i]   >= 0.050537 )  : continue
-           #     if (IoEmIoP[i]          >= 0.091942  )  : continue
-           #     if (abs(dxy[i])         >= 0.0118110.012235 )  : continue
-           #     if (abs(dz[i])          >= 0.070775 )  : continue
-           # else :
-           #     if (relIso              >= 0.116708) : continue
-           #     if (abs(dEtaSCTrack[i]) >= 0.007429 ) : continue
-           #     if (abs(dPhiSCTrack[i]) >= 0.067879 ) : continue
-           #     if (see[i]              >= 0.030135 ) : continue
-           #     if (hadronicOverEm[i]   >= 0.086782 ) : continue
-           #     if (IoEmIoP[i]          >= 0.100683 ) : continue
-           #     if (abs(dxy[i])         >= 0.036719 ) : continue
-           #     if (abs(dz[i])          >= 0.138142 ) : continue
 
 
             if not (passConversionVeto[i] )  : continue
@@ -408,9 +335,8 @@ class Selection :
 
     #branchesForPVSelection = []
     def pvSelection(self,event):
-        #variables are missing in the tuples for the moment
-	if event.pv_rho > 2 : return False 
         if abs(event.pv_z) >24 : return False
+	if event.pv_rho > 2 : return False 
         if event.pv_ndof <= 4 : return False
         if event.pv_isFake : return False
         return True

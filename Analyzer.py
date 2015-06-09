@@ -8,6 +8,9 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     ################
     #  for sync    #
     ################
+    # uses a file "evenList"
+    # only used for sync' exercise
+    # will be remove later
     def loadList(self):
     
         self.eventList=[]
@@ -38,7 +41,8 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 
     def __init__(self, dataset) :
         self.dataset = dataset
-	self.loadList()
+	# only used for sync' exercise
+	#self.loadList()
 
     # ############# #
     # Reset objects #
@@ -84,20 +88,24 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	#if (not passEventSelection) : return False
 
         # Compute variables
+	# NB: this part is the most CPU intensive part of the code
 	self.computeVariables(event)
       
-        # for synchronisation
-	if (event.ev_lumi,event.ev_id)  in self.eventList:
-	    print "### ", event.ev_lumi, event.ev_id
-	    print "- electron -"
-	    self.electronDump(event)
-	    print "- muon -"
-	    self.muonDump(event)
-	    print "- pv - "
-	    self.pvDump(event)
-	    print " - selection Code - ", self.selectionCode[0]
-	    print " - muon sele Code - ", self.muSelCode[0] if len(self.muSelCode)>0 else -1
-	    print " - elec sele Code - ", self.elSelCode[0] if len(self.elSelCode)>0 else -1
+	#######################
+        # for synchronisation #
+	#######################
+	#if (event.ev_lumi,event.ev_id)  in self.eventList:
+	#if event.ev_lumi == 229 and event.ev_id == 22840: 
+	#    print "### ", event.ev_lumi, event.ev_id
+	#    print "- electron -"
+	#    self.electronDump(event)
+	#    print "- muon -"
+	#    self.muonDump(event)
+	#    print "- pv - "
+	#    self.pvDump(event)
+	#    print " - selection Code - ", self.selectionCode[0]
+	#    print " - muon sele Code - ", self.muSelCode[0] if len(self.muSelCode)>0 else -1
+	#    print " - elec sele Code - ", self.elSelCode[0] if len(self.elSelCode)>0 else -1
 
         # for iso study
 	if isoStudy:
