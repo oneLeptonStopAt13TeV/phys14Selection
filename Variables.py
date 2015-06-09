@@ -1,6 +1,6 @@
-   
 from math        import sqrt, cos
 from inputs.MT2W import MT2W
+#from inputs.topness import topness    
 
 class Variables() :
 
@@ -14,6 +14,17 @@ class Variables() :
         else:
 		self.MT2W = 0
 	self.numberOfGeneratedLeptons = self.getNumberOfGeneratedLeptons(event)
+
+    	# ### topness
+	# change the way b-jets are choose
+        #self.topness = topness.compute(self.selectedLeptons[0], self.selectedJets[0], self.selectedJets[1], event.met_pt, event.met_phi)
+
+	#Chi2
+	#M3b
+	#ak4_htssm
+	#Mlb_leadb
+	#dphi_Wlep
+
 
     # ########
     # #  MT  # 
@@ -45,6 +56,10 @@ class Variables() :
     # # Number of generated leptons #
     # ###############################
 
+    # this function is very CPU intensive (40% total time)
+    # should be optimzed ?
+    
+    
     def getNumberOfGeneratedLeptons(self, event) :
 
         genLeptonsFound = 0;
@@ -53,22 +68,28 @@ class Variables() :
         pdgid  = event.gen_id
         mother = event.gen_mother_index
         status = event.gen_status
-        
-        for i in range(n) :
+       
+
+        #for i in range(n) :
+
+            # put this requirement at the first position
+	#    if (status[i] > 3) :
+        #        continue;
             
-            if ((abs(pdgid[i]) != 11) and (abs(pdgid[i]) != 13) and (abs(pdgid[i]) != 15)) :
-                continue;
+        #    mother_pdgid = pdgid[mother[i]]
+	#    if (abs(mother_pdgid) != 24) :
+        #        continue;
+            
+        #    if ((abs(pdgid[i]) != 11) and (abs(pdgid[i]) != 13) and (abs(pdgid[i]) != 15)) :
+        #        continue;
 
-            mother_pdgid = pdgid[mother[i]]
 
-            if (abs(mother_pdgid) != 24) :
-                continue;
+        #    genLeptonsFound += 1
 
-            if (status[i] > 3) :
-                continue;
 
-            genLeptonsFound += 1
+	res = [1 for i in range(n) if status[i]<=3 and pdgid[mother[i]] == 24 and ((abs(pdgid[i]) == 11) or (abs(pdgid[i]) == 13) or (abs(pdgid[i]) == 15))]
+        return sum(res)
 
-        return genLeptonsFound
+	#return genLeptonsFound
 
 
