@@ -8,7 +8,7 @@ CXXFLAGS     += -O -Wall -fPIC $(DEFINES) -Wno-unused-result -Wshadow
 CXXFLAGS     += $(ROOTCFLAGS) -I./
 
 LD            = g++ 
-LDFLAGS       = -g -O -Wall -fPIC -Wl,-undefined,error
+LDFLAGS       = -g -O3 -Wall -fPIC -Wl,-undefined,error
 LDFLAGS      += $(ROOTLIBS)  -lEG -lTMVA 
 
 SOFLAGS       = -shared
