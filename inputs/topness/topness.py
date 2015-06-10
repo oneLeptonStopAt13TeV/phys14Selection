@@ -1,27 +1,31 @@
 import ctypes
 import os
+from ROOT import TLorentzVector
 
 lib = os.path.dirname(os.path.realpath(__file__))+'/libTopness.so'
 Topnesswrap = ctypes.CDLL(lib)
 Topnesscompute_ = Topnesswrap.topnessMinimization
 
 # Arguments types
-Topnesscompute_.argtypes = (
-  ctypes.c_double lep_pt, ctypes.c_double lep_eta, ctypes.c_double lep_phi, ctypes.c_double lep_e,
-  ctypes.c_double bjet1_pt, ctypes.c_double bjet1_eta, ctypes.c_double bjet1_phi, ctypes.c_double bjet1_e,
-  ctypes.c_double bjet2_pt, ctypes.c_double bjet2_eta, ctypes.c_double bjet2_phi, ctypes.c_double bjet2_e,
-  ctypes.c_double met, ctypes.c_double met_phi)
+#Topnesscompute_.argtypes = (TLorentzVector, TLorentzVector, TLorentzVector, TLorentzVector)
+Topnesscompute_.argtypes = (\
+  ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double,\
+  ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double,\
+  ctypes.c_double, ctypes.c_double, ctypes.c_double, ctypes.c_double,\
+  ctypes.c_double, ctypes.c_double)
 
 # Return type
 Topnesscompute_.restype = ctypes.c_float
 
 
-def computeTopness( lepton, bjet1, bjet2,  MET, METphi):
-    
-    result = Topnesscompute_(
-   	ctypes.double(lepton.pT),  ctypes.double(lepton.eta),  ctypes.double(lepton.phi),  ctypes.double(lepton.E),
-   	ctypes.double(bjet1.pT) ,  ctypes.double(bjet1.eta) ,  ctypes.double(bjet1.phi) ,  ctypes.double(bjet1.E),
-   	ctypes.double(bjet2.pT) ,  ctypes.double(bjet2.eta) ,  ctypes.double(bjet2.phi) ,  ctypes.double(bjet2.E),
-	ctypes.double(met), ctypes.double(met_phi))
-    
-    return float(result)
+def computeTopness ( 
+    lepton_pt, lepton_eta, lepton_phi, lepton_E,
+    bjet1_pt, bjet1_eta, bjet1_phi, bjet1_E,
+    bjet2_pt, bjet2_eta, bjet2_phi, bjet2_E,
+    met, met_phi):
+        result = Topnesscompute_( \
+    		lepton_pt, lepton_eta, lepton_phi, lepton_E,\
+    		bjet1_pt, bjet1_eta, bjet1_phi, bjet1_E,\
+   		bjet2_pt, bjet2_eta, bjet2_phi, bjet2_E,\
+   	 	met, met_phi)
+        return float(result)

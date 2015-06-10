@@ -3,7 +3,7 @@
 //THIS is the function you want to call to get the variable. Others are helper.
 //float topnessMinimization(TLorentzVector met, TLorentzVector lep, TLorentzVector bjet1, TLorentzVector bjet2) {
 // Using extern "C" for compiler to not mangle the name of the function
-float topnessMinimization(
+extern "C" float topnessMinimization(
   double lep_pt, double lep_eta, double lep_phi, double lep_e,
   double bjet1_pt, double bjet1_eta, double bjet1_phi, double bjet1_e,
   double bjet2_pt, double bjet2_eta, double bjet2_phi, double bjet2_e,
