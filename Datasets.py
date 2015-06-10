@@ -4,24 +4,30 @@ from core import genericDataset
 Dataset = genericDataset.Dataset
 datasets = [
 
-#    Dataset("ttbar-madgraph", xsection=831.76,
-#            wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/crab_ttbar-madgraph/150314_230009/0000/"),          
+    #Dataset("ttbar-madgraph", xsection=831.76,
+    #	     wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/crab_ttbar-madgraph/150314_230009/0000/"),          
 #    Dataset("ttbar-pythia8", xsection=831.76,
 #            wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/TT_Tune4C_13TeV-pythia8-tauola/crab_ttbar-pythia8/150314_230037/0000/"),          
 
     Dataset("T2tt_850_100",   xsection=0.01896,
-            wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/SMS-T2tt_2J_mStop-850_mLSP-100_Tune4C_13TeV-madgraph-tauola/crab_T2tt_850_100/150314_225910/0000/"),
+            wildcard="local:../../../../prod/CMSSW_7_3_0/src/IPHCFlatTree/FlatTreeProducer/test/output.root")
+ #   Dataset("T2tt_650_100",   xsection=0.01896,
+ #           wildcard="dpm:/echabert/FlatTrees/v20150314-WildBeast-v3/SMS-T2tt_2J_mStop-650_mLSP-325_Tune4C_13TeV-madgraph-tauola/crab_T2tt_650_325/150604_211802/0000"),
+  #  Dataset("T2tt_850_100",   xsection=0.01896,
+   #         wildcard="dpm:/echabert/FlatTrees/v20150314-WildBeast-v3/SMS-T2tt_2J_mStop-850_mLSP-100_Tune4C_13TeV-madgraph-tauola/crab_T2tt_850_100/150604_211832/0000")
+
 #    Dataset("T2tt_425_325",   xsection=1.31169,
 #            wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/SMS-T2tt_2J_mStop-425_mLSP-325_Tune4C_13TeV-madgraph-tauola/crab_T2tt_425_325/150314_225747/0000/"),
-#   Dataset("T2tt_500_325",   xsection=0.51848,
+#  Dataset("T2tt_500_325",   xsection=0.51848,
 #           wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/SMS-T2tt_2J_mStop-500_mLSP-325_Tune4C_13TeV-madgraph-tauola/crab_T2tt_500_325/150314_225814/0000/"),
-   Dataset("T2tt_650_325",   xsection=0.107045,
-           wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/SMS-T2tt_2J_mStop-650_mLSP-325_Tune4C_13TeV-madgraph-tauola/crab_T2tt_650_325/150314_225841/0000/"),          
+#   Dataset("T2tt_650_325",   xsection=0.107045,
+#           wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/SMS-T2tt_2J_mStop-650_mLSP-325_Tune4C_13TeV-madgraph-tauola/crab_T2tt_650_325/150314_225841/0000/")        
+
    #Dataset("T2tt_650_325",   xsection=0.107045,
    #        wildcard="local:/opt/sbg/data/data2/cms/aaubin/stopPhys14/store/FlatTrees_T2tt_650_325/*.root"),
 
-#    Dataset("Wjets", xsection=61466,
-#            wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/WJetsToLNu_13TeV-madgraph-pythia8-tauola/crab_Wjets/150314_230201/0000/"),          
+    #Dataset("Wjets", xsection=61466,
+    #        wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/WJetsToLNu_13TeV-madgraph-pythia8-tauola/crab_Wjets/150314_230201/0000/")
 #
 #    Dataset("singleTopbar_s", xsection=4.16,
 #            wildcard="dpm:/aaubin/FlatTrees/v20150314-WildBeast-v2/TBarToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola/crab_singleTop_s/150314_230257/0000/"),
