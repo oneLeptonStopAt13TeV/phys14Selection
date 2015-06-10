@@ -46,7 +46,14 @@ class BabyTupleFormat :
       'MT'                       :  'F',
       'MT2W'                     :  'F',
       'HT'                       :  'F',
-       
+      'ak4_htssm'		 :  'F',
+      'ak4_htosm'		 :  'F',
+      'M3b'			 :  'F',
+      'Mlb_leadb'		 :  'F',
+      'dphi_Wlep'		 :  'F',
+      'topness'			 :  'F',
+      'hadronic_top_chi2'        :  'F',
+
       #added: pv
       'pv_ndof'			 :   'F',
       'pv_isFake'                :   'I',
@@ -134,7 +141,15 @@ class BabyTupleFormat :
         babyTupleTree.MT                      = self.MT
         babyTupleTree.MT2W                    = self.MT2W
         babyTupleTree.HT                      = self.HT
-  
+        babyTupleTree.ak4_htssm  = self.HTSSM
+        babyTupleTree.ak4_htosm  = self.HTOSM
+        babyTupleTree.M3b   	= self.M3b
+        babyTupleTree.Mlb_leadb 	= self.Mlb_leadb
+        babyTupleTree.dphi_Wlep 	= self.dphi_Wlep
+        babyTupleTree.topness   	= self.topness
+        babyTupleTree.hadronic_top_chi2 = self.hadchi2
+
+
         #isoStudy
 	if doIsoStudy:
 	    for i in range(2):
