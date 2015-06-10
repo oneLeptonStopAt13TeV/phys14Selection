@@ -8,13 +8,15 @@
 using namespace std;
 
 
-//float topnessMinimization(TLorentzVector met, TLorentzVector lep, TLorentzVector bjet1, TLorentzVector bjet2, int version=1);
-extern "C" float topnessMinimization(
+//extern "C" float topnessMinimization(TLorentzVector met, TLorentzVector lep, TLorentzVector bjet1, TLorentzVector bjet2, int version=1);
+
+/*
+extern "C" float topnessMinimization( TLorentzVecto
   double lep_pt, double lep_eta, double lep_phi, double lep_e,
   double bjet1_pt, double bjet1_eta, double bjet1_phi, double bjet1_e,
   double bjet2_pt, double bjet2_eta, double bjet2_phi, double bjet2_e,
   double met, double met_phi);
-
+*/
 double topnessFunction(double pwx_, double pwy_, double pwz_, double pnz_,
                        double plx_, double ply_, double plz_, double ple_,
                        double pb1x_, double pb1y_, double pb1z_, double pb1e_,
