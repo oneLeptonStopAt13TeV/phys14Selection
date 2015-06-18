@@ -122,8 +122,11 @@ double Resolution::GetChi2(int n_jets, TLorentzVector* jets, bool* btag)
 
   for(int i=0; i<n_jets; i++)
   {
-        sigmas.push_back(GetSigmaJet(jets[i]));
-  	//cout<<GetSigmaJet(jets[i])<<endl;
+        //cout<<GetSigmaJet(jets[i])<<" "<<0.1*jets[i].Pt()<<endl;
+	//sgmas.push_back(GetSigmaJet(jets[i]));
+  	//use a flat 10%
+	sigmas.push_back(0.1);
+	//cout<<GetSigmaJet(jets[i])<<endl;
   }
 
   //check at most first 6 jets
