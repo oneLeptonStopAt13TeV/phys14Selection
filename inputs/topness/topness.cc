@@ -1,8 +1,16 @@
 #include "topness.h"
+#include <iostream>
+
+using namespace std;
 
 //THIS is the function you want to call to get the variable. Others are helper.
 //float topnessMinimization(TLorentzVector met, TLorentzVector lep, TLorentzVector bjet1, TLorentzVector bjet2) {
 // Using extern "C" for compiler to not mangle the name of the function
+ 
+double round(double input, int digits){
+    return ceil( ( input * pow( 10,digits ) ) - 0.5 ) / pow( 10,digits );
+}
+
 extern "C" float topnessMinimization(
   double lep_pt, double lep_eta, double lep_phi, double lep_e,
   double bjet1_pt, double bjet1_eta, double bjet1_phi, double bjet1_e,
@@ -22,25 +30,33 @@ extern "C" float topnessMinimization(
   TLorentzVector bjet1;
   bjet1.SetPtEtaPhiE(bjet1_pt, bjet1_eta, bjet1_phi, bjet1_e);
   TLorentzVector bjet2;
-  bjet2.SetPtEtaPhiE(bjet1_pt, bjet2_eta, bjet2_phi, bjet2_e);
+  bjet2.SetPtEtaPhiE(bjet2_pt, bjet2_eta, bjet2_phi, bjet2_e);
+ 
+  // get variables for Topness and use a rounding
+ 
+  int mydigit = 3;
+  double iLpx = round(lep.Px(),mydigit);
+  double iLpy = round(lep.Py(),mydigit);
+  double iLpz = round(lep.Pz(),mydigit);
+  double iLpe = round(lep.E(),mydigit);
+  double iB1px = round(bjet1.Px(),mydigit);
+  double iB1py = round(bjet1.Py(),mydigit);
+  double iB1pz = round(bjet1.Pz(),mydigit);
+  double iB1pe = round(bjet1.E(),mydigit);
+  double iB2px = round(bjet2.Px(),mydigit);
+  double iB2py = round(bjet2.Py(),mydigit);
+  double iB2pz = round(bjet2.Pz(),mydigit);
+  double iB2pe = round(bjet2.E(),mydigit);
+  double iMpx = round(met.Px(),mydigit);
+  double iMpy = round(met.Py(),mydigit);
+  double iMpz = round(met.Pz(),mydigit);
+  double iMpe = round(met.E(),mydigit);
+
+  //cout<<iLpx<<" "<<iLpy<<" "<<iLpz<<" "<<iLpe<<endl;
+  //cout<<iB1px<<" "<<iB1py<<" "<<iB1pz<<" "<<iB1pe<<endl;
+  //cout<<iB2px<<" "<<iB2py<<" "<<iB2pz<<" "<<iB2pe<<endl;
+  //cout<<iMpx<<" "<<iMpy<<" "<<iMpz<<" "<<iMpe<<endl;
   
-  // get variables for Topness
-  double iLpx = lep.Px();
-  double iLpy = lep.Py();
-  double iLpz = lep.Pz();
-  double iLpe = lep.E();
-  double iB1px = bjet1.Px();
-  double iB1py = bjet1.Py();
-  double iB1pz = bjet1.Pz();
-  double iB1pe = bjet1.E();
-  double iB2px = bjet2.Px();
-  double iB2py = bjet2.Py();
-  double iB2pz = bjet2.Pz();
-  double iB2pe = bjet2.E();
-  double iMpx = met.Px();
-  double iMpy = met.Py();
-  double iMpz = met.Pz();
-  double iMpe = met.E();
   // Define parameters [param number, param name, init val, estimated distance to min, bla, bla] // 300,3000,-3000,3000
   minimizer->SetParameter(0,"pwx",0,500,-3000,3000);
   minimizer->SetParameter(1,"pwy",0,500,-3000,3000);
@@ -82,6 +98,7 @@ extern "C" float topnessMinimization(
   // Run the simplex minimizer to get close to the minimum [no good precision, but robust]
   // For signal regions, no difference seen with migrad, but more stable
   minimizer->ExecuteCommand("SIMPLEX",0,0);
+  //minimizer->ExecuteCommand("MIGRAD",0,0);
   //Get the best fit values
   double pwx_fit = minimizer->GetParameter(0);
   double pwy_fit = minimizer->GetParameter(1);
