@@ -14,6 +14,81 @@ class BabyTupleFormat :
 
     babyTupleFormat = { 
 
+      #common format
+       
+	
+      ## lepton 1: leading lepton
+      'lep1_pdgid'		:	'I',
+      'lep1_pt'			:	'F',
+      'lep1_eta'		:	'F',
+      'lep1_phi'		:	'F',
+      'lep1_mass'		:	'F',
+      'lep1_passVeto'		:	'F',
+      'lep1_passMediumID'	:	'F',
+      'lep1_dz'			:	'F',
+      'lep1_d0'			:	'F',
+      'lep1_MiniIso'		:	'F',
+      
+      ## lepton 2: second leading lepton
+      'lep2_pdgid'		:	'I',
+      'lep2_pt'			:	'F',
+      'lep2_eta'		:	'F',
+      'lep2_phi'		:	'F',
+      'lep2_mass'		:	'F',
+      'lep2_passVeto'		:	'F',
+      'lep2_passMediumID'	:	'F',
+      'lep2_dz'			:	'F',
+      'lep2_d0'			:	'F',
+      'lep2_MiniIso'		:	'F',
+      
+      # vector of jets are pt ordered
+      'ak4pfjets_pt'		:	'F',
+      'ak4pfjets_eta'		:	'F',
+      'ak4pfjets_phi'		:	'F',
+      'ak4pfjets_mass'		:	'F',
+      'ak4pfjets_CSV'		:	'F',
+      'ak4pfjets_loose_pfid'	:	'B',
+      'ak4pfjets_puid'		:	'B',
+      'dphi_ak4pfjets_met'	:	'F',
+
+      #Store the following event variables: 
+      'ak4pfjets_rho'		:	'F',
+      #pf - type1 corrected
+      'pfmet'			:	'F',
+      'pfmet_phi'		:	'F',
+      'mt_met_lep'		:	'F',
+      'ngoodjets'		:	'I',	#number of selected jets 
+      'ngoodbtags'		:	'I',	#number of selected btag jets 
+      'ngoodleps'		:	'I',	#number of selected leptons 
+      'nvetoleps'		:	'I',	#number of leptons that pass the veto selection 
+      'genlepsfromtop'		:	'I',	
+      #inumber of gen-level leptons (e, mu,tau) from top decays; used to classify ttbar=>1lep+Jets, ttbar=>2lep mc events
+
+      # discriminating variables
+      'MT2W'		:	'F',
+      'chi2'		:	'F',  #hadronic chi2 
+      'topness'		:	'F',
+      'dphi_Wlep'	:	'F',  #DeltaPhi(l,W) using lep1 
+      'ak4_HT'		:	'F',  # HT of selected jets 
+      'ak4_htssm'	:	'F',  # HT of selected jets on same hemisphere as met 
+      'ak4_htosm'	:	'F',  # HT of selected jets on opposite hemisphere as met 
+      'Mlb'		:	'F',  # M(lb), mass of lep1 + closest b 
+      'Mjjj'		:	'F',  # M3b, mass of 3 jets most back to back to lep1 
+      'dR_lep_leadb'	:	'F',  # DeltaR(l,lead_b)  
+
+      #triggers
+      'HLT_SingleMu'	:	'B',
+      'HLT_SingleE'	:	'B',
+
+      # weights
+      'pu_weight'	:	'F',
+      'scale1fb'	:	'F',
+      'lep_sf'		:	'F',
+      'btag_sf'		:	'F',
+
+      ############################################
+      ## END COMMON FORMAT
+      ############################################
       'runId'                    :  'I',
       'lumiId'                   :  'I',
       'eventId'                  :  'I',
@@ -104,6 +179,7 @@ class BabyTupleFormat :
             babyTupleTree.leadingLeptonPt         = self.selectedLeptons[0].pT
             babyTupleTree.leadingLeptonEta        = self.selectedLeptons[0].eta
             babyTupleTree.leadingLeptonPhi        = self.selectedLeptons[0].phi
+            #babyTupleTree.leadingLeptonIso        = self.selectedLeptons[0].miniIso
             babyTupleTree.leadingLeptonIso        = self.selectedLeptons[0].iso
 
         if (len(self.selectedLeptons) >= 2) :
@@ -111,6 +187,7 @@ class BabyTupleFormat :
             babyTupleTree.secondLeptonPt      = self.selectedLeptons[1].pT
             babyTupleTree.secondLeptonEta     = self.selectedLeptons[1].eta
             babyTupleTree.secondLeptonPhi     = self.selectedLeptons[1].phi
+            #babyTupleTree.secondLeptonIso     = self.selectedLeptons[1].miniIso
             babyTupleTree.secondLeptonIso     = self.selectedLeptons[1].iso
         else :
             babyTupleTree.secondLeptonId      = 0
