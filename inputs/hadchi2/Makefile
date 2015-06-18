@@ -1,6 +1,6 @@
 
 ROOTCFLAGS    = $(shell root-config --cflags)
-ROOTLIBS      = $(shell root-config --libs) -lMinuit2
+ROOTLIBS      = $(shell root-config --libs) -lMinuit2 -lGenVector
 
 CXX           = g++
 CXXFLAGS      = -std=c++0x
@@ -28,5 +28,6 @@ clean:
 
 #------------------------------------------------------------------------------
 
-libHadChi2.so: Resolution.cc
+#libHadChi2.so: Resolution.cc
+libHadChi2.so: chi2.cc
 	$(LD) $(CXXFLAGS) $(LDFLAGS) $(SOFLAGS) -o $@ $< $(LIBS) $(GCCPARSER)
