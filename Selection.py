@@ -106,7 +106,8 @@ class Selection :
 	for i in range(n) :
 	    # Reject muons than can either be veto or selected
 	    
-	    if abs(eta[i]) > 2.4  : continue
+	    if abs(eta[i]) >= 2.4  : continue
+	    if abs(pt[i]) <= 10  : continue
 	    if abs(dxy[i]) >= 0.1 : continue
 	    if abs(dz[i]) >= 0.5  : continue	
             if miniIso[i] >= 0.2 : continue
@@ -115,51 +116,17 @@ class Selection :
 	    # we miss if it is a track muon
 
             # Require tight ID
-            #if isTightMuon[i] != 1 : continue
-	    # The following cuts are need
-	    #if not (isPF[i])       : continue
-	    #if not (isGlobal[i])   : continue
-	    #if event.mu_numberOfMatches[i] < 2 : continue
-            # Vertex constrain
-	    #if abs(dxy[i]) >= 0.02 : continue
-	    #if abs(dz[i]) >= 0.1 : continue	
-
 	    if isTightMuon[i] == 1 and event.mu_numberOfMatches[i] >=2 and abs(dxy[i])<0.02 and abs(dz[i])<0.1 and miniIso[i]<0.1:
-	        if abs(eta[i]) < 2.1 and pt[i] >= 20:
+	        # Selected muon
+		if abs(eta[i]) < 2.1 and pt[i] >= 30:
 		    self.selectedLeptons.append( self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i]) )
-		elif abs(eta[i]) < 2.4 and pt[i] >= 10:
+		# Loose selection
+		elif pt[i] >= 20:
 		    self.selectedLeptons2.append( self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i]) )
+	    # Veto muon
 	    else:
 	        self.vetoLeptons.append( self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i]) )
 
-            # Isolation
-            #absIso = isoChargedHadron[i]         \
-            #       + max(0.0,isoNeutralHadron[i] \
-            #               + isoPhoton[i]        \
-            #         - 0.5 * isoPU[i])
-	    
-	    
-	    # Apply pT and eta critera at the end
-	    #if (abs(eta[i]) > 2.1)    :  continue
-            #if (pt[i]       <  20)    : continue
-            
-	    #if iso:
-		#if (absIso / pt[i])  > 0.15    : continue
-	#	if (miniIso[i]) >= 0.1: continue
-#		self.selectedMuons = self.selectedMuons + 1
-#	        self.selectedLeptons.append(self.lepton( id[i],
- #                                                    E[i],
- #                                                    pt[i],
-  #                                                   eta[i],
-   #                                                  phi[i],
-						     #miniIso[i]
-                                                     #))
-#	    else :
-#	        self.noIsoSelectedMuons.append(
-#			{'miniIso':event.mu_miniIso[i],
-#			'relIsoDB':absIso/pt[i],
-#			'pt':pt[i],
-#			'eta':eta[i]})
 	
 
     # ######### #
@@ -233,74 +200,45 @@ class Selection :
 
         for i in range(n) :
 
-            # Loose criteria applied for the veot leptons
+            # Loose criteria applied for the veto leptons
 	    if pt[i] <= 10  : continue
 	    if abs(eta[i]) >= 2.4: continue
 	    if miniIso[i] >= 0.2: continue
+	    # Isolation
+	    if iso:
+	        if miniIso[i] >= 0.1: continue
 
             # Apply pT and eta critera
-            if (pt[i]       <  20) : continue
-	    if (abs(eta[i]) > 2.1) : continue
+            #if (pt[i]       <  20) : continue
+	    #if (abs(eta[i]) > 2.1) : continue
 
             # Remove crack electron
             #if (abs(scleta[i]) > 1.4442) and ((abs(scleta[i]) < 1.566)) : continue
 
-	    #############
-            # Isolation
-	    #############
+	    ##############
+            # Electron ID
+	    ##############
 
-	    ## this part could certainly be optimzed
-	    #taken form https://indico.cern.ch/event/367861/contribution/2/material/slides/0.pdf (slide 7)
-	    #effAreaList = [ (0.8,0.1013), (1.3,0.0988), (2.0,0.0572), (2.2,0.0842), (2.5,0.1530)] 
-	    #effArea = 0
-	    #for eff_eta,eff_val in effAreaList:
-	   # 	if abs(eta[i]) < eff_eta: 
-	#		effArea = eff_val
-	#		break;
-
-	 #   absIso = isoChargedHadron[i]         \
-          #         + max(0.0,isoNeutralHadron[i] \
-           #                + isoPhoton[i]        \
-                        # - event.ev_rho * effArea)
-
-            #relIso = absIso / pt[i]
-
-	    #relIsoDB = (isoChargedHadron[i]         \
-            #       + max(0.0,isoNeutralHadron[i] \
-            #               + isoPhoton[i]        \
-            #             - 0.5 * isoPU[i])) / pt[i]
-
-	    # Isolation
-	    if iso:
-	        if miniIso[i] >= 0.1: continue
-	    
-	    # Electron ID
 	    # Veto Working point
             # Taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2
             # Phys14, PU20, bx25, revision 19
 	    
 	    if (abs(scleta[i]) <= 1.479) :
-                # use miniIso now
-                #if iso:
-		    #if (relIsoDB              >= 0.097213)  : continue
 		if (abs(dEtaSCTrack[i]) >= 0.013625 )  : continue
                 if (abs(dPhiSCTrack[i]) >= 0.230374 )  : continue
                 if (see[i]              >= 0.011586 )  : continue
                 if (hadronicOverEm[i]   >= 0.181130 )  : continue
-                if (IoEmIoP[i]          >= 0.295751 )  : continue
                 if (abs(dxy[i])         >= 0.094095 ) : continue
                 if (abs(dz[i])          >= 0.713070 )  : continue
+                if (IoEmIoP[i]          >= 0.295751 )  : continue
             else :
-                # use miniIso now
-		#if iso:
-                #    if (relIsoDB              >= 0.116708 ) : continue
                 if (abs(dEtaSCTrack[i]) >= 0.011932 ) : continue
                 if (abs(dPhiSCTrack[i]) >= 0.255450 ) : continue
                 if (see[i]              >= 0.031849 ) : continue
                 if (hadronicOverEm[i]   >= 0.223870 ) : continue
-                if (IoEmIoP[i]          >= 0.155501 ) : continue
                 if (abs(dxy[i])         >= 0.342293 ) : continue
                 if (abs(dz[i])          >= 0.953461 ) : continue
+                if (IoEmIoP[i]          >= 0.155501 ) : continue
 
             if not (passConversionVeto[i] )  : continue
             if (numberOfLostHits[i]   >  3)  : continue
@@ -313,17 +251,6 @@ class Selection :
             # consistent with r19 (r13 in sync' - v1
             
 	    if (abs(scleta[i]) <= 1.479) :
-                # use miniIso now
-                #if iso:
-		    #if (relIsoDB              >= 0.097213)  : continue
-		#if((abs(dEtaSCTrack[i]) < 0.007641)  and 
-                #   (abs(dPhiSCTrack[i]) < 0.032643)  and
-                #   (see[i]              < 0.010399)  and
-                #   (hadronicOverEm[i]   < 0.060662)  and
-                #   (IoEmIoP[i]          < 0.153897)  and
-                #   (abs(dxy[i])         < 0.011811)  and
-                #   (abs(dz[i])          < 0.070775))  :
-		#     selected = True
 		if((abs(dEtaSCTrack[i]) <  0.008925 )  and 
                    (abs(dPhiSCTrack[i]) <  0.035973 )  and
                    (see[i]              <  0.009996  )  and
@@ -333,17 +260,6 @@ class Selection :
                    (abs(dz[i])          <  0.042020 ))  :
 		     selected = True
             else :
-                # use miniIso now
-		#if iso:
-                #    if (relIsoDB              >= 0.116708 ) : continue
-                #if((abs(dEtaSCTrack[i]) >= 0.009285 ) and
-                #   (abs(dPhiSCTrack[i]) < 0.042447 )  and
-                #   (see[i]              < 0.029524 )  and
-                #   (hadronicOverEm[i]   < 0.104263 )  and
-                #   (IoEmIoP[i]          < 0.137468 )  and
-                #   (abs(dxy[i])         < 0.051682 )  and
-                #   (abs(dz[i])          < 0.180720 ))  :
-		#     selected = True
                 if((abs(dEtaSCTrack[i]) <  0.007429  ) and
                    (abs(dPhiSCTrack[i]) <  0.067879  )  and
                    (see[i]              <  0.030135  )  and
@@ -368,24 +284,6 @@ class Selection :
 	      #print "LOOSE LEPTON"
               self.vetoLeptons.append(self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i]))
 
-
-#	    if iso:
-#	        self.selectedElectrons = self.selectedElectrons + 1
-#                self.selectedLeptons.append(self.lepton(id[i],
-#                                                    E[i],
-#                                                    pt[i],
-#                                                    eta[i],
-#                                                    phi[i],
-#                                                    absIso
-#                                                    ))
-#	    else :
-#	        self.noIsoSelectedElectrons.append(
-#			{'miniIso':miniIso[i],
-#			'relIsoEA':absIso/pt[i],
-#			'relIsoDB':relIsoDB,
-#			'pt':pt[i],
-#			'eta':eta[i]})
-#		
 
 
     # #### #
@@ -436,21 +334,17 @@ class Selection :
         CSVv2       = event.jet_CSVv2
         pileupJetId = event.jet_pileupJetId
 
-        for i in range(n) :
+        
+	selectedJets = []
+	selectedJetsOrg = []
+
+	for i in range(n) :
 
             # Apply pT and eta requirements
             if (pt[i]       <  30) : continue
             if (abs(eta[i]) > 2.4) : continue
 
-            # Remove jet overlaping with leptons
-            foundOverlapWithLepton = False
-            for lepton in self.selectedLeptons :
-                dR = common.deltaR(lepton.phi,lepton.eta,phi[i],eta[i])
-                if (dR < 0.4) : foundOverlapWithLepton = True; break
-
-            if (foundOverlapWithLepton) : continue
-
-            self.selectedJets.append(self.jet(E[i],
+            selectedJets.append(self.jet(E[i],
                                               pt[i],
                                               eta[i],
                                               phi[i],
@@ -458,6 +352,34 @@ class Selection :
                                               CSVv2[i],
                                               pileupJetId[i],
                                               (CSVv2[i] > 0.814)))
+           
+	# build a collection of leptons (selected, loose and veto)
+	leptons = self.selectedLeptons+self.selectedLeptons2+self.vetoLeptons
+	    
+	# Remove jet overlaping with leptons (the closest one if many)
+	tmpCollection = [(j, []) for j in selectedJets]
+	for lepton in leptons :
+            for jet in tmpCollection:
+		dR = common.deltaR(lepton.phi,lepton.eta,jet[0].phi,jet[0].eta)
+                #print "loop ", jet[0].pT, dR
+                jet[1].append(dR)
+
+	for j in tmpCollection:
+	    keep_it = True
+	    for i in range(len(leptons)):
+		#print j[0].pT, j[1][i]
+		if j[1][i]<0.4:
+		    # check if it is the closest jet
+		    dRs = [tmpCollection[k][1][i] for k in range (len(tmpCollection))] 
+	    	    
+		    if j[1][i] == min(dRs):
+			keep_it = False 
+	    if keep_it:
+		self.selectedJets.append(j[0])
+
+	#if len(self.selectedJets) != len(selectedJetsOrg):
+	#    print "Jets: ", len(selectedJets), len(tmpCollection), len(self.selectedJets), len(selectedJetsOrg)
+
 
     ##########################################################################
     #  _____                 _              _           _   _                #
