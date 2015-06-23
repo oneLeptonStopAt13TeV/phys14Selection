@@ -53,8 +53,9 @@ class Selection :
 				 "mu_innerTrack_dxy", "mu_innerTrack_dz",
                                  #"mu_pfIso03_sumChargedHadronPt", "mu_pfIso03_sumNeutralHadronEt",
                                  #"mu_pfIso03_sumPhotonEt", "mu_pfIso03_sumPUPt",
-                                 "mu_numberOfMatches",
-				 "mu_isTightMuon","mu_miniIso" ]
+                                 #"mu_numberOfMatches",
+				 "mu_isLooseMuon", "mu_isMediumMuon", #"mu_isTightMuon",
+				 "mu_miniIso", "mu_SUSYminiIso" ]
 
     def muonDump(self,event):
        for i in range(event.mu_n):
@@ -72,8 +73,11 @@ class Selection :
             #print "isoNeutralHadron      =", event.mu_pfIso03_sumNeutralHadronEt[i]
             #print "isoPhoton             =", event.mu_pfIso03_sumPhotonEt[i]
             #print "isoPU                 =", event.mu_pfIso03_sumPUPt[i]
-            print "isTightMuon           =", event.mu_isTightMuon[i]
+            print "isLooseMuon           =", event.mu_isLooseMuon[i]
+            print "isMediumMuon          =", event.mu_isMediumMuon[i]
+            #print "isTightMuon           =", event.mu_isTightMuon[i]
             print "miniIso               =", event.mu_miniIso[i]
+            print "SUSYminiIso           =", event.mu_SUSYminiIso[i]
 
 
 
@@ -98,9 +102,11 @@ class Selection :
         #isoNeutralHadron      = event.mu_pfIso03_sumNeutralHadronEt
         #isoPhoton             = event.mu_pfIso03_sumPhotonEt
         #isoPU                 = event.mu_pfIso03_sumPUPt
-        isTightMuon           = event.mu_isTightMuon
+        #isTightMuon           = event.mu_isTightMuon
 	miniIso		      = event.mu_miniIso
-
+	#miniIso		      = event.mu_SUSYminiIso
+	isLooseMuon	      = event.mu_isLooseMuon
+	isMediumMuon	      = event.mu_isMediumMuon
 
 
 	for i in range(n) :
@@ -111,12 +117,11 @@ class Selection :
 	    if abs(dxy[i]) >= 0.1 : continue
 	    if abs(dz[i]) >= 0.5  : continue	
             if miniIso[i] >= 0.2 : continue
-	    if not (isPF[i])       : continue
-	    if (not isTracker[i]) and (not isGlobal[i]) : continue
-	    # we miss if it is a track muon
+	    if not isLooseMuon[i]: continue
 
             # Require tight ID
-	    if isTightMuon[i] == 1 and event.mu_numberOfMatches[i] >=2 and abs(dxy[i])<0.02 and abs(dz[i])<0.1 and miniIso[i]<0.1:
+	    #if isTightMuon[i] == 1 and event.mu_numberOfMatches[i] >=2 and abs(dxy[i])<0.02 and abs(dz[i])<0.1 and miniIso[i]<0.1:
+	    if isMediumMuon[i]  and abs(dxy[i])<0.02 and abs(dz[i])<0.1 and miniIso[i]<0.1:
 	        # Selected muon
 		if abs(eta[i]) < 2.1 and pt[i] >= 30:
 		    self.selectedLeptons.append( self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i]) )
@@ -143,7 +148,7 @@ class Selection :
                                      "el_passConversionVeto", "el_numberOfLostHits",
                                      "el_pfIso_sumChargedHadronPt", "el_pfIso_sumNeutralHadronEt",
                                      "el_pfIso_sumPhotonEt", "el_pfIso_sumPUPt" ,
-				     "ev_rho", "el_miniIso"]
+				     "ev_rho", "el_miniIso", "el_SUSYminiIso"]
 
     def electronDump( self,event):
         for i in range(event.el_n):
@@ -168,6 +173,7 @@ class Selection :
             print "isoPhoton          =", event.el_pfIso_sumPhotonEt[i]
             print "isoPU              =", event.el_pfIso_sumPUPt[i]
             print "miniIso            =", event.el_miniIso[i]
+            print "SUSYminiIso        =", event.el_SUSYminiIso[i]
     
     def electronSelector(self,event,elSelCode, iso = True) :
     	#use also iso cut if iso == True
@@ -194,6 +200,7 @@ class Selection :
         isoPhoton          = event.el_pfIso_sumPhotonEt
         isoPU              = event.el_pfIso_sumPUPt
         miniIso   	   = event.el_miniIso
+        #miniIso   	   = event.el_SUSYminiIso
 
 	selected = False
 	veto = False
