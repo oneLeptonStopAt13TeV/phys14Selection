@@ -33,7 +33,9 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
                      + Selection.branchesForElectronSelection \
                      + Selection.branchesForMuonSelection     \
                      + Selection.branchesForJetSelection      \
-                     + Selection.branchesForEventSelection
+                     + Selection.branchesForEventSelection    \
+                     + Selection.branchesForPfcand	      \
+                     + Selection.branchesForTauSelection
 
     # ########### #
     # Constructor #
@@ -42,7 +44,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     def __init__(self, dataset) :
         self.dataset = dataset
 	# only used for sync' exercise
-	#self.loadList()
+	self.loadList()
 
     # ############# #
     # Reset objects #
@@ -50,6 +52,48 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 
     def reset(self) :
         self.resetSelectedObjects()
+
+
+    # ############################## #
+    # Dump info about a given event  #
+    # ############################## #
+    def eventDump(self):
+	self.leadingLepton.Print()
+	print "gen leptons = ",self.numberOfGeneratedLeptons
+	print "Lepton-phi = ", self.leadingLepton.Phi()
+	print "M3b = ", self.M3b
+	print "topness = ", self.topness
+	print "chi2 = ", self.hadchi2
+	print "M3b = ", self.M3b
+	print "Mlb = ", self.Mlb_leadb
+	print "dphi_Wlep = ", self.dphi_Wlep
+	print "HT = ", self.HT
+	print "HTSSM = ", self.HTSSM
+	print "pt lep = ", self.selectedLeptons[0].pT
+	print "met_phi = ", event.met_phi
+	print "MT = ",self.MT
+	print "nof jets = ", len(self.selectedJets)
+	print "lepton iso = ",self.leadingLeptonIso 
+	self.jetDump(event)
+	self.selJetDump(event)
+	
+	id2 = self.selectedLeptons2[0].id if len(self.selectedLeptons2) else 0 
+	idloose = self.vetoLeptons[0].id if len(self.vetoLeptons) else 0 
+	numberOfBTaggedJets = 0
+        for jet in self.selectedJets :
+            if (jet.bTag == True) : numberOfBTaggedJets += 1
+	print "### ", event.ev_lumi, event.ev_id,\
+	      " - nof leptons sel: ", len(self.selectedLeptons), " lep2: ",len(self.selectedLeptons2), " loose: ",len(self.vetoLeptons),\
+	      " - selection Code - ", self.selectionCode[0], " - ", id2, idloose,\
+	      " - ", len(self.selectedJets), numberOfBTaggedJets, event.met_pt
+	print "Muon dump" 
+	self.muonDump(event)
+	print "Electron dump" 
+	self.electronDump(event)
+	if len(self.selectedLeptons2) >=1:
+	    print "loose lepton, pt = ", self.selectedLeptons2[0].pT
+	if len(self.vetoLeptons) >=1:
+	    print "veto lepton, pt = ", self.vetoLeptons[0].pT
 
     ###################################################################################
     #   _____                 _                                       _               #
@@ -63,11 +107,12 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     def process(self,event,babyTupleTree, isoStudy = False) :
 
         self.reset()
+	#if (event.ev_lumi != 2756 or event.ev_id != 75567):
+	#    return
 
         # Select muons,electrons
         self.muSelCode = []
 	self.muonSelector(event, self.muSelCode)
-	#print "self.mSelcode = ", self.muSelCode[0] if len(self.muSelCode) else -1
 	self.elSelCode = []
         self.electronSelector(event, self.elSelCode)
 
@@ -80,13 +125,25 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         # Sort selected jets by pT
         self.selectedJets = sorted(self.selectedJets, key=lambda jet: jet.pT, reverse=True)
 
+	# tupling of pfcands => No, just check for basic selection (charge, pt, dz)
+	# required to compute isoTrackVeto
+	# should be called before doingn isoTrackVeto
+	#self.pfCandTupling(event)
+
         # Apply event selection
 	self.selectionCode  = []
-        #setattr(event,'selectionCode',0)
 	passEventSelection = self.eventSelector(event, self.selectionCode)
         #print " = ", self.selectionCode[0]
 	#if (not passEventSelection) : return False
 
+
+	# Compute isoTrackVeto
+	#self.isoTrackVeto(event)
+
+	# create p4 for met,  leading lepton and jets
+	# this is required for the method computeVariables
+	self.createTLorentzVector(event)
+	
         # Compute variables
 	# NB: this part is the most CPU intensive part of the code
 	self.computeVariables(event)
@@ -94,18 +151,11 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	#######################
         # for synchronisation #
 	#######################
+	
+	#if (event.ev_lumi == 234 and event.ev_id == 23332):
 	#if (event.ev_lumi,event.ev_id)  in self.eventList:
-	#if event.ev_lumi == 229 and event.ev_id == 22840: 
-	#    print "### ", event.ev_lumi, event.ev_id
-	#    print "- electron -"
-	#    self.electronDump(event)
-	#    print "- muon -"
-	#    self.muonDump(event)
-	#    print "- pv - "
-	#    self.pvDump(event)
-	#    print " - selection Code - ", self.selectionCode[0]
-	#    print " - muon sele Code - ", self.muSelCode[0] if len(self.muSelCode)>0 else -1
-	#    print " - elec sele Code - ", self.elSelCode[0] if len(self.elSelCode)>0 else -1
+	#	eventDump(event)
+
 
         # for iso study
 	if isoStudy:
@@ -117,7 +167,8 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 
         # Fill event in babytuple
 
-        self.fill(event,babyTupleTree)
+        if passEventSelection:
+	    self.fill(event,babyTupleTree)
         
         return True
 
