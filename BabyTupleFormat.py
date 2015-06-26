@@ -1,3 +1,5 @@
+from ROOT import TLorentzVector, std
+import rootpy.stl as stl
 
 ###########################################################################################
 #   ____        _           _               _         __                            _     #
@@ -14,9 +16,18 @@ class BabyTupleFormat :
 
     babyTupleFormat = { 
 
-      #common format
-       
-	
+      ##################
+      # common format  #
+      ##################
+
+      ######## global quantites   ###
+      'run'                    :  'I',
+      'ls'   	               :  'I',
+      'event'                  :  'I',
+
+      'PassTrackVeto'	:	'B',
+      'PassTauVeto'	:	'B',
+
       ## lepton 1: leading lepton
       'lep1_pdgid'		:	'I',
       'lep1_pt'			:	'F',
@@ -42,13 +53,13 @@ class BabyTupleFormat :
       'lep2_MiniIso'		:	'F',
       
       # vector of jets are pt ordered
-      'ak4pfjets_pt'		:	'F',
-      'ak4pfjets_eta'		:	'F',
-      'ak4pfjets_phi'		:	'F',
-      'ak4pfjets_mass'		:	'F',
-      'ak4pfjets_CSV'		:	'F',
-      'ak4pfjets_loose_pfid'	:	'B',
-      'ak4pfjets_puid'		:	'B',
+      'ak4pfjets_pt'		: 'vector<float>',
+      'ak4pfjets_eta'		: 'vector<float>',
+      'ak4pfjets_phi'		: 'vector<float>',
+      'ak4pfjets_mass'		: 'vector<float>',
+      'ak4pfjets_CSV'		: 'vector<float>',
+      'ak4pfjets_loose_pfid'	: 'vector<bool>',
+      'ak4pfjets_puid'		: 'vector<float>',
       'dphi_ak4pfjets_met'	:	'F',
 
       #Store the following event variables: 
@@ -89,6 +100,7 @@ class BabyTupleFormat :
       ############################################
       ## END COMMON FORMAT
       ############################################
+      
       'runId'                    :  'I',
       'lumiId'                   :  'I',
       'eventId'                  :  'I',
@@ -162,10 +174,140 @@ class BabyTupleFormat :
     babyTupleFormat['selectionCode'] = 'F'
 
 
+
     # Additional input branches needed during the filling of the babytuple
     branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id" ]
 
     def fill(self,event,babyTupleTree) :
+        ############################
+        #  common format           #
+        ############################
+      
+	
+        babyTupleTree.run              = event.ev_run
+        babyTupleTree.ls               = event.ev_lumi
+        babyTupleTree.event            = event.ev_id
+
+        babyTupleTree.PassTrackVeto = self.PassTrackVeto
+        babyTupleTree.PassTauVeto = self.PassTauVeto
+
+        # filling lepton1
+	if len(self.selectedLeptons) > 0 :
+	    lepton = self.selectedLeptons[0]
+	    babyTupleTree.lep1_pdgid = lepton.id
+	    babyTupleTree.lep1_pt = lepton.pT
+	    babyTupleTree.lep1_eta = lepton.eta
+	    babyTupleTree.lep1_phi = lepton.phi
+	    # compute Mass
+	    lep = TLorentzVector()
+	    lep.SetPtEtaPhiE(lepton.pT, lepton.eta, lepton.phi, lepton.E)
+	    babyTupleTree.lep1_mass = lep.M()
+	    babyTupleTree.lep1_passVeto = True	# by definition
+	    babyTupleTree.lep1_passMediumID = True	# by definition
+	    babyTupleTree.lep1_dz = lepton.dz
+	    babyTupleTree.lep1_d0 = lepton.d0
+	    babyTupleTree.lep1_MiniIso = lepton.iso
+	    babyTupleTree.lep1_pdgid = lepton.id
+
+	# filling lepton2
+	lepton2 = []
+	if len(self.selectedLeptons) > 1:
+	    lepton2 = self.selectedLeptons[1]
+	    babyTupleTree.lep2_passVeto = True	# by definition
+	if len(self.selectedLeptons2) > 0:
+	    lepton2 = self.selectedLeptons2[0]
+	    babyTupleTree.lep2_passVeto = True	# by definition
+	if len(self.vetoLeptons) > 0:
+	    lepton2 = vetoLeptons[0]
+	    babyTupleTree.lep2_passVeto = False	# by definition
+
+	if lepton2 != []:
+	    babyTupleTree.lep2_pdgid = lepton.id
+	    babyTupleTree.lep2_pt = lepton.pT
+	    babyTupleTree.lep2_eta = lepton.eta
+	    babyTupleTree.lep2_phi = lepton.phi
+	    # compute Mass
+	    lep = TLorentzVector()
+	    lep.SetPtEtaPhiE(lepton.pT, lepton.eta, lepton.phi, lepton.E)
+	    babyTupleTree.lep2_mass = lep.M()
+	    babyTupleTree.lep2_dz = lepton.dz
+	    babyTupleTree.lep2_d0 = lepton.d0
+	    babyTupleTree.lep2_MiniIso = leptonm.iso
+	    babyTupleTree.lep2_pdgid = lepton.id
+	    babyTupleTree.lep2_passMediumID = lepton.passMediumID
+	   
+	babyTupleTree.runId                   = event.ev_run
+      
+        # vector of jets are pt ordered
+        v_jet_pt = stl.vector('float')()
+        v_jet_eta = stl.vector('float')()
+        v_jet_phi = stl.vector('float')()
+        v_jet_mass = stl.vector('float')()
+        v_jet_CSV = stl.vector('float')()
+        v_jet_loose_pfid = stl.vector('bool')()
+        v_jet_puid = stl.vector('float')()
+	for jet in self.selectedJets:
+	    v_jet_pt.push_back(jet.pT)
+	    v_jet_eta.push_back(jet.eta)
+	    v_jet_phi.push_back(jet.phi)
+	    jetp4 = TLorentzVector()
+	    jetp4.SetPtEtaPhiE(jet.pT, jet.eta, jet.phi, jet.E)
+	    v_jet_mass.push_back(jetp4.M())
+	    v_jet_CSV.push_back(jet.CSVv2)
+	    v_jet_loose_pfid.push_back(jet.looseID)
+	    v_jet_puid.push_back(jet.PUid)
+        babyTupleTree.ak4pfjets_pt	 =  v_jet_pt
+        babyTupleTree.ak4pfjets_eta	 =  v_jet_eta
+        babyTupleTree.ak4pfjets_phi	 =  v_jet_phi
+        babyTupleTree.ak4pfjets_mass	 =  v_jet_mass
+        babyTupleTree.ak4pfjets_CSV	 =  v_jet_CSV
+        babyTupleTree.ak4pfjets_loose_pfid	 =  v_jet_loose_pfid
+        babyTupleTree.ak4pfjets_puid	 =  v_jet_puid
+        
+	#'dphi_ak4pfjets_met'	:	'F',
+
+        #Store the following event variables: 
+        babyTupleTree.ak4pfjets_rho  =	event.ev_rho
+      
+        #pf - type1 corrected
+        babyTupleTree.pfmet		 = 	event.met_pt
+        babyTupleTree.pfmet_phi		 = 	event.met_phi
+        babyTupleTree.mt_met_lep	 = 	self.MT
+        babyTupleTree.ngoodjets	 = len(self.selectedJets)	#number of selected jets 
+        #to be changed
+	babyTupleTree.ngoodbtags	 = len(self.selectedLeptons)	#number of selected btag jets 
+        babyTupleTree.ngoodleps	 = len(self.selectedLeptons)	#number of selected leptons 
+        babyTupleTree.nvetoleps	 = len(self.vetoLeptons)	#number of leptons that pass the veto selection 
+        babyTupleTree.genlepsfromtop	 = self.numberOfGeneratedLeptons
+      
+        # discriminating variables
+        babyTupleTree.MT2W		= self.MT2W
+        babyTupleTree.chi2		= self.hadchi2
+        babyTupleTree.topness		= self.topness
+        babyTupleTree.dphi_Wlep		= self.dphi_Wlep
+        babyTupleTree.ak4_HT		= self.HT
+        babyTupleTree.ak4_htosm		= self.HTOSM
+        babyTupleTree.Mlb		= self.Mlb_leadb
+        babyTupleTree.Mjjj		= self.M3b
+        # not yet computed 
+	babyTupleTree.dR_lep_leadb	= 0 #self.
+        
+	#triggers
+	# will have to be filled
+        babyTupleTree.HLT_SingleMu	= True #
+        babyTupleTree.HLT_SingleE	= True # default
+
+        # weights
+	# will have to be filled
+        babyTupleTree.pu_weight		= 1.0
+        babyTupleTree.scale1fb		= 1.0
+        babyTupleTree.lep_sf		= 1.0
+        babyTupleTree.btag_sf		= 1.0
+
+
+	##################################
+	#  end common format
+	##################################
 
         babyTupleTree.runId                   = event.ev_run
         babyTupleTree.lumiId                  = event.ev_lumi
