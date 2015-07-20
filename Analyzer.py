@@ -3,7 +3,10 @@ from Selection       import *
 from BabyTupleFormat import *
 from Variables       import *
 
+saveGenInfo = True
 class Analyzer(Selection,BabyTupleFormat,Variables) :
+    
+
 
     ################
     #  for sync    #
@@ -36,6 +39,13 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
                      + Selection.branchesForEventSelection    \
                      + Selection.branchesForPfcand	      \
                      + Selection.branchesForTauSelection
+    if saveGenInfo:
+    	requiredBranches+= Selection.branchesForGenInfo
+
+    #if saveGenInfo:
+      		#BabyTupleFormat.AddGenInfo()
+    #self.AddGenInfo()
+
 
     # ########### #
     # Constructor #
@@ -168,7 +178,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         # Fill event in babytuple
 
         if passEventSelection:
-	    self.fill(event,babyTupleTree)
+	    self.fill(event,babyTupleTree,saveGenInfo)
         
         return True
 

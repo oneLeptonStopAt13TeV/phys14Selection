@@ -11,6 +11,7 @@ import rootpy.stl as stl
 ###########################################################################################
 
 doIsoStudy = False
+addGenInfo = True
 
 class BabyTupleFormat :
 
@@ -172,13 +173,43 @@ class BabyTupleFormat :
 
     #for synchronisation
     babyTupleFormat['selectionCode'] = 'F'
+     
+
+    def AddGenInfo(self):
+        setattr(self, 'gen_n', 'I')
+        setattr(self,'gen_pt',	 "vector<float>")
+        setattr(self,'gen_eta',	 "vector<float>")
+        setattr(self,'gen_phi',	 "vector<float>")
+        setattr(self,'gen_m',	 "vector<float>")
+        setattr(self,'gen_status',	 "vector<int>")
+        setattr(self,'gen_id',	 "vector<int>")
+        setattr(self,'gen_charge',	 "vector<int>")
+        setattr(self,'gen_index',	 "vector<int>")
+        setattr(self,'gen_mother_index',	 "vector<int>")
+        setattr(self,'gen_daughter_n',	 "vector<int>")
+        setattr(self,'gen_daughter_index',	 "vector<vector<int> >")
+        
+    if addGenInfo:
+        babyTupleFormat['gen_n'] =	 'I'
+        babyTupleFormat['gen_pt'] =	 "vector<float>"
+        babyTupleFormat['gen_eta'] =	 "vector<float>"
+        babyTupleFormat['gen_phi'] =	 "vector<float>"
+        babyTupleFormat['gen_m'] =	 "vector<float>"
+        babyTupleFormat['gen_status'] =	 "vector<int>"
+        babyTupleFormat['gen_id'] =	 "vector<int>"
+        babyTupleFormat['gen_charge'] =	 "vector<int>"
+        babyTupleFormat['gen_index'] =	 "vector<int>"
+        babyTupleFormat['gen_mother_index'] =	 "vector<int>"
+        babyTupleFormat['gen_daughter_n'] =	 "vector<int>"
+        babyTupleFormat['gen_daughter_index'] =	 "vector<vector<int> >"
+
 
 
 
     # Additional input branches needed during the filling of the babytuple
     branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id" ]
 
-    def fill(self,event,babyTupleTree) :
+    def fill(self,event,babyTupleTree,saveGenInfo = False) :
         ############################
         #  common format           #
         ############################
@@ -275,7 +306,8 @@ class BabyTupleFormat :
         babyTupleTree.mt_met_lep	 = 	self.MT
         babyTupleTree.ngoodjets	 = len(self.selectedJets)	#number of selected jets 
         #to be changed
-	babyTupleTree.ngoodbtags	 = len(self.selectedLeptons)	#number of selected btag jets 
+	#babyTupleTree.ngoodbtags	 = len(self.selectedLeptons)	#number of selected btag jets 
+	babyTupleTree.ngoodbtags	 = self.ngoodbtags	#number of selected btag jets 
         babyTupleTree.ngoodleps	 = len(self.selectedLeptons)	#number of selected leptons 
         babyTupleTree.nvetoleps	 = len(self.vetoLeptons)	#number of leptons that pass the veto selection 
         babyTupleTree.genlepsfromtop	 = self.numberOfGeneratedLeptons
@@ -399,3 +431,20 @@ class BabyTupleFormat :
 
         #for synchronization
 	#babyTupleTree.selectionCode = self.selectionCode
+
+	#Add gen info
+        if saveGenInfo:
+        	babyTupleTree.gen_n =				event.gen_n 
+        	babyTupleTree.gen_pt = 			event.gen_pt
+        	babyTupleTree.gen_eta = 			event.gen_eta
+        	babyTupleTree.gen_phi = 			event.gen_phi
+        	babyTupleTree.gen_m = 			event.gen_m
+        	babyTupleTree.gen_status = 			event.gen_status
+        	babyTupleTree.gen_id = 			event.gen_id
+        	babyTupleTree.gen_charge = 			event.gen_charge
+        	babyTupleTree.gen_index = 			event.gen_index
+        	babyTupleTree.gen_mother_index = 			event.gen_mother_index
+        	babyTupleTree.gen_daughter_n = 			event.gen_daughter_n
+        	babyTupleTree.gen_daughter_index = 			event.gen_daughter_index
+
+	#Add pfcand. info

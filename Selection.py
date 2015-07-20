@@ -25,7 +25,8 @@ class Selection :
 	self.vetoLeptons   = []
         self.selectedJets      = []
 	self.pfcands = []
-	
+        self.ngoodbtags = 0
+
 	#some default values
 	self.PassTrackVeto = True 
 	self.PassTauVeto = True 
@@ -43,6 +44,9 @@ class Selection :
 	self.noIsoSelectedMuons = []
 	self.noIsoSelectedElectrons = []
 	################################
+
+
+    branchesForGenInfo = ["gen_n", "gen_pt", "gen_eta", "gen_phi", "gen_m", "gen_status", "gen_id", "gen_charge", "gen_index", "gen_mother_index", "gen_daughter_n", "gen_daughter_index"]
 
     ############################################################################
     #    ___  _     _           _              _           _                   #
@@ -497,7 +501,10 @@ class Selection :
 	#   print selectedJets[i]
 	#if len(self.selectedJets) != len(selectedJetsOrg):
 	#    print "Jets: ", len(selectedJets), len(tmpCollection), len(self.selectedJets), len(selectedJetsOrg)
-
+	self.ngoodbtags = 0
+	for jet in self.selectedJets:
+	    if jet.bTag:
+	        self.ngoodbtags = self.ngoodbtags+1
 
     ################################	
     # compute TrackIso for each pf
@@ -701,13 +708,18 @@ class Selection :
 	# once we've selected the leptons
 	########################################
 
+	#to reduce time - only comute this for event passing the selection:
+	if returnBool:
 	# tupling of pfcands => No, just check for basic selection (charge, pt, dz)
 	# required to compute isoTrackVeto
 	# should be called before doingn isoTrackVeto
-	self.pfCandTupling(event)
+	    self.pfCandTupling(event)
 	
-	# Test TrackVeto
-	self.PassTrackVeto  = self.isoTrackVeto(event)
+	    # Test TrackVeto
+	    self.PassTrackVeto  = self.isoTrackVeto(event)
+
+
+	###########################
 
 	# Test TauVeto
 	self.PassTauVeto  = self.isTauVeto(event)
