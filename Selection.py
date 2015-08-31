@@ -1,4 +1,3 @@
-
 from collections import namedtuple
 from core        import commonFunctions as common
 from ROOT import TLorentzVector
@@ -59,7 +58,7 @@ class Selection :
 
     # Define structure for temporary objects storage
     lepton = namedtuple('lepton', ['id', 'E', 'pT', 'eta', 'phi', 'iso', 'passMediumID', 'dz', 'd0', 'charge' ])
-    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSV', 'CSVv2', 'PUid', 'bTag', 'looseID' ])
+    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'PUid', 'bTag', 'looseID' ])
     pfc    = namedtuple('pfcand',    [ 'pT', 'eta', 'phi', 'charge', 'id' ])
 
 
@@ -158,12 +157,12 @@ class Selection :
                                  "mu_id", "mu_E", "mu_pt", "mu_eta", "mu_phi", "mu_charge",
                                  "mu_isPFMuon", "mu_isGlobalMuon", "mu_isTrackerMuon",
                                  #"mu_globalTrack_dxy", "mu_globalTrack_dz",
-				 "mu_innerTrack_dxy", "mu_innerTrack_dz",
+				 "mu_innerTrack_PV_dxy", "mu_innerTrack_PV_dz",
                                  #"mu_pfIso03_sumChargedHadronPt", "mu_pfIso03_sumNeutralHadronEt",
                                  #"mu_pfIso03_sumPhotonEt", "mu_pfIso03_sumPUPt",
                                  #"mu_numberOfMatches",
 				 "mu_isLooseMuon", "mu_isMediumMuon", #"mu_isTightMuon",
-				 "mu_miniIso", "mu_SUSYminiIso" ]
+				 "mu_miniIso"  ]
 
     def muonDump(self,event):
        for i in range(event.mu_n):
@@ -175,8 +174,8 @@ class Selection :
             print "isPF                  =", event.mu_isPFMuon[i]
             print "isGlobal              =", event.mu_isGlobalMuon[i]
             print "isTracker             =", event.mu_isTrackerMuon[i]
-            print "dxy                   =", event.mu_innerTrack_dxy[i]
-            print "dz                    =", event.mu_innerTrack_dz[i]
+            print "dxy                   =", event.mu_innerTrack_PV_dxy[i]
+            print "dz                    =", event.mu_innerTrack_PV_dz[i]
             #print "isoChargedHadron      =", event.mu_pfIso03_sumChargedHadronPt[i]
             #print "isoNeutralHadron      =", event.mu_pfIso03_sumNeutralHadronEt[i]
             #print "isoPhoton             =", event.mu_pfIso03_sumPhotonEt[i]
@@ -185,7 +184,7 @@ class Selection :
             print "isMediumMuon          =", event.mu_isMediumMuon[i]
             #print "isTightMuon           =", event.mu_isTightMuon[i]
             print "miniIso               =", event.mu_miniIso[i]
-            print "SUSYminiIso           =", event.mu_SUSYminiIso[i]
+            #print "SUSYminiIso           =", event.mu_SUSYminiIso[i]
             print "charge	         =", event.mu_charge[i]
 
 
@@ -206,8 +205,8 @@ class Selection :
         isPF                  = event.mu_isPFMuon
         isGlobal              = event.mu_isGlobalMuon
         isTracker             = event.mu_isTrackerMuon
-        dxy                   = event.mu_innerTrack_dxy
-        dz                    = event.mu_innerTrack_dz
+        dxy                   = event.mu_innerTrack_PV_dxy
+        dz                    = event.mu_innerTrack_PV_dz
         #isoChargedHadron      = event.mu_pfIso03_sumChargedHadronPt
         #isoNeutralHadron      = event.mu_pfIso03_sumNeutralHadronEt
         #isoPhoton             = event.mu_pfIso03_sumPhotonEt
@@ -250,17 +249,17 @@ class Selection :
     # ######### #
 
     branchesForElectronSelection = [ "el_n",
-                                     "el_id", "el_E", "el_pt", "el_eta", "el_scleta", "el_phi", "el_charge",
+                                     "el_id", "el_E", "el_pt", "el_eta", "el_superCluster_eta", "el_phi", "el_charge",
                                      "el_deltaEtaSuperClusterTrackAtVtx",
                                      "el_deltaPhiSuperClusterTrackAtVtx",
-                                     "el_see", "el_hadronicOverEm",
+                                     "el_sigmaIetaIeta", "el_hadronicOverEm",
                                      "el_eSuperClusterOverP",
-                                     "el_dxy", "el_dz", "el_IoEmIoP",
+                                     "el_gsfTrack_PV_dxy", "el_gsfTrack_PV_dz", "el_IoEmIoP",
                                      "el_passConversionVeto", "el_numberOfLostHits",
                                      #"el_pfIso_sumChargedHadronPt", "el_pfIso_sumNeutralHadronEt",
                                      #"el_pfIso_sumPhotonEt", "el_pfIso_sumPUPt" ,
 				     "ev_rho", 
-				     "el_miniIso", "el_SUSYminiIso"]
+				     "el_miniIso" ]
 
     def electronDump( self,event):
         for i in range(event.el_n):
@@ -268,15 +267,15 @@ class Selection :
             print "E                  =", event.el_E[i]
             print "pt                 =", event.el_pt[i]
             print "eta                =", event.el_eta[i]
-            print "scleta             =", event.el_scleta[i]
+            print "scleta             =", event.el_superCluster_eta[i]
             print "phi                =", event.el_phi[i]
             print "dEtaSCTrack        =", event.el_deltaEtaSuperClusterTrackAtVtx[i]
             print "dPhiSCTrack        =", event.el_deltaPhiSuperClusterTrackAtVtx[i]
-            print "see                =", event.el_see[i]
+            print "see                =", event.el_sigmaIetaIeta[i]
             print "hadronicOverEm     =", event.el_hadronicOverEm[i]
             print "eSuperClusterOverP =", event.el_eSuperClusterOverP[i]
-            print "dxy                =", event.el_dxy[i]
-            print "dz                 =", event.el_dz[i]
+            print "dxy                =", event.el_gsfTrack_PV_dxy[i]
+            print "dz                 =", event.el_gsfTrack_PV_dz[i]
             print "IoEmIoP            =", event.el_IoEmIoP[i]
             print "passConversionVeto =", event.el_passConversionVeto[i]
             print "numberOfLostHits   =", event.el_numberOfLostHits[i]
@@ -293,15 +292,15 @@ class Selection :
         E                  = event.el_E
         pt                 = event.el_pt
         eta                = event.el_eta
-        scleta             = event.el_scleta
+        scleta             = event.el_superCluster_eta
         phi                = event.el_phi
         dEtaSCTrack        = event.el_deltaEtaSuperClusterTrackAtVtx
         dPhiSCTrack        = event.el_deltaPhiSuperClusterTrackAtVtx
-        see                = event.el_see
+        see                = event.el_sigmaIetaIeta
         hadronicOverEm     = event.el_hadronicOverEm
         eSuperClusterOverP = event.el_eSuperClusterOverP
-        dxy                = event.el_dxy
-        dz                 = event.el_dz
+        dxy                = event.el_gsfTrack_PV_dxy
+        dz                 = event.el_gsfTrack_PV_dz
         charge             = event.el_charge
         IoEmIoP            = event.el_IoEmIoP
         passConversionVeto = event.el_passConversionVeto
@@ -404,7 +403,7 @@ class Selection :
 
     branchesForJetSelection = [ "jet_n",
                                 "jet_E", "jet_pt", "jet_eta",   "jet_phi",
-                                "jet_CSV", "jet_CSVv2",
+                                "jet_CSVv2",
                                 "jet_pileupJetId" ,
 				"jet_looseJetID",
 				#"jet_tightJetID"
@@ -446,7 +445,6 @@ class Selection :
         pt          = event.jet_pt
         eta         = event.jet_eta
         phi         = event.jet_phi
-        CSV         = event.jet_CSV
         CSVv2       = event.jet_CSVv2
         pileupJetId = event.jet_pileupJetId
         looseID     = event.jet_looseJetID
@@ -467,7 +465,6 @@ class Selection :
                                               pt[i],
                                               eta[i],
                                               phi[i],
-                                              CSV[i],
                                               CSVv2[i],
                                               pileupJetId[i],
                                               (CSVv2[i] > 0.814),

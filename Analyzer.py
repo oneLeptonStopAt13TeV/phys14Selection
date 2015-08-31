@@ -54,7 +54,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     def __init__(self, dataset) :
         self.dataset = dataset
 	# only used for sync' exercise
-	self.loadList()
+	#self.loadList()
 
     # ############# #
     # Reset objects #

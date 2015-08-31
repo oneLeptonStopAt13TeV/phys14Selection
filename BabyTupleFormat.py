@@ -285,7 +285,7 @@ class BabyTupleFormat :
 	    jetp4.SetPtEtaPhiE(jet.pT, jet.eta, jet.phi, jet.E)
 	    v_jet_mass.push_back(jetp4.M())
 	    v_jet_CSV.push_back(jet.CSVv2)
-	    v_jet_loose_pfid.push_back(jet.looseID)
+	    v_jet_loose_pfid.push_back(bool(jet.looseID))
 	    v_jet_puid.push_back(jet.PUid)
         babyTupleTree.ak4pfjets_pt	 =  v_jet_pt
         babyTupleTree.ak4pfjets_eta	 =  v_jet_eta
@@ -383,7 +383,6 @@ class BabyTupleFormat :
             babyTupleTree.jetsPt[i]           = jet.pT
             babyTupleTree.jetsPhi[i]          = jet.phi
             babyTupleTree.jetsEta[i]          = jet.eta
-            babyTupleTree.jetsCSV[i]          = jet.CSV
             babyTupleTree.jetsCSVv2[i]        = jet.CSVv2
             babyTupleTree.jetsPUid[i]         = jet.PUid
 
