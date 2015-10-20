@@ -1,9 +1,10 @@
-
+import ROOT
 from Selection       import *
 from BabyTupleFormat import *
 from Variables       import *
 
-saveGenInfo = True
+saveGenInfo = False
+
 class Analyzer(Selection,BabyTupleFormat,Variables) :
     
 
@@ -35,6 +36,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
                      + Variables.branchesForVariables         \
                      + Selection.branchesForElectronSelection \
                      + Selection.branchesForMuonSelection     \
+                     + Selection.branchesForAk8JetSelection      \
                      + Selection.branchesForJetSelection      \
                      + Selection.branchesForEventSelection    \
                      + Selection.branchesForPfcand	      \
@@ -46,6 +48,10 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
       		#BabyTupleFormat.AddGenInfo()
     #self.AddGenInfo()
 
+
+    hWeights = ROOT.TH1D("hWeights","Sum of weights",1,0.5,1.5)
+    hWeightsPlus = ROOT.TH1D("hWeightsPlus","Sum of positive  weights",1,0.5,1.5)
+    hWeightsMinus = ROOT.TH1D("hWeightsMinus","Sum of negative weights",1,0.5,1.5)
 
     # ########### #
     # Constructor #
@@ -135,6 +141,10 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         # Sort selected jets by pT
         self.selectedJets = sorted(self.selectedJets, key=lambda jet: jet.pT, reverse=True)
 
+
+	# Selected AK8 jets
+	self.ak8jetSelector(event)
+
 	# tupling of pfcands => No, just check for basic selection (charge, pt, dz)
 	# required to compute isoTrackVeto
 	# should be called before doingn isoTrackVeto
@@ -164,7 +174,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	
 	#if (event.ev_lumi == 234 and event.ev_id == 23332):
 	#if (event.ev_lumi,event.ev_id)  in self.eventList:
-	#	eventDump(event)
+	#self.eventDump(event)
 
 
         # for iso study
@@ -175,11 +185,19 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
             self.noIsoSelectedMuons = sorted(self.noIsoSelectedMuons, key=lambda lepton: lepton['pt'], reverse=True)
             self.noIsoSelectedElectrons = sorted(self.noIsoSelectedElectrons, key=lambda lepton: lepton['pt'], reverse=True)
 
-        # Fill event in babytuple
 
-        if passEventSelection:
+	#fill the weight (treat separately positive and negative - needed for correction stat. uncert.
+	self.hWeights.Fill(1,event.mc_weight)
+	if event.mc_weight>0:   
+		self.hWeightsPlus.Fill(1,event.mc_weight)
+	else:
+		self.hWeightsMinus.Fill(1,-event.mc_weight)
+
+        # Fill event in babytuple
+	if passEventSelection:
 	    self.fill(event,babyTupleTree,saveGenInfo)
         
-        return True
+        #return True
+        return passEventSelection
 
 

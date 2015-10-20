@@ -6,10 +6,21 @@ from inputs.MT2W import MT2W
 from inputs.topness import topness    
 from inputs.hadchi2 import hadchi2
 
+loadGenInfo = False
+loadMCTruth = False
+
 class Variables() :
 
-    branchesForVariables = [ "met_pt", "met_phi", "gen_n", "gen_id", "gen_mother_index", "gen_status" ]
-    
+    branchesForVariables = [ "met_pt", "met_phi", "met_sig"]
+    if (loadGenInfo):
+    	branchesForVariables.extend( ["gen_n", "gen_id", "gen_mother_index", "gen_status" ])
+	print "loadGenInfo = true"
+    else:
+	print "loadGenInfo = false"
+
+    if(loadMCTruth): 
+    	branchesForVariables.extend( ["mc_truth_tWl1_status", "mc_truth_tWl2_status"])
+
     def computeVariables(self,event) :
         
 	self.MT   = self.computeMT(event)
@@ -22,7 +33,15 @@ class Variables() :
 		self.MT2W = MT2W.computeMT2W(self.selectedJets, self.selectedLeptons[0], event.met_pt, event.met_phi)
         else:
 		self.MT2W = 0
-	self.numberOfGeneratedLeptons = self.getNumberOfGeneratedLeptons(event)
+	
+	self.numberOfGeneratedLeptons = -999
+	if (loadGenInfo):
+		self.numberOfGeneratedLeptons = self.getNumberOfGeneratedLeptons(event)
+
+	if (loadMCTruth):
+		self.numberOfGeneratedLeptons = 0
+		if event.mc_truth_tWl1_status >=0 : self.numberOfGeneratedLeptons+=1
+		if event.mc_truth_tWl2_status >=0 : self.numberOfGeneratedLeptons+=1
 
         #topness
 	self.topness = self.computeTopness(event)

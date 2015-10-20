@@ -25,6 +25,7 @@ class BabyTupleFormat :
       'run'                    :  'I',
       'ls'   	               :  'I',
       'event'                  :  'I',
+      'mc_weight'              :  'D',
 
       'PassTrackVeto'	:	'B',
       'PassTauVeto'	:	'B',
@@ -102,6 +103,24 @@ class BabyTupleFormat :
       ## END COMMON FORMAT
       ############################################
       
+      
+      # vector of jets are pt ordered
+      'ak8pfjets_pt'		: 'vector<float>',
+      'ak8pfjets_eta'		: 'vector<float>',
+      'ak8pfjets_phi'		: 'vector<float>',
+      'ak8pfjets_mass'		: 'vector<float>',
+      'ak8pfjets_CSV'		: 'vector<float>',
+      'ak8pfjets_softdrop_mass'	: 'vector<float>',
+      'ak8pfjets_trimmed_mass'	: 'vector<float>',
+      'ak8pfjets_pruned_mass'	: 'vector<float>',
+      'ak8pfjets_filtered_mass'	: 'vector<float>',
+      'ak8pfjets_minMass'	: 'vector<float>',
+      'ak8pfjets_topMass'	: 'vector<float>',
+      'ak8pfjets_nSubJets'	: 'vector<int>',
+      'ak8pfjets_tau1'		: 'vector<float>',
+      'ak8pfjets_tau2'		: 'vector<float>',
+      'ak8pfjets_tau3'		: 'vector<float>',
+      
       'runId'                    :  'I',
       'lumiId'                   :  'I',
       'eventId'                  :  'I',
@@ -134,13 +153,14 @@ class BabyTupleFormat :
       'MT'                       :  'F',
       'MT2W'                     :  'F',
       'HT'                       :  'F',
-      'ak4_htssm'		 :  'F',
       'ak4_htosm'		 :  'F',
       'M3b'			 :  'F',
       'Mlb_leadb'		 :  'F',
       'dphi_Wlep'		 :  'F',
       'topness'			 :  'F',
       'hadronic_top_chi2'        :  'F',
+      
+      'met_sig'                  :  'F',
 
       #added: pv
       'pv_ndof'			 :   'F',
@@ -207,7 +227,7 @@ class BabyTupleFormat :
 
 
     # Additional input branches needed during the filling of the babytuple
-    branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id" ]
+    branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id", "mc_weight" ]
 
     def fill(self,event,babyTupleTree,saveGenInfo = False) :
         ############################
@@ -218,6 +238,7 @@ class BabyTupleFormat :
         babyTupleTree.run              = event.ev_run
         babyTupleTree.ls               = event.ev_lumi
         babyTupleTree.event            = event.ev_id
+        babyTupleTree.mc_weight        = event.mc_weight
 
         babyTupleTree.PassTrackVeto = self.PassTrackVeto
         babyTupleTree.PassTauVeto = self.PassTauVeto
@@ -277,6 +298,7 @@ class BabyTupleFormat :
         v_jet_CSV = stl.vector('float')()
         v_jet_loose_pfid = stl.vector('bool')()
         v_jet_puid = stl.vector('float')()
+        v_jet_qgtag = stl.vector('float')()
 	for jet in self.selectedJets:
 	    v_jet_pt.push_back(jet.pT)
 	    v_jet_eta.push_back(jet.eta)
@@ -287,6 +309,7 @@ class BabyTupleFormat :
 	    v_jet_CSV.push_back(jet.CSVv2)
 	    v_jet_loose_pfid.push_back(bool(jet.looseID))
 	    v_jet_puid.push_back(jet.PUid)
+	    v_jet_qgtag.push_back(jet.qgtag)
         babyTupleTree.ak4pfjets_pt	 =  v_jet_pt
         babyTupleTree.ak4pfjets_eta	 =  v_jet_eta
         babyTupleTree.ak4pfjets_phi	 =  v_jet_phi
@@ -294,7 +317,63 @@ class BabyTupleFormat :
         babyTupleTree.ak4pfjets_CSV	 =  v_jet_CSV
         babyTupleTree.ak4pfjets_loose_pfid	 =  v_jet_loose_pfid
         babyTupleTree.ak4pfjets_puid	 =  v_jet_puid
+       
+
+	#ak8 jets
+        # vector of jets are pt ordered
         
+	v_ak8jet_E = stl.vector('float')()
+        v_ak8jet_pt = stl.vector('float')()
+        v_ak8jet_eta = stl.vector('float')()
+        v_ak8jet_phi = stl.vector('float')()
+        v_ak8jet_mass = stl.vector('float')()
+        v_ak8jet_CSV = stl.vector('float')()
+        v_ak8jet_tau1 = stl.vector('float')()
+        v_ak8jet_tau2 = stl.vector('float')()
+        v_ak8jet_tau3 = stl.vector('float')()
+        v_ak8jet_softdrop_mass = stl.vector('float')()
+        v_ak8jet_trimmed_mass = stl.vector('float')()
+        v_ak8jet_pruned_mass = stl.vector('float')()
+        v_ak8jet_filtered_mass = stl.vector('float')()
+        v_ak8jet_minMass = stl.vector('float')()
+        v_ak8jet_topMass = stl.vector('float')()
+        v_ak8jet_nSubJets = stl.vector('int')()
+	for jet in self.ak8selectedJets:
+		v_ak8jet_pt.push_back(jet.pT)
+		v_ak8jet_eta.push_back(jet.eta)
+		v_ak8jet_phi.push_back(jet.phi)
+	        jetp4.SetPtEtaPhiE(jet.pT, jet.eta, jet.phi, jet.E)
+	        v_ak8jet_mass.push_back(jetp4.M())
+		v_ak8jet_CSV.push_back(jet.CSVv2)
+		v_ak8jet_softdrop_mass.push_back(jet.softdropMass)
+		v_ak8jet_trimmed_mass.push_back(jet.trimmedMass)
+		v_ak8jet_pruned_mass.push_back(jet.prunedMass)
+		v_ak8jet_filtered_mass.push_back(jet.filteredMass)
+		v_ak8jet_minMass.push_back(jet.minMass)
+		v_ak8jet_topMass.push_back(jet.topMass)
+		v_ak8jet_nSubJets.push_back(jet.nSubJets)
+		v_ak8jet_tau1.push_back(jet.tau1)
+		v_ak8jet_tau2.push_back(jet.tau2)
+		v_ak8jet_tau3.push_back(jet.tau3)
+
+
+
+        babyTupleTree.ak8pfjets_pt	 =  v_ak8jet_pt
+        babyTupleTree.ak8pfjets_eta	 =  v_ak8jet_eta
+        babyTupleTree.ak8pfjets_phi	 =  v_ak8jet_phi
+        babyTupleTree.ak8pfjets_mass	 =  v_ak8jet_mass
+        babyTupleTree.ak8pfjets_CSV	 =  v_ak8jet_CSV
+        babyTupleTree.ak8pfjets_softdrop_mass	 =  v_ak8jet_softdrop_mass
+        babyTupleTree.ak8pfjets_trimmed_mass	 =  v_ak8jet_trimmed_mass
+        babyTupleTree.ak8pfjets_pruned_mass	 =  v_ak8jet_pruned_mass
+        babyTupleTree.ak8pfjets_filtered_mass	 =  v_ak8jet_filtered_mass
+        babyTupleTree.ak8pfjets_minMass	 =  v_ak8jet_minMass
+        babyTupleTree.ak8pfjets_topMass	 =  v_ak8jet_topMass
+        babyTupleTree.ak8pfjets_nSubJets	 =  v_ak8jet_nSubJets
+        babyTupleTree.ak8pfjets_tau1	 =  v_ak8jet_tau1
+        babyTupleTree.ak8pfjets_tau2	 =  v_ak8jet_tau2
+        babyTupleTree.ak8pfjets_tau3	 =  v_ak8jet_tau3
+
 	#'dphi_ak4pfjets_met'	:	'F',
 
         #Store the following event variables: 
@@ -398,6 +477,7 @@ class BabyTupleFormat :
         babyTupleTree.dphi_Wlep 	= self.dphi_Wlep
         babyTupleTree.topness   	= self.topness
         babyTupleTree.hadronic_top_chi2 = self.hadchi2
+        babyTupleTree.met_sig	        = event.met_sig
 
 
         #isoStudy

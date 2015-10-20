@@ -23,6 +23,7 @@ class Selection :
 	self.selectedLeptons2   = []
 	self.vetoLeptons   = []
         self.selectedJets      = []
+        self.ak8selectedJets      = []
 	self.pfcands = []
         self.ngoodbtags = 0
 
@@ -58,7 +59,8 @@ class Selection :
 
     # Define structure for temporary objects storage
     lepton = namedtuple('lepton', ['id', 'E', 'pT', 'eta', 'phi', 'iso', 'passMediumID', 'dz', 'd0', 'charge' ])
-    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'PUid', 'bTag', 'looseID' ])
+    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'PUid', 'bTag', 'looseID' ])
+    ak8jet = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'softdropMass', 'trimmedMass', 'prunedMass', 'filteredMass', 'minMass', 'topMass', 'nSubJets', 'tau1', 'tau2', 'tau3' ])
     pfc    = namedtuple('pfcand',    [ 'pT', 'eta', 'phi', 'charge', 'id' ])
 
 
@@ -87,7 +89,8 @@ class Selection :
 	#    if el[3]>0.1: continue
 	#    if el[0]<0: continue
 	#    self.pfcands.append(self.pfc(el[0],el[1],el[2],el[4],el[5]))
-	for i in range(n):
+	#for i in range(n):
+	for i in range(len(pt)):
 	    if charge[i] == 0: 
 	    	self.pf_isSel.append(False)
 		continue
@@ -401,12 +404,94 @@ class Selection :
     # Jets #
     # #### #
 
+   
+
+    branchesForAk8JetSelection = [ "ak8jet_n",
+                                "ak8jet_E", "ak8jet_pt", "ak8jet_eta",   "ak8jet_phi",
+                                "ak8jet_CSVv2",
+                                "ak8jet_tau1" , "ak8jet_tau2", "ak8jet_tau3",
+				"ak8jet_softdrop_mass", "ak8jet_trimmed_mass", "ak8jet_pruned_mass", "ak8jet_filtered_mass",
+				"ak8jet_minMass", "ak8jet_topMass",
+				"ak8jet_nSubJets"
+				]
+    
+    def ak8jetSelector(self,event) :
+
+        n           = event.ak8jet_n
+        E           = event.ak8jet_E
+        pt          = event.ak8jet_pt
+        eta         = event.ak8jet_eta
+        phi         = event.ak8jet_phi
+        CSVv2       = event.ak8jet_CSVv2
+	softdrop_mass	 = event.ak8jet_softdrop_mass
+	trimmed_mass	 = event.ak8jet_trimmed_mass
+	filtered_mass  	= event.ak8jet_filtered_mass
+	pruned_mass	 = event.ak8jet_pruned_mass
+	minMass 	= event.ak8jet_minMass
+	topMass 	= event.ak8jet_minMass
+	tau1 		= event.ak8jet_tau1
+	tau2 		= event.ak8jet_tau2
+	tau3 		= event.ak8jet_tau3
+	nSubJets	= event.ak8jet_nSubJets
+        
+	selectedJets = []
+	selectedJetsOrg = []
+
+
+	for i in range(n) :
+
+            # No selection for the moment (Apply pT and eta later)
+	    self.ak8selectedJets.append(self.ak8jet(E[i],
+                                              pt[i],
+                                              eta[i],
+                                              phi[i],
+                                              CSVv2[i],
+					      softdrop_mass[i], trimmed_mass[i], filtered_mass[i], pruned_mass[i], 
+					      minMass[i], topMass[i],
+					      nSubJets[i],
+					      tau1[i], tau2[i], tau3[i]
+					      ))
+    # #### #
+    # Jets #
+    # #### #
+
+
+
+    branchesForJetSelection = [ "jet_n",
+                                "jet_E", "jet_pt", "jet_eta",   "jet_phi",
+                                "jet_CSVv2",
+                                "jet_qgtag",
+				"jet_pileupJetId" ,
+				"jet_looseJetID"
+				#"jet_tightJetID"
+				]
+    
+    def jetDump(self,event):
+        n   	    = event.jet_n
+        E           = event.jet_E
+        pt          = event.jet_pt
+        eta         = event.jet_eta
+        phi         = event.jet_phi
+        CSVv2       = event.jet_CSVv2
+        looseID     = event.jet_looseJetID
+	qgtag	    = event.jet_qgtag
+
+        for i in range(n):
+	    j= TLorentzVector ()
+	    j.SetPtEtaPhiE(pt[i],eta[i],phi[i],E[i])
+	    dr = j.DeltaR(self.leadingLepton)
+	    dphi = j.DeltaPhi(self.leadingLepton)
+	    dphiMET = j.DeltaPhi(self.METP4)
+	    print "jet pt: ", pt[i], " eta: ", eta[i], " phi: ", phi[i], " E: ", E[i], " CSV: ",CSVv2[i], "QGT: ", qgtag[i], "DR(j,l): ",dr, "dphi(j.l:)",dphi, "dphi(j,MET):", dphiMET
+   
+
     branchesForJetSelection = [ "jet_n",
                                 "jet_E", "jet_pt", "jet_eta",   "jet_phi",
                                 "jet_CSVv2",
                                 "jet_pileupJetId" ,
 				"jet_looseJetID",
 				#"jet_tightJetID"
+				"jet_qgtag"
 				]
 
     
@@ -418,6 +503,7 @@ class Selection :
         phi         = event.jet_phi
         CSVv2       = event.jet_CSVv2
         looseID     = event.jet_looseJetID
+	qgtag	    = event.jet_qgtag
 
         for i in range(n):
 	    j= TLorentzVector ()
@@ -425,7 +511,7 @@ class Selection :
 	    dr = j.DeltaR(self.leadingLepton)
 	    dphi = j.DeltaPhi(self.leadingLepton)
 	    dphiMET = j.DeltaPhi(self.METP4)
-	    print "jet pt: ", pt[i], " eta: ", eta[i], " phi: ", phi[i], " E: ", E[i], " CSV: ",CSVv2[i], "DR(j,l): ",dr, "dphi(j.l:)",dphi, "dphi(j,MET):", dphiMET
+	    print "jet pt: ", pt[i], " eta: ", eta[i], " phi: ", phi[i], " E: ", E[i], " CSV: ",CSVv2[i], "QGT: ", qgtag[i], "DR(j,l): ",dr, "dphi(j.l:)",dphi, "dphi(j,MET):", dphiMET
    
     def selJetDump(self,event):
         jets = self.selJetsP4
@@ -435,7 +521,7 @@ class Selection :
 	    dphi = j.DeltaPhi(self.leadingLepton)
 	    dphiMET = j.DeltaPhi(self.METP4)
 	    #print "jet pt: ", j.Pt(), " eta: ", j.Eta(), " phi: ", j.Phi(), " E: ", j.E(), " DR(j,l) : ",dr, " dphi(j,l): ",dphi, " dphi(j,MET): ", dphiMET
-	    print "jet pt: ", j.Pt(), " eta: ", j.Eta(), " phi: ", j.Phi(), " E: ", j.E(), "CSVv2: ", mytuple[1]," DR(j,l) : ",dr, " dphi(j,l): ",dphi, " dphi(j,MET): ", dphiMET
+	    print "jet pt: ", j.Pt(), " eta: ", j.Eta(), " phi: ", j.Phi(), " E: ", j.E(), "CSVv2: ", mytuple[1], "QGT: ", qgtag[i], " DR(j,l) : ",dr, " dphi(j,l): ",dphi, " dphi(j,MET): ", dphiMET
             #print "CVS: ", mytuple[1]
 	
     def jetSelector(self,event) :
@@ -449,6 +535,7 @@ class Selection :
         pileupJetId = event.jet_pileupJetId
         looseID     = event.jet_looseJetID
         #tightID     = event.jet_tightJetID
+	qgtag	    = event.jet_qgtag
 
         
 	selectedJets = []
@@ -466,6 +553,7 @@ class Selection :
                                               eta[i],
                                               phi[i],
                                               CSVv2[i],
+					      qgtag[i],
                                               pileupJetId[i],
                                               (CSVv2[i] > 0.814),
 					      looseID[i]))
