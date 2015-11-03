@@ -6,20 +6,26 @@ from inputs.MT2W import MT2W
 from inputs.topness import topness    
 from inputs.hadchi2 import hadchi2
 
-loadGenInfo = False
-loadMCTruth = False
+loadGenInfo = True
+loadMCTruth = True
 
 class Variables() :
 
-    branchesForVariables = [ "met_pt", "met_phi", "met_sig"]
-    if (loadGenInfo):
-    	branchesForVariables.extend( ["gen_n", "gen_id", "gen_mother_index", "gen_status" ])
-	print "loadGenInfo = true"
-    else:
-	print "loadGenInfo = false"
+    def __init__(self):
+   	self.loadGenInfo_Var = False
+	self.loadMCTruth_Var = False
+	self.branchesForVariables = []
 
-    if(loadMCTruth): 
-    	branchesForVariables.extend( ["mc_truth_tWl1_status", "mc_truth_tWl2_status"])
+    def UpdateVarBranchLoad(self):
+    	self.branchesForVariables = [ "met_pt", "met_phi", "met_sig"]
+    	if (self.loadGenInfo_Var):
+    		self.branchesForVariables.extend( ["gen_n", "gen_id", "gen_mother_index", "gen_status" ])
+		print "loadGenInfo = true"
+   	else:
+		print "loadGenInfo = false"
+
+    	if(self.loadMCTruth_Var): 
+    		self.branchesForVariables.extend( ["mc_truth_tWl1_status", "mc_truth_tWl2_status"])
 
     def computeVariables(self,event) :
         
@@ -35,10 +41,10 @@ class Variables() :
 		self.MT2W = 0
 	
 	self.numberOfGeneratedLeptons = -999
-	if (loadGenInfo):
+	if (self.loadGenInfo_Var):
 		self.numberOfGeneratedLeptons = self.getNumberOfGeneratedLeptons(event)
 
-	if (loadMCTruth):
+	if (self.loadMCTruth_Var):
 		self.numberOfGeneratedLeptons = 0
 		if event.mc_truth_tWl1_status >=0 : self.numberOfGeneratedLeptons+=1
 		if event.mc_truth_tWl2_status >=0 : self.numberOfGeneratedLeptons+=1

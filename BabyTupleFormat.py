@@ -10,226 +10,227 @@ import rootpy.stl as stl
 #                      |___/          |_|                                                 #
 ###########################################################################################
 
-doIsoStudy = False
-addGenInfo = True
 
 class BabyTupleFormat :
 
-    babyTupleFormat = { 
+    def __init__(self):
+	self.doIsoStudy = False
+	self.saveGenInfo = True
+    	self.saveAK8 = False	
 
-      ##################
-      # common format  #
-      ##################
-
-      ######## global quantites   ###
-      'run'                    :  'I',
-      'ls'   	               :  'I',
-      'event'                  :  'I',
-      'mc_weight'              :  'D',
-
-      'PassTrackVeto'	:	'B',
-      'PassTauVeto'	:	'B',
-
-      ## lepton 1: leading lepton
-      'lep1_pdgid'		:	'I',
-      'lep1_pt'			:	'F',
-      'lep1_eta'		:	'F',
-      'lep1_phi'		:	'F',
-      'lep1_mass'		:	'F',
-      'lep1_passVeto'		:	'F',
-      'lep1_passMediumID'	:	'F',
-      'lep1_dz'			:	'F',
-      'lep1_d0'			:	'F',
-      'lep1_MiniIso'		:	'F',
-      
-      ## lepton 2: second leading lepton
-      'lep2_pdgid'		:	'I',
-      'lep2_pt'			:	'F',
-      'lep2_eta'		:	'F',
-      'lep2_phi'		:	'F',
-      'lep2_mass'		:	'F',
-      'lep2_passVeto'		:	'F',
-      'lep2_passMediumID'	:	'F',
-      'lep2_dz'			:	'F',
-      'lep2_d0'			:	'F',
-      'lep2_MiniIso'		:	'F',
-      
-      # vector of jets are pt ordered
-      'ak4pfjets_pt'		: 'vector<float>',
-      'ak4pfjets_eta'		: 'vector<float>',
-      'ak4pfjets_phi'		: 'vector<float>',
-      'ak4pfjets_mass'		: 'vector<float>',
-      'ak4pfjets_CSV'		: 'vector<float>',
-      'ak4pfjets_loose_pfid'	: 'vector<bool>',
-      'ak4pfjets_puid'		: 'vector<float>',
-      'dphi_ak4pfjets_met'	:	'F',
-
-      #Store the following event variables: 
-      'ak4pfjets_rho'		:	'F',
-      #pf - type1 corrected
-      'pfmet'			:	'F',
-      'pfmet_phi'		:	'F',
-      'mt_met_lep'		:	'F',
-      'ngoodjets'		:	'I',	#number of selected jets 
-      'ngoodbtags'		:	'I',	#number of selected btag jets 
-      'ngoodleps'		:	'I',	#number of selected leptons 
-      'nvetoleps'		:	'I',	#number of leptons that pass the veto selection 
-      'genlepsfromtop'		:	'I',	
-      #inumber of gen-level leptons (e, mu,tau) from top decays; used to classify ttbar=>1lep+Jets, ttbar=>2lep mc events
-
-      # discriminating variables
-      'MT2W'		:	'F',
-      'chi2'		:	'F',  #hadronic chi2 
-      'topness'		:	'F',
-      'dphi_Wlep'	:	'F',  #DeltaPhi(l,W) using lep1 
-      'ak4_HT'		:	'F',  # HT of selected jets 
-      'ak4_htssm'	:	'F',  # HT of selected jets on same hemisphere as met 
-      'ak4_htosm'	:	'F',  # HT of selected jets on opposite hemisphere as met 
-      'Mlb'		:	'F',  # M(lb), mass of lep1 + closest b 
-      'Mjjj'		:	'F',  # M3b, mass of 3 jets most back to back to lep1 
-      'dR_lep_leadb'	:	'F',  # DeltaR(l,lead_b)  
-
-      #triggers
-      'HLT_SingleMu'	:	'B',
-      'HLT_SingleE'	:	'B',
-
-      # weights
-      'pu_weight'	:	'F',
-      'scale1fb'	:	'F',
-      'lep_sf'		:	'F',
-      'btag_sf'		:	'F',
-
-      ############################################
-      ## END COMMON FORMAT
-      ############################################
-      
-      
-      # vector of jets are pt ordered
-      'ak8pfjets_pt'		: 'vector<float>',
-      'ak8pfjets_eta'		: 'vector<float>',
-      'ak8pfjets_phi'		: 'vector<float>',
-      'ak8pfjets_mass'		: 'vector<float>',
-      'ak8pfjets_CSV'		: 'vector<float>',
-      'ak8pfjets_softdrop_mass'	: 'vector<float>',
-      'ak8pfjets_trimmed_mass'	: 'vector<float>',
-      'ak8pfjets_pruned_mass'	: 'vector<float>',
-      'ak8pfjets_filtered_mass'	: 'vector<float>',
-      'ak8pfjets_minMass'	: 'vector<float>',
-      'ak8pfjets_topMass'	: 'vector<float>',
-      'ak8pfjets_nSubJets'	: 'vector<int>',
-      'ak8pfjets_tau1'		: 'vector<float>',
-      'ak8pfjets_tau2'		: 'vector<float>',
-      'ak8pfjets_tau3'		: 'vector<float>',
-      
-      'runId'                    :  'I',
-      'lumiId'                   :  'I',
-      'eventId'                  :  'I',
-
-      'numberOfSelectedLeptons'  :  'I',
-      
-      'leadingLeptonId'          :  'I',
-      'leadingLeptonPt'          :  'F',
-      'leadingLeptonPhi'         :  'F',
-      'leadingLeptonEta'         :  'F',
-      'leadingLeptonIso'         :  'F',
-      
-      'secondLeptonId'           :  'I',
-      'secondLeptonPt'           :  'F',
-      'secondLeptonPhi'          :  'F',
-      'secondLeptonEta'          :  'F',
-      'secondLeptonIso'          :  'F',
-
-      'numberOfSelectedJets'     :  'I',
-      'numberOfBTaggedJets'      :  'I',
-      'jetsPt'                   :  'F[6]',
-      'jetsPhi'                  :  'F[6]',
-      'jetsEta'                  :  'F[6]',
-      'jetsCSV'                  :  'F[6]',
-      'jetsCSVv2'                :  'F[6]',
-      'jetsPUid'                 :  'F[6]',
-
-      'ETmiss'                   :  'F',
-      'ETmissPhi'                :  'F',
-      'MT'                       :  'F',
-      'MT2W'                     :  'F',
-      'HT'                       :  'F',
-      'ak4_htosm'		 :  'F',
-      'M3b'			 :  'F',
-      'Mlb_leadb'		 :  'F',
-      'dphi_Wlep'		 :  'F',
-      'topness'			 :  'F',
-      'hadronic_top_chi2'        :  'F',
-      
-      'met_sig'                  :  'F',
-
-      #added: pv
-      'pv_ndof'			 :   'F',
-      'pv_isFake'                :   'I',
-      'pv_rho'                	 :   'F',
-      'pv_z'                	 :   'F',
-
-      'numberOfGeneratedLeptons' :  'I',
-     
-      'crossSection'             :  'F',
-      'totalNumberOfInitialEvent':  'I',
+    	self.babyTupleFormat = { 
 	
-      'numberOfSelectedElectrons' : 'I',
-      'numberOfSelectedMuons' : 'I'
-   }
-    #for isolation study
-    # store info for leading and second leading leptons (for each flavor)
-    if doIsoStudy:
-   	# for electrons
-   	babyTupleFormat['el_miniIso']  =  'F[2]'
-        babyTupleFormat['el_relIsoDB']  =  'F[2]'
-        babyTupleFormat['el_relIsoEA']  =  'F[2]'
-        babyTupleFormat['el_pt']  =  'F[2]'
-        babyTupleFormat['el_eta']  =  'F[2]'
-        # for muons
-        babyTupleFormat['mu_miniIso']  =  'F[2]'
-        babyTupleFormat['mu_relIsoDB']  =  'F[2]'
-        babyTupleFormat['mu_pt']  =  'F[2]'
-        babyTupleFormat['mu_eta']  =  'F[2]'
-
-    #for synchronisation
-    babyTupleFormat['selectionCode'] = 'F'
+	      ##################
+	      # common format  #
+	      ##################
+	
+	      ######## global quantites   ###
+	      'run'                    :  'I',
+	      'ls'   	               :  'I',
+	      'event'                  :  'I',
+	      'mc_weight'              :  'D',
+	
+	      'PassTrackVeto'	:	'B',
+	      'PassTauVeto'	:	'B',
+	
+	      ## lepton 1: leading lepton
+	      'lep1_pdgid'		:	'I',
+	      'lep1_pt'			:	'F',
+	      'lep1_eta'		:	'F',
+	      'lep1_phi'		:	'F',
+	      'lep1_mass'		:	'F',
+	      'lep1_passVeto'		:	'F',
+	      'lep1_passMediumID'	:	'F',
+	      'lep1_dz'			:	'F',
+	      'lep1_d0'			:	'F',
+	      'lep1_MiniIso'		:	'F',
+	      
+	      ## lepton 2: second leading lepton
+	      'lep2_pdgid'		:	'I',
+	      'lep2_pt'			:	'F',
+	      'lep2_eta'		:	'F',
+	      'lep2_phi'		:	'F',
+	      'lep2_mass'		:	'F',
+	      'lep2_passVeto'		:	'F',
+	      'lep2_passMediumID'	:	'F',
+	      'lep2_dz'			:	'F',
+	      'lep2_d0'			:	'F',
+	      'lep2_MiniIso'		:	'F',
+	      
+	      # vector of jets are pt ordered
+	      'ak4pfjets_pt'		: 'vector<float>',
+	      'ak4pfjets_eta'		: 'vector<float>',
+	      'ak4pfjets_phi'		: 'vector<float>',
+	      'ak4pfjets_mass'		: 'vector<float>',
+	      'ak4pfjets_CSV'		: 'vector<float>',
+	      'ak4pfjets_loose_pfid'	: 'vector<bool>',
+	      'ak4pfjets_puid'		: 'vector<float>',
+	      'dphi_ak4pfjets_met'	:	'F',
+	
+	      #Store the following event variables: 
+	      'ak4pfjets_rho'		:	'F',
+	      #pf - type1 corrected
+	      'pfmet'			:	'F',
+	      'pfmet_phi'		:	'F',
+	      'mt_met_lep'		:	'F',
+	      'ngoodjets'		:	'I',	#number of selected jets 
+	      'ngoodbtags'		:	'I',	#number of selected btag jets 
+	      'ngoodleps'		:	'I',	#number of selected leptons 
+	      'nvetoleps'		:	'I',	#number of leptons that pass the veto selection 
+	      'genlepsfromtop'		:	'I',	
+	      #inumber of gen-level leptons (e, mu,tau) from top decays; used to classify ttbar=>1lep+Jets, ttbar=>2lep mc events
+	
+	      # discriminating variables
+	      'MT2W'		:	'F',
+	      'chi2'		:	'F',  #hadronic chi2 
+	      'topness'		:	'F',
+	      'dphi_Wlep'	:	'F',  #DeltaPhi(l,W) using lep1 
+	      'ak4_HT'		:	'F',  # HT of selected jets 
+	      'ak4_htssm'	:	'F',  # HT of selected jets on same hemisphere as met 
+	      'ak4_htosm'	:	'F',  # HT of selected jets on opposite hemisphere as met 
+	      'Mlb'		:	'F',  # M(lb), mass of lep1 + closest b 
+	      'Mjjj'		:	'F',  # M3b, mass of 3 jets most back to back to lep1 
+	      'dR_lep_leadb'	:	'F',  # DeltaR(l,lead_b)  
+	
+	      #triggers
+	      'HLT_SingleMu'	:	'B',
+	      'HLT_SingleE'	:	'B',
+	
+	      # weights
+	      'pu_weight'	:	'F',
+	      'scale1fb'	:	'F',
+	      'lep_sf'		:	'F',
+	      'btag_sf'		:	'F',
+	
+	      ############################################
+	      ## END COMMON FORMAT
+	      ############################################
+	      
+	      
+	      
+	      'runId'                    :  'I',
+	      'lumiId'                   :  'I',
+	      'eventId'                  :  'I',
+	
+	      'numberOfSelectedLeptons'  :  'I',
+	      
+	      'leadingLeptonId'          :  'I',
+	      'leadingLeptonPt'          :  'F',
+	      'leadingLeptonPhi'         :  'F',
+	      'leadingLeptonEta'         :  'F',
+	      'leadingLeptonIso'         :  'F',
+	      
+	      'secondLeptonId'           :  'I',
+	      'secondLeptonPt'           :  'F',
+	      'secondLeptonPhi'          :  'F',
+	      'secondLeptonEta'          :  'F',
+	      'secondLeptonIso'          :  'F',
+	
+	      'numberOfSelectedJets'     :  'I',
+	      'numberOfBTaggedJets'      :  'I',
+	      'jetsPt'                   :  'F[6]',
+	      'jetsPhi'                  :  'F[6]',
+	      'jetsEta'                  :  'F[6]',
+	      'jetsCSV'                  :  'F[6]',
+	      'jetsCSVv2'                :  'F[6]',
+	      'jetsPUid'                 :  'F[6]',
+	
+	      'ETmiss'                   :  'F',
+	      'ETmissPhi'                :  'F',
+	      'MT'                       :  'F',
+	      'MT2W'                     :  'F',
+	      'HT'                       :  'F',
+	      'ak4_htosm'		 :  'F',
+	      'M3b'			 :  'F',
+	      'Mlb_leadb'		 :  'F',
+	      'dphi_Wlep'		 :  'F',
+	      'topness'			 :  'F',
+	      'hadronic_top_chi2'        :  'F',
+	      
+	      'met_sig'                  :  'F',
+	
+	      #added: pv
+	      'pv_ndof'			 :   'F',
+	      'pv_isFake'                :   'I',
+	      'pv_rho'                	 :   'F',
+	      'pv_z'                	 :   'F',
+	
+	      'numberOfGeneratedLeptons' :  'I',
+	     
+	      'crossSection'             :  'F',
+	      'totalNumberOfInitialEvent':  'I',
+		
+	      'numberOfSelectedElectrons' : 'I',
+	      'numberOfSelectedMuons' : 'I'
+	}
+	#for synchronisation
+	self.babyTupleFormat['selectionCode'] = 'F'
+	#for isolation study
+    
+    	# Additional input branches needed during the filling of the babytuple
+    	self.branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id", "mc_weight" ]
+    
+    ##############################
+    # 	END OF CONSTRUCTOR       #
+    ##############################
+	
+    def UpdateFormat(self):
+	
+	# store info for leading and second leading leptons (for each flavor)
+	if self.doIsoStudy:
+	   	# for electrons
+	   	self.babyTupleFormat['el_miniIso']  =  'F[2]'
+	        self.babyTupleFormat['el_relIsoDB']  =  'F[2]'
+	        self.babyTupleFormat['el_relIsoEA']  =  'F[2]'
+	        self.babyTupleFormat['el_pt']  =  'F[2]'
+	        self.babyTupleFormat['el_eta']  =  'F[2]'
+	        # for muons
+	        self.babyTupleFormat['mu_miniIso']  =  'F[2]'
+	        self.babyTupleFormat['mu_relIsoDB']  =  'F[2]'
+	        self.babyTupleFormat['mu_pt']  =  'F[2]'
+	        self.babyTupleFormat['mu_eta']  =  'F[2]'
+	
      
 
-    def AddGenInfo(self):
-        setattr(self, 'gen_n', 'I')
-        setattr(self,'gen_pt',	 "vector<float>")
-        setattr(self,'gen_eta',	 "vector<float>")
-        setattr(self,'gen_phi',	 "vector<float>")
-        setattr(self,'gen_m',	 "vector<float>")
-        setattr(self,'gen_status',	 "vector<int>")
-        setattr(self,'gen_id',	 "vector<int>")
-        setattr(self,'gen_charge',	 "vector<int>")
-        setattr(self,'gen_index',	 "vector<int>")
-        setattr(self,'gen_mother_index',	 "vector<int>")
-        setattr(self,'gen_daughter_n',	 "vector<int>")
-        setattr(self,'gen_daughter_index',	 "vector<vector<int> >")
         
-    if addGenInfo:
-        babyTupleFormat['gen_n'] =	 'I'
-        babyTupleFormat['gen_pt'] =	 "vector<float>"
-        babyTupleFormat['gen_eta'] =	 "vector<float>"
-        babyTupleFormat['gen_phi'] =	 "vector<float>"
-        babyTupleFormat['gen_m'] =	 "vector<float>"
-        babyTupleFormat['gen_status'] =	 "vector<int>"
-        babyTupleFormat['gen_id'] =	 "vector<int>"
-        babyTupleFormat['gen_charge'] =	 "vector<int>"
-        babyTupleFormat['gen_index'] =	 "vector<int>"
-        babyTupleFormat['gen_mother_index'] =	 "vector<int>"
-        babyTupleFormat['gen_daughter_n'] =	 "vector<int>"
-        babyTupleFormat['gen_daughter_index'] =	 "vector<vector<int> >"
+    	if self.saveGenInfo:
+	      	self.babyTupleFormat['gen_n'] =	 'I'
+	        self.babyTupleFormat['gen_pt'] =	 "vector<float>"
+	        self.babyTupleFormat['gen_eta'] =	 "vector<float>"
+	        self.babyTupleFormat['gen_phi'] =	 "vector<float>"
+	        self.babyTupleFormat['gen_m'] =	 "vector<float>"
+	        self.babyTupleFormat['gen_status'] =	 "vector<int>"
+	        self.babyTupleFormat['gen_id'] =	 "vector<int>"
+	        self.babyTupleFormat['gen_charge'] =	 "vector<int>"
+	        self.babyTupleFormat['gen_index'] =	 "vector<int>"
+	        self.babyTupleFormat['gen_mother_index'] =	 "vector<int>"
+	        self.babyTupleFormat['gen_daughter_n'] =	 "vector<int>"
+	        self.babyTupleFormat['gen_daughter_index'] =	 "vector<vector<int> >"
+	    
+        if self.saveAK8:
+       		self.babyTupleFormat['ak8pfjets_pt'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_eta'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_phi'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_CSV'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_softdrop_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_trimmed_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_pruned_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_filtered_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_minMass'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_topMass'] = "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_nSubJets'] =  "vector<int>"
+       		self.babyTupleFormat['ak8pfjets_tau1'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_tau2'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_tau3'] =  "vector<float>"
+   
+
+
+    
 
 
 
-
-    # Additional input branches needed during the filling of the babytuple
-    branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id", "mc_weight" ]
-
-    def fill(self,event,babyTupleTree,saveGenInfo = False) :
+    def fill(self,event,babyTupleTree) : #,saveGenInfo = False) :
         ############################
         #  common format           #
         ############################
@@ -358,21 +359,22 @@ class BabyTupleFormat :
 
 
 
-        babyTupleTree.ak8pfjets_pt	 =  v_ak8jet_pt
-        babyTupleTree.ak8pfjets_eta	 =  v_ak8jet_eta
-        babyTupleTree.ak8pfjets_phi	 =  v_ak8jet_phi
-        babyTupleTree.ak8pfjets_mass	 =  v_ak8jet_mass
-        babyTupleTree.ak8pfjets_CSV	 =  v_ak8jet_CSV
-        babyTupleTree.ak8pfjets_softdrop_mass	 =  v_ak8jet_softdrop_mass
-        babyTupleTree.ak8pfjets_trimmed_mass	 =  v_ak8jet_trimmed_mass
-        babyTupleTree.ak8pfjets_pruned_mass	 =  v_ak8jet_pruned_mass
-        babyTupleTree.ak8pfjets_filtered_mass	 =  v_ak8jet_filtered_mass
-        babyTupleTree.ak8pfjets_minMass	 =  v_ak8jet_minMass
-        babyTupleTree.ak8pfjets_topMass	 =  v_ak8jet_topMass
-        babyTupleTree.ak8pfjets_nSubJets	 =  v_ak8jet_nSubJets
-        babyTupleTree.ak8pfjets_tau1	 =  v_ak8jet_tau1
-        babyTupleTree.ak8pfjets_tau2	 =  v_ak8jet_tau2
-        babyTupleTree.ak8pfjets_tau3	 =  v_ak8jet_tau3
+        if self.saveAK8:
+        	babyTupleTree.ak8pfjets_pt	 =  v_ak8jet_pt
+        	babyTupleTree.ak8pfjets_eta	 =  v_ak8jet_eta
+        	babyTupleTree.ak8pfjets_phi	 =  v_ak8jet_phi
+        	babyTupleTree.ak8pfjets_mass	 =  v_ak8jet_mass
+        	babyTupleTree.ak8pfjets_CSV	 =  v_ak8jet_CSV
+        	babyTupleTree.ak8pfjets_softdrop_mass	 =  v_ak8jet_softdrop_mass
+        	babyTupleTree.ak8pfjets_trimmed_mass	 =  v_ak8jet_trimmed_mass
+        	babyTupleTree.ak8pfjets_pruned_mass	 =  v_ak8jet_pruned_mass
+        	babyTupleTree.ak8pfjets_filtered_mass	 =  v_ak8jet_filtered_mass
+        	babyTupleTree.ak8pfjets_minMass	 =  v_ak8jet_minMass
+        	babyTupleTree.ak8pfjets_topMass	 =  v_ak8jet_topMass
+        	babyTupleTree.ak8pfjets_nSubJets	 =  v_ak8jet_nSubJets
+        	babyTupleTree.ak8pfjets_tau1	 =  v_ak8jet_tau1
+        	babyTupleTree.ak8pfjets_tau2	 =  v_ak8jet_tau2
+        	babyTupleTree.ak8pfjets_tau3	 =  v_ak8jet_tau3
 
 	#'dphi_ak4pfjets_met'	:	'F',
 
@@ -481,7 +483,7 @@ class BabyTupleFormat :
 
 
         #isoStudy
-	if doIsoStudy:
+	if self.doIsoStudy:
 	    for i in range(2):
 	        #electrons
 		babyTupleTree.el_miniIso[i] = self.noIsoSelectedElectrons[i]['miniIso'] if len (self.noIsoSelectedElectrons)> i else -999
@@ -512,7 +514,7 @@ class BabyTupleFormat :
 	#babyTupleTree.selectionCode = self.selectionCode
 
 	#Add gen info
-        if saveGenInfo:
+        if self.saveGenInfo:
         	babyTupleTree.gen_n =				event.gen_n 
         	babyTupleTree.gen_pt = 			event.gen_pt
         	babyTupleTree.gen_eta = 			event.gen_eta

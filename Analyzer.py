@@ -4,6 +4,7 @@ from BabyTupleFormat import *
 from Variables       import *
 
 saveGenInfo = False
+#loadAK8 = True
 
 class Analyzer(Selection,BabyTupleFormat,Variables) :
     
@@ -27,40 +28,68 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 
         #print eventList
 
-
-    # ####################################### #
-    # Define branches needed for the analysis #
-    # ####################################### #
-        
-    requiredBranches = BabyTupleFormat.branchesForMiscInfos   \
-                     + Variables.branchesForVariables         \
-                     + Selection.branchesForElectronSelection \
-                     + Selection.branchesForMuonSelection     \
-                     + Selection.branchesForAk8JetSelection      \
-                     + Selection.branchesForJetSelection      \
-                     + Selection.branchesForEventSelection    \
-                     + Selection.branchesForPfcand	      \
-                     + Selection.branchesForTauSelection
-    if saveGenInfo:
-    	requiredBranches+= Selection.branchesForGenInfo
-
-    #if saveGenInfo:
-      		#BabyTupleFormat.AddGenInfo()
-    #self.AddGenInfo()
-
-
-    hWeights = ROOT.TH1D("hWeights","Sum of weights",1,0.5,1.5)
-    hWeightsPlus = ROOT.TH1D("hWeightsPlus","Sum of positive  weights",1,0.5,1.5)
-    hWeightsMinus = ROOT.TH1D("hWeightsMinus","Sum of negative weights",1,0.5,1.5)
-
     # ########### #
     # Constructor #
     # ########### #
 
     def __init__(self, dataset) :
-        self.dataset = dataset
+        
+	# ################################## #
+	# Call constructor of mother classes #
+	# ################################## #
+	BabyTupleFormat.__init__(self)
+	Variables.__init__(self)
+	Selection.__init__(self)
+
+	self.dataset = dataset
 	# only used for sync' exercise
 	#self.loadList()
+
+	# saving some information (need first to load them)
+	# member of BabyTupleFormat class
+	self.doIsoStudy = False
+	self.saveGenInfo = False
+	self.saveAK8 = False
+    	
+	# loading of certain branches
+	# member of Analyze class
+	self.loadAK8 = False	
+    	self.loadGenInfo = False
+	self.UpdateVarBranchLoad()
+	
+	# member of Selection
+	self.loadPFcand = False
+
+	#do not forget to update the format once the boolean have been set
+	self.UpdateFormat()
+	self.loadGenInfo_Var = self.loadGenInfo
+	self.loadMCTruth_Var = False
+
+    	# ####################################### #
+   	# Define branches needed for the analysis #
+    	# ####################################### #
+        
+    	self.requiredBranches = self.branchesForMiscInfos   \
+                     + self.branchesForVariables         \
+                     + Selection.branchesForElectronSelection \
+                     + Selection.branchesForMuonSelection     \
+                     + Selection.branchesForJetSelection      \
+                     + Selection.branchesForEventSelection    \
+                     + Selection.branchesForTauSelection
+    	if self.loadGenInfo:
+    		self.requiredBranches+= Selection.branchesForGenInfo
+    	
+	if self.loadAK8:
+    		self.requiredBranches +=  Selection.branchesForAk8JetSelection
+	if self.loadPFcand:
+		self.requiredBranches += Selection.branchesForPfcand
+    
+
+    	self.hWeights = ROOT.TH1D("hWeights","Sum of weights",1,0.5,1.5)
+    	self.hWeightsPlus = ROOT.TH1D("hWeightsPlus","Sum of positive  weights",1,0.5,1.5)
+    	self.hWeightsMinus = ROOT.TH1D("hWeightsMinus","Sum of negative weights",1,0.5,1.5)
+
+
 
     # ############# #
     # Reset objects #
@@ -143,7 +172,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 
 
 	# Selected AK8 jets
-	self.ak8jetSelector(event)
+	if(self.loadAK8):  self.ak8jetSelector(event)
 
 	# tupling of pfcands => No, just check for basic selection (charge, pt, dz)
 	# required to compute isoTrackVeto
@@ -195,7 +224,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 
         # Fill event in babytuple
 	if passEventSelection:
-	    self.fill(event,babyTupleTree,saveGenInfo)
+	    self.fill(event,babyTupleTree) #,self.addGenInfo)
         
         #return True
         return passEventSelection

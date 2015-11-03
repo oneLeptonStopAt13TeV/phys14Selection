@@ -4,7 +4,12 @@ from ROOT import TLorentzVector
 
 class Selection :
     
-    
+   
+    def __init__(self):
+    	self.resetSelectedObjects()
+	self.loadPFcand = True
+
+
     # ######################################## #
     # matching leptons with gen prompt lepton  #
     # ######################################## #
@@ -794,7 +799,7 @@ class Selection :
 	########################################
 
 	#to reduce time - only comute this for event passing the selection:
-	if returnBool:
+	if returnBool and self.loadPFcand:
 	# tupling of pfcands => No, just check for basic selection (charge, pt, dz)
 	# required to compute isoTrackVeto
 	# should be called before doingn isoTrackVeto
