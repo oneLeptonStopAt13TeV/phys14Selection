@@ -71,7 +71,8 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         
     	self.requiredBranches = self.branchesForMiscInfos   \
                      + self.branchesForVariables         \
-                     + Selection.branchesForElectronSelection \
+		     + Selection.branchesForTrigger \
+		     + Selection.branchesForElectronSelection \
                      + Selection.branchesForMuonSelection     \
                      + Selection.branchesForJetSelection      \
                      + Selection.branchesForEventSelection    \
@@ -196,7 +197,11 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         # Compute variables
 	# NB: this part is the most CPU intensive part of the code
 	self.computeVariables(event)
-      
+    
+
+	# fill trigger info
+	self.FillTriggerInfo(event)
+
 	#######################
         # for synchronisation #
 	#######################

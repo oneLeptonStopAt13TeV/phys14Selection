@@ -407,8 +407,11 @@ class BabyTupleFormat :
         
 	#triggers
 	# will have to be filled
-        babyTupleTree.HLT_SingleMu	= True #
-        babyTupleTree.HLT_SingleE	= True # default
+        #babyTupleTree.HLT_SingleMu	= True #
+        #babyTupleTree.HLT_SingleE	= True # default
+	#print self.trigger
+	babyTupleTree.HLT_SingleMu = self.trigger.setdefault("HLT_IsoMu17_eta2p1_v2",False) or self.trigger.setdefault("HLT_IsoMu20_v2",False) or self.trigger.setdefault("HLT_IsoMu17_eta2p1_v1",False) or self.trigger.setdefault("HLT_IsoMu20_v1",False)
+	babyTupleTree.HLT_SingleE = self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose_Gsf_v1",False) or self.trigger.setdefault("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1",False) 
 
         # weights
 	# will have to be filled

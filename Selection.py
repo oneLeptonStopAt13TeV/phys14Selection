@@ -31,6 +31,7 @@ class Selection :
         self.ak8selectedJets      = []
 	self.pfcands = []
         self.ngoodbtags = 0
+	self.trigger = {}
 
 	#some default values
 	self.PassTrackVeto = True 
@@ -49,6 +50,30 @@ class Selection :
 	self.noIsoSelectedMuons = []
 	self.noIsoSelectedElectrons = []
 	################################
+
+
+    branchesForTrigger = ["trigger_name", "trigger_pass"]
+
+    def FillTriggerInfo(self, event):
+	
+	trig_name = event.trigger_name
+	trig_pass = event.trigger_pass
+	for i in xrange(len(trig_name)):
+		if trig_name[i] == "HLT_IsoMu17_eta2p1_v1": 
+			self.trigger["HLT_IsoMu17_eta2p1_v1"] =  bool(trig_pass[i])
+		if trig_name[i] == "HLT_IsoMu17_eta2p1_v2": 
+			self.trigger["HLT_IsoMu17_eta2p1_v2"] =  bool(trig_pass[i])
+		if trig_name[i] == "HLT_IsoMu20_v1": 
+			self.trigger["HLT_IsoMu20_v1"] = bool(trig_pass[i])
+		if trig_name[i] == "HLT_IsoMu20_v2": 
+			self.trigger["HLT_IsoMu20_v2"] = bool(trig_pass[i])
+		if trig_name[i] == "HLT_Ele27_eta2p1_WPLoose_Gsf_v1": 
+			self.trigger["HLT_Ele27_eta2p1_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
+		if trig_name[i] == "HLT_Ele23_WPLoose_Gsf_v2": 
+			self.trigger["HLT_Ele23_WPLoose_Gsf_v2"] =  bool(trig_pass[i])
+		if trig_name[i] == "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1": 
+			self.trigger["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1"] =  bool(trig_pass[i])
+	#print self.trigger
 
 
     branchesForGenInfo = ["gen_n", "gen_pt", "gen_eta", "gen_phi", "gen_m", "gen_status", "gen_id", "gen_charge", "gen_index", "gen_mother_index", "gen_daughter_n", "gen_daughter_index"]
