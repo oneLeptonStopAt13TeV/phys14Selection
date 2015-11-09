@@ -77,7 +77,8 @@ class Selection :
 
 
     branchesForGenInfo = ["gen_n", "gen_pt", "gen_eta", "gen_phi", "gen_m", "gen_status", "gen_id", "gen_charge", "gen_index", "gen_mother_index", "gen_daughter_n", "gen_daughter_index"]
-
+    branchesForGenMET = ["metGen_pt", "metGen_phi"]
+    
     ############################################################################
     #    ___  _     _           _              _           _                   #
     #   / _ \| |__ (_) ___  ___| |_   ___  ___| | ___  ___| |_ ___  _ __ ___   #
@@ -89,7 +90,7 @@ class Selection :
 
     # Define structure for temporary objects storage
     lepton = namedtuple('lepton', ['id', 'E', 'pT', 'eta', 'phi', 'iso', 'passMediumID', 'dz', 'd0', 'charge' ])
-    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'PUid', 'bTag', 'looseID' ])
+    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
     ak8jet = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'softdropMass', 'trimmedMass', 'prunedMass', 'filteredMass', 'minMass', 'topMass', 'nSubJets', 'tau1', 'tau2', 'tau3' ])
     pfc    = namedtuple('pfcand',    [ 'pT', 'eta', 'phi', 'charge', 'id' ])
 
@@ -492,7 +493,8 @@ class Selection :
                                 "jet_CSVv2",
                                 "jet_qgtag",
 				"jet_pileupJetId" ,
-				"jet_looseJetID"
+				"jet_looseJetID",
+				"jet_partonFlavour"
 				#"jet_tightJetID"
 				]
     
@@ -505,6 +507,7 @@ class Selection :
         CSVv2       = event.jet_CSVv2
         looseID     = event.jet_looseJetID
 	qgtag	    = event.jet_qgtag
+	partonFlavour = event.jet_partonFlavour
 
         for i in range(n):
 	    j= TLorentzVector ()
@@ -515,33 +518,6 @@ class Selection :
 	    print "jet pt: ", pt[i], " eta: ", eta[i], " phi: ", phi[i], " E: ", E[i], " CSV: ",CSVv2[i], "QGT: ", qgtag[i], "DR(j,l): ",dr, "dphi(j.l:)",dphi, "dphi(j,MET):", dphiMET
    
 
-    branchesForJetSelection = [ "jet_n",
-                                "jet_E", "jet_pt", "jet_eta",   "jet_phi",
-                                "jet_CSVv2",
-                                "jet_pileupJetId" ,
-				"jet_looseJetID",
-				#"jet_tightJetID"
-				"jet_qgtag"
-				]
-
-    
-    def jetDump(self,event):
-        n   	    = event.jet_n
-        E           = event.jet_E
-        pt          = event.jet_pt
-        eta         = event.jet_eta
-        phi         = event.jet_phi
-        CSVv2       = event.jet_CSVv2
-        looseID     = event.jet_looseJetID
-	qgtag	    = event.jet_qgtag
-
-        for i in range(n):
-	    j= TLorentzVector ()
-	    j.SetPtEtaPhiE(pt[i],eta[i],phi[i],E[i])
-	    dr = j.DeltaR(self.leadingLepton)
-	    dphi = j.DeltaPhi(self.leadingLepton)
-	    dphiMET = j.DeltaPhi(self.METP4)
-	    print "jet pt: ", pt[i], " eta: ", eta[i], " phi: ", phi[i], " E: ", E[i], " CSV: ",CSVv2[i], "QGT: ", qgtag[i], "DR(j,l): ",dr, "dphi(j.l:)",dphi, "dphi(j,MET):", dphiMET
    
     def selJetDump(self,event):
         jets = self.selJetsP4
@@ -566,7 +542,7 @@ class Selection :
         looseID     = event.jet_looseJetID
         #tightID     = event.jet_tightJetID
 	qgtag	    = event.jet_qgtag
-
+	partonFlavour	 = event.jet_partonFlavour
         
 	selectedJets = []
 	selectedJetsOrg = []
@@ -584,7 +560,8 @@ class Selection :
                                               phi[i],
                                               CSVv2[i],
 					      qgtag[i],
-                                              pileupJetId[i],
+                                              partonFlavour[i],
+					      pileupJetId[i],
                                               (CSVv2[i] > 0.814),
 					      looseID[i]))
            
@@ -810,7 +787,7 @@ class Selection :
 	
 	##############
 	# At least three jets
-        if (len(self.selectedJets)     < 3) : 
+        if (len(self.selectedJets)     < 2) : 
 	    returnBool =  False
         else : 
 	    selectionCode+=100

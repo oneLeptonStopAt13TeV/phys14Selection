@@ -285,7 +285,7 @@ class Variables() :
         #    genLeptonsFound += 1
 
 
-	res = [1 for i in range(n) if status[i]<=3 and pdgid[mother[i]] == 24 and ((abs(pdgid[i]) == 11) or (abs(pdgid[i]) == 13) or (abs(pdgid[i]) == 15))]
+	res = [1 for i in range(n) if status[i]<=3 and abs(pdgid[mother[i]]) == 24 and ((abs(pdgid[i]) == 11) or (abs(pdgid[i]) == 13) or (abs(pdgid[i]) == 15))]
         return sum(res)
 
 

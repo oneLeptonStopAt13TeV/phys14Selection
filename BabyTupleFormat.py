@@ -17,6 +17,7 @@ class BabyTupleFormat :
 	self.doIsoStudy = False
 	self.saveGenInfo = True
     	self.saveAK8 = False	
+	self.saveGenMET = False
 
     	self.babyTupleFormat = { 
 	
@@ -65,6 +66,8 @@ class BabyTupleFormat :
 	      'ak4pfjets_CSV'		: 'vector<float>',
 	      'ak4pfjets_loose_pfid'	: 'vector<bool>',
 	      'ak4pfjets_puid'		: 'vector<float>',
+	      'ak4pfjets_qgtag'		: 'vector<float>',
+	      'ak4pfjets_partonFlavour'	: 'vector<float>',
 	      'dphi_ak4pfjets_met'	:	'F',
 	
 	      #Store the following event variables: 
@@ -161,7 +164,10 @@ class BabyTupleFormat :
 	      'totalNumberOfInitialEvent':  'I',
 		
 	      'numberOfSelectedElectrons' : 'I',
-	      'numberOfSelectedMuons' : 'I'
+	      'numberOfSelectedMuons' : 'I',
+	
+	      'metGen_pt' : 'F',
+	      'metGen_phi': 'F'
 	}
 	#for synchronisation
 	self.babyTupleFormat['selectionCode'] = 'F'
@@ -206,7 +212,8 @@ class BabyTupleFormat :
 	        self.babyTupleFormat['gen_mother_index'] =	 "vector<int>"
 	        self.babyTupleFormat['gen_daughter_n'] =	 "vector<int>"
 	        self.babyTupleFormat['gen_daughter_index'] =	 "vector<vector<int> >"
-	    
+	   
+
         if self.saveAK8:
        		self.babyTupleFormat['ak8pfjets_pt'] =  "vector<float>"
        		self.babyTupleFormat['ak8pfjets_eta'] =  "vector<float>"
@@ -300,6 +307,7 @@ class BabyTupleFormat :
         v_jet_loose_pfid = stl.vector('bool')()
         v_jet_puid = stl.vector('float')()
         v_jet_qgtag = stl.vector('float')()
+        v_jet_partonFlavour = stl.vector('float')()
 	for jet in self.selectedJets:
 	    v_jet_pt.push_back(jet.pT)
 	    v_jet_eta.push_back(jet.eta)
@@ -311,6 +319,7 @@ class BabyTupleFormat :
 	    v_jet_loose_pfid.push_back(bool(jet.looseID))
 	    v_jet_puid.push_back(jet.PUid)
 	    v_jet_qgtag.push_back(jet.qgtag)
+	    v_jet_partonFlavour.push_back(jet.partonFlavour)
         babyTupleTree.ak4pfjets_pt	 =  v_jet_pt
         babyTupleTree.ak4pfjets_eta	 =  v_jet_eta
         babyTupleTree.ak4pfjets_phi	 =  v_jet_phi
@@ -318,6 +327,8 @@ class BabyTupleFormat :
         babyTupleTree.ak4pfjets_CSV	 =  v_jet_CSV
         babyTupleTree.ak4pfjets_loose_pfid	 =  v_jet_loose_pfid
         babyTupleTree.ak4pfjets_puid	 =  v_jet_puid
+        babyTupleTree.ak4pfjets_qgtag	 =  v_jet_qgtag
+        babyTupleTree.ak4pfjets_partonFlavour	 =  v_jet_partonFlavour
        
 
 	#ak8 jets
@@ -392,7 +403,7 @@ class BabyTupleFormat :
         babyTupleTree.ngoodleps	 = len(self.selectedLeptons)	#number of selected leptons 
         babyTupleTree.nvetoleps	 = len(self.vetoLeptons)	#number of leptons that pass the veto selection 
         babyTupleTree.genlepsfromtop	 = self.numberOfGeneratedLeptons
-      
+
         # discriminating variables
         babyTupleTree.MT2W		= self.MT2W
         babyTupleTree.chi2		= self.hadchi2
@@ -512,6 +523,13 @@ class BabyTupleFormat :
         babyTupleTree.crossSection              = self.dataset.xsection
         babyTupleTree.totalNumberOfInitialEvent = self.dataset.initialNumberOfEvents
 
+	
+        if self.saveGenMET:	
+		babyTupleTree.metGen_pt = event.metGen_pt
+		babyTupleTree.metGen_phi = event.metGen_phi
+	else: 
+		babyTupleTree.metGen_pt  = -999
+		babyTupleTree.metGen_phi = -999
 
         #for synchronization
 	#babyTupleTree.selectionCode = self.selectionCode

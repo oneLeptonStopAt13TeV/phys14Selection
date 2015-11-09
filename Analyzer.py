@@ -48,13 +48,14 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	# saving some information (need first to load them)
 	# member of BabyTupleFormat class
 	self.doIsoStudy = False
-	self.saveGenInfo = False
-	self.saveAK8 = False
+	self.saveGenInfo = True
+	self.saveAK8 = True
     	
 	# loading of certain branches
 	# member of Analyze class
-	self.loadAK8 = False	
-    	self.loadGenInfo = False
+	self.loadAK8 = True	
+    	self.loadGenInfo = True
+	self.loadGenMET = True
 	self.UpdateVarBranchLoad()
 	
 	# member of Selection
@@ -79,7 +80,9 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
                      + Selection.branchesForTauSelection
     	if self.loadGenInfo:
     		self.requiredBranches+= Selection.branchesForGenInfo
-    	
+        if self.loadGenMET:
+		self.requiredBranches+= Selection.branchesForGenMET  
+
 	if self.loadAK8:
     		self.requiredBranches +=  Selection.branchesForAk8JetSelection
 	if self.loadPFcand:
