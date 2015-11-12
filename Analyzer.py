@@ -2,6 +2,7 @@ import ROOT
 from Selection       import *
 from BabyTupleFormat import *
 from Variables       import *
+import ConfigParser
 
 saveGenInfo = False
 #loadAK8 = True
@@ -41,30 +42,53 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	Variables.__init__(self)
 	Selection.__init__(self)
 
+	################################
+	#  LOAD CONFIG FILE            #
+	################################
+
+	config = ConfigParser.ConfigParser()
+	config.read('config/config_data.init')
+
 	self.dataset = dataset
 	# only used for sync' exercise
 	#self.loadList()
 
 	# saving some information (need first to load them)
 	# member of BabyTupleFormat class
-	self.doIsoStudy = False
-	self.saveGenInfo = True
+	#self.doIsoStudy = False
+	#self.saveGenInfo = True
 	self.saveAK8 = True
+	self.doIsoStudy 	= config.getboolean('DEFAULT','doIsoStudy')
+	self.saveGenInfo 	= config.getboolean('DEFAULT','saveGenInfo')
+	self.saveAK8 		= config.getboolean('DEFAULT','saveAK8')
     	
 	# loading of certain branches
 	# member of Analyze class
-	self.loadAK8 = True	
-    	self.loadGenInfo = True
-	self.loadGenMET = True
+	#self.loadAK8 = True	
+    	#self.loadGenInfo = True
+	#self.loadGenMET = True
+	self.loadAK8 		= config.getboolean('DEFAULT','loadAK8')
+	self.loadGenInfo 	= config.getboolean('DEFAULT','loadGenInfo')
+	print 'value = ', config.get('DEFAULT','loadGenInfo',12)
+	print "GenInfo = ", self.loadGenInfo
+	self.loadGenMET		= config.getboolean('DEFAULT','loadGenMET')
 	self.UpdateVarBranchLoad()
 	
 	# member of Selection
-	self.loadPFcand = False
+	#self.loadPFcand = False
+	self.loadPFcand 	= config.getboolean('DEFAULT','loadPFcand')
 
 	#do not forget to update the format once the boolean have been set
 	self.UpdateFormat()
 	self.loadGenInfo_Var = self.loadGenInfo
-	self.loadMCTruth_Var = False
+	#self.loadMCTruth_Var = False
+	self.loadMCTruth_Var = config.getboolean('DEFAULT','loadMCTruth_Var')
+
+
+	# Configuable selection variable
+	self.electronPtCut = config.getfloat('SELECTION','electronPtCut')
+	self.muonPtCut = config.getfloat('SELECTION','muonPtCut')
+	self.jet_multiplicity = config.getint('SELECTION','jet_multiplicity')
 
     	# ####################################### #
    	# Define branches needed for the analysis #
@@ -79,7 +103,8 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
                      + Selection.branchesForEventSelection    \
                      + Selection.branchesForTauSelection
     	if self.loadGenInfo:
-    		self.requiredBranches+= Selection.branchesForGenInfo
+    		print "here or not "
+		self.requiredBranches+= Selection.branchesForGenInfo
         if self.loadGenMET:
 		self.requiredBranches+= Selection.branchesForGenMET  
 
