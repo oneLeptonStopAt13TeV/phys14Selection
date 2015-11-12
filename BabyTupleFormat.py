@@ -387,7 +387,7 @@ class BabyTupleFormat :
         	babyTupleTree.ak8pfjets_tau2	 =  v_ak8jet_tau2
         	babyTupleTree.ak8pfjets_tau3	 =  v_ak8jet_tau3
 
-	#'dphi_ak4pfjets_met'	:	'F',
+	babyTupleTree.dphi_ak4pfjets_met	 = self.dphi_ak4pfjets_met
 
         #Store the following event variables: 
         babyTupleTree.ak4pfjets_rho  =	event.ev_rho
@@ -422,7 +422,7 @@ class BabyTupleFormat :
         #babyTupleTree.HLT_SingleE	= True # default
 	#print self.trigger
 	babyTupleTree.HLT_SingleMu = self.trigger.setdefault("HLT_IsoMu17_eta2p1_v2",False) or self.trigger.setdefault("HLT_IsoMu20_v2",False) or self.trigger.setdefault("HLT_IsoMu17_eta2p1_v1",False) or self.trigger.setdefault("HLT_IsoMu20_v1",False)
-	babyTupleTree.HLT_SingleE = self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose_Gsf_v1",False) or self.trigger.setdefault("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1",False) 
+	babyTupleTree.HLT_SingleE = self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose_Gsf_v1",False) or self.trigger.setdefault("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1",False) or self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose_Gsf_v1",False)
 
         # weights
 	# will have to be filled
