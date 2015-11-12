@@ -8,7 +8,10 @@ class Selection :
     def __init__(self):
     	self.resetSelectedObjects()
 	self.loadPFcand = True
-
+	self.dphi_ak4pfjets_met = 9999
+	self.electronPtCut = 20
+	self.muoonPtCut = 20
+	self.jet_multiplicity = 3
 
     # ######################################## #
     # matching leptons with gen prompt lepton  #
@@ -32,6 +35,8 @@ class Selection :
 	self.pfcands = []
         self.ngoodbtags = 0
 	self.trigger = {}
+
+	self.dphi_ak4pfjets_met = 999
 
 	#some default values
 	self.PassTrackVeto = True 
@@ -73,6 +78,8 @@ class Selection :
 			self.trigger["HLT_Ele23_WPLoose_Gsf_v2"] =  bool(trig_pass[i])
 		if trig_name[i] == "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1": 
 			self.trigger["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1"] =  bool(trig_pass[i])
+		if trig_name[i] == "HLT_Ele27_eta2p1_WPLoose_Gsf_v1": 
+			self.trigger["HLT_Ele27_eta2p1_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
 	#print self.trigger
 
 
@@ -265,7 +272,11 @@ class Selection :
 	    veto = True
 	    if isMediumMuon[i]  and abs(dxy[i])<0.02 and abs(dz[i])<0.1 and miniIso[i]<0.1:
 	        # Selected muon
-		if abs(eta[i]) < 2.1 and pt[i] >= 30:
+		
+		
+		#CHANGE
+		#if abs(eta[i]) < 2.1 and pt[i] >= 30:
+		if abs(eta[i]) < 2.1 and pt[i] >= self.muonPtCut:
 		    veto = False
 		    self.selectedLeptons.append( self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], isMediumMuon[i], dz[i], dxy[i], charge[i]) )
 		# Loose selection
@@ -420,7 +431,9 @@ class Selection :
 
 	    veto = True
 	    if selected:
-	       if pt[i] > 40 and abs(eta[i])< 2.1 and miniIso[i]<0.1:
+	       #CHANGE
+	       #if pt[i] > 40 and abs(eta[i])< 2.1 and miniIso[i]<0.1:
+	       if pt[i] > self.electronPtCut and abs(eta[i])< 2.1 and miniIso[i]<0.1:
                    veto = False
 		   self.selectedLeptons.append(self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], passMediumID, dz[i], dxy[i], charge[i]))
 	       elif pt[i] > 20 and abs(eta[i])<2.4 and miniIso[i]<0.1:
@@ -547,6 +560,7 @@ class Selection :
 	selectedJets = []
 	selectedJetsOrg = []
 
+	self.dphi_ak4pfjets_met = 9999
 	for i in range(n) :
 
             # Apply pT and eta requirements
@@ -554,7 +568,19 @@ class Selection :
             if (abs(eta[i]) > 2.4) : continue
 	    if not looseID[i]: continue
 	    #if not tightID[i]: continue
-            selectedJets.append(self.jet(E[i],
+            
+	    #compute self.dphi_ak4pfjets_met
+	    j= TLorentzVector ()
+	    j.SetPtEtaPhiE(pt[i],eta[i],phi[i],E[i])
+	    self.METP4 = TLorentzVector()
+	    self.METP4.SetPtEtaPhiE(event.met_pt,0,event.met_phi,event.met_pt)
+	    dphiMET = j.DeltaPhi(self.METP4)
+	    if abs(dphiMET) < self.dphi_ak4pfjets_met:
+	    	self.dphi_ak4pfjets_met = abs(dphiMET)
+
+	    #end
+
+	    selectedJets.append(self.jet(E[i],
                                               pt[i],
                                               eta[i],
                                               phi[i],
@@ -787,7 +813,9 @@ class Selection :
 	
 	##############
 	# At least three jets
-        if (len(self.selectedJets)     < 2) : 
+        # CHANGE
+	#if (len(self.selectedJets)     < 2) : 
+        if (len(self.selectedJets)     < self.jet_multiplicity) : 
 	    returnBool =  False
         else : 
 	    selectionCode+=100
