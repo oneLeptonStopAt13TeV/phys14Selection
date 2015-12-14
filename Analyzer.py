@@ -47,11 +47,11 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	################################
 
 	config = ConfigParser.ConfigParser()
-	config.read('config/config_data.init')
+	config.read('config/config_mc.init')
 
 	self.dataset = dataset
 	# only used for sync' exercise
-	#self.loadList()
+	self.loadList()
 
 	# saving some information (need first to load them)
 	# member of BabyTupleFormat class
@@ -128,6 +128,33 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         self.resetSelectedObjects()
 
 
+
+
+    # ############################## #
+    #  Event dump for sync exercise  #
+    # ############################## #
+    def syncDump(self, event):
+    		prec = 4
+		print event.ev_run, ":", \
+		event.ev_lumi, ":", \
+		event.ev_id, ":", \
+		round(self.selectedLeptons[0].pT, prec), ":", \
+		self.selectedLeptons[0].id, ":", \
+		round(event.met_pt, prec), ":", \
+		round(self.MT, prec), ":", \
+		self.PassTrackVeto, ":", \
+		len(self.selectedJets), ":", \
+		self.ngoodbtags, ":", \
+		self.numberOfGeneratedLeptons, ":", \
+		round(self.dphi_Wlep, prec), ":", \
+		round(self.HTSSM, prec), ":", \
+		round(self.Mlb_leadb, prec), ":", \
+		round(self.M3b, prec), ":", \
+		round(self.MT2W,prec), ":", \
+		round(self.topness,prec), ":", \
+		round(self.hadchi2,prec) \
+
+
     # ############################## #
     # Dump info about a given event  #
     # ############################## #
@@ -190,6 +217,9 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	self.elSelCode = []
         self.electronSelector(event, self.elSelCode)
 
+	# Make a cleaning
+	self.leptonCleaning()
+
         # Sort selected leptons by pT
         self.selectedLeptons = sorted(self.selectedLeptons, key=lambda lepton: lepton.pT, reverse=True)
      
@@ -225,7 +255,20 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         # Compute variables
 	# NB: this part is the most CPU intensive part of the code
 	self.computeVariables(event)
-    
+   
+
+	print "##@@ sync exec'"
+ 	###   sync exercise   ####
+ 	if self.pvSelection(event) 			\
+		and len(self.selectedLeptons) == 1	\
+		and len(self.selectedJets) >=4		\
+		and event.met_pt > 50			\
+		and len(self.selectedLeptons2) == 0 	\
+		and len(self.vetoLeptons)==0	\
+		and self.isoTrackVeto(event)	\
+		and self.isTauVeto(event):
+		self.syncDump(event)	
+		#print "debug: ",len(self.selectedLeptons2), len(self.vetoLeptons), self.isoTrackVeto(event), self.isTauVeto(event)
 
 	# fill trigger info
 	self.FillTriggerInfo(event)
@@ -235,7 +278,19 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	#######################
 	
 	#if (event.ev_lumi == 234 and event.ev_id == 23332):
-	#if (event.ev_lumi,event.ev_id)  in self.eventList:
+	if (event.ev_lumi,event.ev_id)  in self.eventList:
+		print "##################"
+		print event.ev_lumi,event.ev_id \
+		      ,"n-lep:", len(self.selectedLeptons), "n-jets:", len(self.selectedJets), "n-lep2:", len(self.selectedLeptons2), "n-veto:", len(self.vetoLeptons) \
+		      ,"met:", event.met_pt, "isTrackVeto:", self.isoTrackVeto(event), "isTauVeto:", self.isTauVeto(event)
+		self.dumpPFCand(event)
+		print self.selectedLeptons
+		print self.selectedLeptons2
+	 	print self.vetoLeptons
+		print "muon Dump"
+		self.muonDump(event)
+		print "electron Dump"
+		self.electronDump(event)
 	#self.eventDump(event)
 
 

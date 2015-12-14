@@ -270,32 +270,45 @@ class BabyTupleFormat :
 	    babyTupleTree.lep1_pdgid = lepton.id
 
 	# filling lepton2
-	lepton2 = []
+	lepton2 = self.lepton(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+	foundLep2 = False
 	if len(self.selectedLeptons) > 1:
 	    lepton2 = self.selectedLeptons[1]
 	    babyTupleTree.lep2_passVeto = True	# by definition
+	    foundLep2 = True
 	if len(self.selectedLeptons2) > 0:
 	    lepton2 = self.selectedLeptons2[0]
 	    babyTupleTree.lep2_passVeto = True	# by definition
+	    foundLep2 = True
 	if len(self.vetoLeptons) > 0:
 	    lepton2 = vetoLeptons[0]
 	    babyTupleTree.lep2_passVeto = False	# by definition
+	    foundLep2 = True
 
-	if lepton2 != []:
-	    babyTupleTree.lep2_pdgid = lepton.id
-	    babyTupleTree.lep2_pt = lepton.pT
-	    babyTupleTree.lep2_eta = lepton.eta
-	    babyTupleTree.lep2_phi = lepton.phi
+	if foundLep2 :
+	    babyTupleTree.lep2_pdgid = lepton2.id
+	    babyTupleTree.lep2_pt = lepton2.pT
+	    babyTupleTree.lep2_eta = lepton2.eta
+	    babyTupleTree.lep2_phi = lepton2.phi
 	    # compute Mass
 	    lep = TLorentzVector()
-	    lep.SetPtEtaPhiE(lepton.pT, lepton.eta, lepton.phi, lepton.E)
+	    lep.SetPtEtaPhiE(lepton2.pT, lepton2.eta, lepton2.phi, lepton2.E)
 	    babyTupleTree.lep2_mass = lep.M()
-	    babyTupleTree.lep2_dz = lepton.dz
-	    babyTupleTree.lep2_d0 = lepton.d0
-	    babyTupleTree.lep2_MiniIso = leptonm.iso
-	    babyTupleTree.lep2_pdgid = lepton.id
-	    babyTupleTree.lep2_passMediumID = lepton.passMediumID
-	   
+	    babyTupleTree.lep2_dz = lepton2.dz
+	    babyTupleTree.lep2_d0 = lepton2.d0
+	    babyTupleTree.lep2_MiniIso = lepton2.iso
+	    #babyTupleTree.lep2_passMediumID = lepton2.passMediumID
+	else:
+	    babyTupleTree.lep2_pdgid = 0
+	    babyTupleTree.lep2_pt = 0
+	    babyTupleTree.lep2_eta = -999
+	    babyTupleTree.lep2_phi = 0
+	    babyTupleTree.lep2_mass = 0
+	    babyTupleTree.lep2_dz = 9999
+	    babyTupleTree.lep2_d0 = 9999
+	    babyTupleTree.lep2_MiniIso = 9999
+	    #babyTupleTree.lep2_passMediumID = lepton2.passMediumID
+
 	babyTupleTree.runId                   = event.ev_run
       
         # vector of jets are pt ordered

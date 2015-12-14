@@ -12,6 +12,7 @@ class Selection :
 	self.electronPtCut = 20
 	self.muoonPtCut = 20
 	self.jet_multiplicity = 3
+	self.btagCut = 0.89
 
     # ######################################## #
     # matching leptons with gen prompt lepton  #
@@ -106,7 +107,7 @@ class Selection :
     # pfcanfs #
     # ####### #
 
-    branchesForPfcand = ["pfcand_n", "pfcand_E", "pfcand_pt", "pfcand_eta", "pfcand_phi", "pfcand_dz", "pfcand_charge", "pfcand_id"]
+    branchesForPfcand = ["pfcand_n", "pfcand_E", "pfcand_pt", "pfcand_eta", "pfcand_phi", "pfcand_dz", "pfcand_charge", "pfcand_id" , "pfcand_trackIso"]
 
     def pfCandTupling(self,event):
 	
@@ -153,7 +154,10 @@ class Selection :
     # ##### #
     
     branchesForTauSelection = [ "tau_n", "tau_pt", "tau_eta", "tau_phi", "tau_charge", 
-    				"tau_byMediumCombinedIsolationDeltaBetaCorr3Hits"]
+    				"tau_decayModeFinding",
+    				"tau_decayModeFindingOldDMs",
+				"tau_byMediumCombinedIsolationDeltaBetaCorr3Hits",
+				"tau_byMediumIsolationMVA3newDMwLT"]
 
     #######################
     # 	Tau Veto          #
@@ -166,8 +170,12 @@ class Selection :
 	phi 	=  event.tau_phi
 	charge	=  event.tau_charge
 	id 	=  event.tau_byMediumCombinedIsolationDeltaBetaCorr3Hits
+	#id 	=  event.tau_byMediumIsolationMVA3newDMwLT
+	#decayMode = event.tau_decayModeFindingOldDMs
+	decayMode = event.tau_decayModeFinding
 
-	lep1 = self.lepton
+
+	lep1 = self.lepton(0,0,0,0,0,0,0,0,0,0)
 	FoundLep1 = False
 	if(len(self.selectedLeptons)>0): 
 		lep1 = self.selectedLeptons[0]
@@ -180,11 +188,14 @@ class Selection :
 	    if pt[i]<20: 	continue
 	    if abs(eta[i])>2.4: continue
 	    if not id[i]:	continue
+	    if not decayMode[i]: continue
+	    if charge[i]*int(lep1.charge)>=0: continue
 	    dR = 1
 	    if FoundLep1:
 	        dR = common.deltaR(phi[i],eta[i],lep1.phi, lep1.eta)
 	    if dR>0.4:
-	    	#We've found a tau !!!
+	    	#print "tau with pt = ", pt[i], " eta = ", eta[i], " charge = ", charge[i], " id = ", id[i]
+		#We've found a tau !!!
 	    	return False
 
 	# No tau found - event is not vetoed
@@ -202,7 +213,7 @@ class Selection :
                                  #"mu_pfIso03_sumChargedHadronPt", "mu_pfIso03_sumNeutralHadronEt",
                                  #"mu_pfIso03_sumPhotonEt", "mu_pfIso03_sumPUPt",
                                  #"mu_numberOfMatches",
-				 "mu_isLooseMuon", "mu_isMediumMuon", #"mu_isTightMuon",
+				 "mu_isLooseMuon", "mu_isMediumMuon", "mu_isTightMuon",
 				 "mu_miniIso"  ]
 
     def muonDump(self,event):
@@ -221,13 +232,13 @@ class Selection :
             #print "isoNeutralHadron      =", event.mu_pfIso03_sumNeutralHadronEt[i]
             #print "isoPhoton             =", event.mu_pfIso03_sumPhotonEt[i]
             #print "isoPU                 =", event.mu_pfIso03_sumPUPt[i]
-            print "isLooseMuon           =", event.mu_isLooseMuon[i]
-            print "isMediumMuon          =", event.mu_isMediumMuon[i]
-            #print "isTightMuon           =", event.mu_isTightMuon[i]
+            #print "isLooseMuon           =", bool(event.mu_isLooseMuon[i])
+            #print "isMediumMuon          =", bool(event.mu_isMediumMuon[i])
+            print "isTightMuon           =", bool(event.mu_isTightMuon[i])
             print "miniIso               =", event.mu_miniIso[i]
             #print "SUSYminiIso           =", event.mu_SUSYminiIso[i]
             print "charge	         =", event.mu_charge[i]
-
+	    print "isLooseMuon		 =", bool(event.mu_isLooseMuon[i])
 
 
 
@@ -257,36 +268,47 @@ class Selection :
 	#miniIso		      = event.mu_SUSYminiIso
 	isLooseMuon	      = event.mu_isLooseMuon
 	isMediumMuon	      = event.mu_isMediumMuon
+	isTightMuon	      = event.mu_isTightMuon
 
 
 	for i in range(n) :
+	    #print "muon with pt = ", pt[i]
 	    # Reject muons than can either be veto or selected
 	    if abs(eta[i]) >= 2.4  : continue
-	    if abs(pt[i]) <= 10  : continue
+	    if abs(pt[i]) <= 5  : continue
 	    if abs(dxy[i]) >= 0.1 : continue
 	    if abs(dz[i]) >= 0.5  : continue	
             if miniIso[i] >= 0.2 : continue
 	    if not isLooseMuon[i]: continue
 
+	    #print " > pass"
             # Require tight ID
 	    veto = True
-	    if isMediumMuon[i]  and abs(dxy[i])<0.02 and abs(dz[i])<0.1 and miniIso[i]<0.1:
+	    if isTightMuon[i]  and abs(dxy[i])<0.02 and abs(dz[i])<0.1 and miniIso[i]<0.1:
 	        # Selected muon
+	    	#print " > here"
 		
 		
 		#CHANGE
 		#if abs(eta[i]) < 2.1 and pt[i] >= 30:
-		if abs(eta[i]) < 2.1 and pt[i] >= self.muonPtCut:
+		if abs(eta[i]) < 2.1 and pt[i] > self.muonPtCut:
+		    #print "sel"
 		    veto = False
 		    self.selectedLeptons.append( self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], isMediumMuon[i], dz[i], dxy[i], charge[i]) )
 		# Loose selection
-		elif pt[i] >= 20:
+		elif pt[i] > 5 and abs(eta[i])<2.4:
+		    #print "sel2"
 		    veto = False
 		    self.selectedLeptons2.append( self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], isMediumMuon[i], dz[i], dxy[i], charge[i]) )
 	    # Veto muon
-	    if veto:
+	    else:
+		#print "veto"
+	    #if veto:
 	        self.vetoLeptons.append( self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], isMediumMuon[i], dz[i], dxy[i], charge[i]) )
 
+	#print "len muon :", len(self.selectedLeptons), len(self.selectedLeptons2), len(self.vetoLeptons)
+	# Check DR btw selected good leptons and veto muons
+	# for vmuon in self.vetoLeptons)
 	
 
     # ######### #
@@ -301,7 +323,8 @@ class Selection :
                                      "el_eSuperClusterOverP",
                                      "el_gsfTrack_PV_dxy", "el_gsfTrack_PV_dz", "el_IoEmIoP",
                                      "el_passConversionVeto", "el_numberOfLostHits",
-                                     #"el_pfIso_sumChargedHadronPt", "el_pfIso_sumNeutralHadronEt",
+                                     "el_vetoStopID", "el_mediumStopID",
+				     #"el_pfIso_sumChargedHadronPt", "el_pfIso_sumNeutralHadronEt",
                                      #"el_pfIso_sumPhotonEt", "el_pfIso_sumPUPt" ,
 				     "ev_rho", 
 				     "el_miniIso" ]
@@ -356,14 +379,17 @@ class Selection :
         #isoPU              = event.el_pfIso_sumPUPt
         miniIso   	   = event.el_miniIso
         #miniIso   	   = event.el_SUSYminiIso
+	vetoStopID     	  = event.el_vetoStopID
+	mediumStopID      = event.el_mediumStopID
+	
 
 	selected = False
 	veto = False
 
         for i in range(n) :
-
+	    #print "electron with pt = ", pt[i]
             # Loose criteria applied for the veto leptons
-	    if pt[i] <= 10  : continue
+	    if pt[i] <= 5  : continue
 	    if abs(eta[i]) >= 2.4: continue
 	    if miniIso[i] >= 0.2: continue
 
@@ -377,26 +403,51 @@ class Selection :
 	    # Veto Working point
             # Taken from https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2
             # Phys14, PU20, bx25, revision 19
-	    
-	    if (abs(scleta[i]) <= 1.479) :
-		if (abs(dEtaSCTrack[i]) >= 0.013625 )  : continue
-                if (abs(dPhiSCTrack[i]) >= 0.230374 )  : continue
-                if (see[i]              >= 0.011586 )  : continue
-                if (hadronicOverEm[i]   >= 0.181130 )  : continue
-                if (abs(dxy[i])         >= 0.094095 ) : continue
-                if (abs(dz[i])          >= 0.713070 )  : continue
-                if (IoEmIoP[i]          >= 0.295751 )  : continue
-            else :
-                if (abs(dEtaSCTrack[i]) >= 0.011932 ) : continue
-                if (abs(dPhiSCTrack[i]) >= 0.255450 ) : continue
-                if (see[i]              >= 0.031849 ) : continue
-                if (hadronicOverEm[i]   >= 0.223870 ) : continue
-                if (abs(dxy[i])         >= 0.342293 ) : continue
-                if (abs(dz[i])          >= 0.953461 ) : continue
-                if (IoEmIoP[i]          >= 0.155501 ) : continue
+	    #print " > step 1"	    
+#	    if (abs(scleta[i]) <= 1.479) :
+#                if (see[i]              >= 0.012 )  : continue
+#		if (abs(dEtaSCTrack[i]) >= 0.0126 )  : continue
+            #    if (abs(dPhiSCTrack[i]) >= 0.107 )  : continue
+            #    if (hadronicOverEm[i]   >= 0.186 )  : continue
+            #    if (IoEmIoP[i]          >= 0.239 )  : continue
+            #    if (abs(dxy[i])         >= 0.0621 ) : continue
+            #    if (abs(dz[i])          >= 0.613 )  : continue
+            #else :
+            #    if (see[i]              >= 0.0339 ) : continue
+            #    if (abs(dEtaSCTrack[i]) >= 0.0109 ) : continue
+            #    if (abs(dPhiSCTrack[i]) >= 0.219 ) : continue
+            #    if (hadronicOverEm[i]   >= 0.0962 ) : continue
+            #    if (IoEmIoP[i]          >= 0.141 ) : continue
+            #    if (abs(dxy[i])         >= 0.279 ) : continue
+            #    if (abs(dz[i])          >= 0.947 ) : continue
 
-            if not (passConversionVeto[i] )  : continue
-            if (numberOfLostHits[i]   >  3)  : continue
+            #if not (passConversionVeto[i] )  : continue
+            #if (numberOfLostHits[i]   >  3)  : continue
+	    
+	    
+	    #  replace by
+	    if not vetoStopID[i]: continue
+#	    if (abs(scleta[i]) <= 1.479) :
+#                if (see[i]              >=  0.0114  )  : continue
+#		if (abs(dEtaSCTrack[i]) >=  0.0152  )  : continue
+#                if (abs(dPhiSCTrack[i]) >=  0.216  )  : continue
+#                if (hadronicOverEm[i]   >=  0.181  )  : continue
+#                if (IoEmIoP[i]          >=  0.207  )  : continue
+#                if (abs(dxy[i])         >=  0.0564  ) : continue
+#                if (abs(dz[i])          >=  0.472  )  : continue
+#            	if (numberOfLostHits[i]   >  2)  : continue
+#            else :
+#                if (see[i]              >=  0.0352  ) : continue
+#                if (abs(dEtaSCTrack[i]) >=  0.0113  ) : continue
+#                if (abs(dPhiSCTrack[i]) >=  0.237  ) : continue
+#                if (hadronicOverEm[i]   >=  0.116  ) : continue
+#                if (IoEmIoP[i]          >=  0.174   ) : continue
+#                if (abs(dxy[i])         >=  0.222  ) : continue
+#                if (abs(dz[i])          >=  0.921  ) : continue
+#            	if (numberOfLostHits[i]   >  3)  : continue
+#
+#            if not (passConversionVeto[i] )  : continue
+	    #print " > loose sel"	    
 
 
             # Electron ID
@@ -405,43 +456,105 @@ class Selection :
             # consistent with r19 (r13 in sync' - v1
             
 	    passMediumID = False
-	    if (abs(scleta[i]) <= 1.479) :
-		if((abs(dEtaSCTrack[i]) <  0.008925 )  and 
-                   (abs(dPhiSCTrack[i]) <  0.035973 )  and
-                   (see[i]              <  0.009996  )  and
-                   (hadronicOverEm[i]   <  0.050537 )  and
-                   (IoEmIoP[i]          <  0.091942 )  and
-                   (abs(dxy[i])         <  0.012235 )  and
-                   (abs(dz[i])          <  0.042020 ))  :
-		     selected = True
-            else :
-                if((abs(dEtaSCTrack[i]) <  0.007429  ) and
-                   (abs(dPhiSCTrack[i]) <  0.067879  )  and
-                   (see[i]              <  0.030135  )  and
-                   (hadronicOverEm[i]   <  0.086782  )  and
-                   (IoEmIoP[i]          <  0.100683  )  and
-                   (abs(dxy[i])         <  0.036719  )  and
-                   (abs(dz[i])          <  0.138142  ))  :
-		     selected = True
-
-
-            if not (passConversionVeto[i] )  : selected = False
-            if (numberOfLostHits[i]   >  1)  : selected = False
-	    passMediumID = selected
+#	    if (abs(scleta[i]) <= 1.479) :
+#		if(
+#                   (see[i]              <  0.0101  )  and
+#		   (abs(dEtaSCTrack[i]) <  0.0094 )  and 
+#                   (abs(dPhiSCTrack[i]) <  0.0296 )  and
+#                   (hadronicOverEm[i]   <  0.0372 )  and
+#                   (IoEmIoP[i]          <  0.118 )  and
+#                   (abs(dxy[i])         <  0.0151 )  and
+#                   (abs(dz[i])          <  0.238 ))  :
+#		     selected = True
+#            else :
+#                if(
+#                   (see[i]              <  0.0287  )  and
+#		   (abs(dEtaSCTrack[i]) <  0.00773  ) and
+            #       (abs(dPhiSCTrack[i]) <  0.148  )  and
+            #       (hadronicOverEm[i]   <  0.0546  )  and
+            #       (IoEmIoP[i]          <  0.104  )  and
+            #       (abs(dxy[i])         <  0.0535  )  and
+            #       (abs(dz[i])          <  0.572  ))  :
+	    #	     selected = True
+            #if not (passConversionVeto[i] )  : selected = False
+            #if (numberOfLostHits[i]   >  1)  : selected = False
+	    
+	    #replaced by
+	    if mediumStopID[i]: selected = True
+#	    if (abs(scleta[i]) <= 1.479) :
+#		if(
+#            	   (numberOfLostHits[i]   <=  2)  and 
+#                   (see[i]              <   0.0101   )  and
+#		   (abs(dEtaSCTrack[i]) <   0.0103  )  and 
+#                   (abs(dPhiSCTrack[i]) <   0.0336  )  and
+#                   (hadronicOverEm[i]   <   0.0876  )  and
+#                   (IoEmIoP[i]          <   0.0174   )  and
+#                   (abs(dxy[i])         <   0.0118   )  and
+#                   (abs(dz[i])          <   0.373  ))  :
+#		     selected = True
+#            else :
+#                if(
+#            	   (numberOfLostHits[i] <= 1)  and 
+#                   (see[i]              <   0.0287  )  and
+#		   (abs(dEtaSCTrack[i]) <   0.00773  ) and
+#                   (abs(dPhiSCTrack[i]) <   0.114   )  and
+#                   (hadronicOverEm[i]   <   0.0678   )  and
+#                   (IoEmIoP[i]          <   0.0898   )  and
+#                   (abs(dxy[i])         <   0.0739   )  and
+#                   (abs(dz[i])          <   0.602   ))  :
+#		     selected = True
+#
+#            if not (passConversionVeto[i] )  : selected = False
+#	    passMediumID = selected
 
 	    veto = True
 	    if selected:
 	       #CHANGE
 	       #if pt[i] > 40 and abs(eta[i])< 2.1 and miniIso[i]<0.1:
-	       if pt[i] > self.electronPtCut and abs(eta[i])< 2.1 and miniIso[i]<0.1:
+	       if pt[i] > self.electronPtCut and abs(eta[i])< 1.4442 and miniIso[i]<0.1:
                    veto = False
 		   self.selectedLeptons.append(self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], passMediumID, dz[i], dxy[i], charge[i]))
-	       elif pt[i] > 20 and abs(eta[i])<2.4 and miniIso[i]<0.1:
+	       elif pt[i] > 5 and abs(eta[i])<2.4 and miniIso[i]<0.2:
                    veto = False
 		   self.selectedLeptons2.append(self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], passMediumID, dz[i], dxy[i], charge[i]))
-	    if veto:
-              self.vetoLeptons.append(self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], passMediumID, dz[i], dxy[i], charge[i]))
+	    #if veto:
+            else:
+	    	self.vetoLeptons.append(self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], passMediumID, dz[i], dxy[i], charge[i]))
+	    
+	    #print " > veto, selected: ", veto, selected
+	
+	#print "leptons collection size: ", len(self.selectedLeptons), len(self.selectedLeptons2), len(self.vetoLeptons)
 
+
+
+
+    # ############### #
+    # Lepton cleaning #
+    # ############### #
+
+   
+
+    def leptonCleaning(self):
+    	
+	# make a copy
+	vetoLeptons = self.vetoLeptons
+	# reset the collection
+	self.vetoLeptons = []
+
+	#print "cleaning"
+	for vlep in vetoLeptons:
+	    minDr = 9999
+	    # computing minDR with selected leptons
+	    for rlep in self.selectedLeptons:
+		dR = common.deltaR(vlep.phi,vlep.eta,rlep.phi,rlep.eta)
+	    	if dR < minDr : dr = minDr	
+	    # computing minDR with selected leptons 2
+	    for rlep in self.selectedLeptons2:
+		dR = common.deltaR(vlep.phi,vlep.eta,rlep.phi,rlep.eta)
+	    	if dR < minDr : dr = minDr	
+	    #print "dr = ", minDr
+	    if minDr>0.01:
+	    	self.vetoLeptons.append(vlep)
 
 
     # #### #
@@ -588,7 +701,7 @@ class Selection :
 					      qgtag[i],
                                               partonFlavour[i],
 					      pileupJetId[i],
-                                              (CSVv2[i] > 0.814),
+                                              (CSVv2[i] > self.btagCut),
 					      looseID[i]))
            
 	# build a collection of leptons (selected, loose and veto)
@@ -614,6 +727,8 @@ class Selection :
 	    if keep_it:
 		self.selectedJets.append(j[0])
 
+	
+	#print "jet collections: ", len(selectedJets), len(self.selectedJets), len(event.jet_pt)
 	#print "Jets: ", len(selectedJets), len(tmpCollection), len(self.selectedJets), len(selectedJetsOrg)
 	#for i in range(len(selectedJets)):
 	#   print selectedJets[i]
@@ -670,7 +785,93 @@ class Selection :
 	#  the Track Veto
 	################################	
 
+
+    def dumpPFCand(self, event):
+		n = int(event.pfcand_pt.size())
+		pf_pt = event.pfcand_pt
+		pf_eta = event.pfcand_eta
+		pf_phi = event.pfcand_phi
+		pf_charge = event.pfcand_charge
+		pf_id = event.pfcand_id
+		pf_trackIso =  event.pfcand_trackIso
+		print "#### dump pf cand ##"
+		#print event.pfcand_id
+		print n
+		for i in range(n):
+			print i
+			print "pt = ", pf_pt[i], " eta = ", pf_eta[i] , " charge = ", pf_charge[i], " id = ", pf_id[i], " trackIso = ", pf_trackIso[i]
+
+
     def isoTrackVeto(self, event):
+		#load inf
+		n = len(event.pfcand_pt)
+		#print "nof pf cand: ", n
+		pf_pt = event.pfcand_pt
+		pf_eta = event.pfcand_eta
+		pf_phi = event.pfcand_phi
+		pf_dz = event.pfcand_dz
+		pf_charge = event.pfcand_charge
+		pf_id = event.pfcand_id
+		pf_trackIso =  event.pfcand_trackIso
+
+		lep1 = self.lepton 
+		#lep2 = self.lepton
+		FoundLep1 = False
+		#FoundLep2 = False
+    		if (len(self.selectedLeptons)>0): 
+			lep1 = self.selectedLeptons[0]
+			FoundLep1 = True
+		elif (len(self.selectedLeptons2)>0): 
+			lep1 = self.selectedLeptons2[0]
+	        	FoundLep1 = True
+		#if (len(self.vetoLeptons)>0):
+		#	lep2 = self.vetoLeptons[0]
+		#	FoundLep2 = True
+		
+		#print "found lep1", FoundLep1
+		vetotracks = 0
+		for i in range(n):
+	 	    #pt, eta, dz, iso has been applied on production
+		    if pf_pt[i]< 10: continue
+		    if abs(pf_eta[i])>2.4: continue
+		    if abs(pf_dz[i]) >0.1: continue
+
+		    print i, " over ", n
+		    if (FoundLep1): 
+		    	print "found"
+			dR = common.deltaR(pf_phi[i], pf_eta[i], lep1.phi, lep1.eta)
+			#if dR < 0.1: continue  
+			## inline computation of isVetoTrack
+			isVeto = True
+			print "charge, pt", lep1.charge, lep1.pT
+			print "pf pt = ", pf_pt[i]," dr = ", dR, " id = ", pf_id[i], "charge*charge = ", pf_charge[i]," *  ", lep1.charge, pf_trackIso[i]
+			if dR < 0.4: isVeto =  False
+      		        # if not electron or muon
+      		        #solve a bug here !! - requirement was inverted
+			print "here"
+			if abs(pf_id[i])==11 or abs(pf_id[i])==13:  
+				continue
+				#break
+			# opposite chrage requirement btw sel lepton and pfcand
+			print "here"
+			if (pf_charge[i] * lep1.charge > 0): isVeto = False
+           		 
+        		if isVeto:		
+				#print "pt = ", pf_pt[i], " eta = ", pf_eta[i], " id = ", pf_id[i], " dR = ", dR, " charge = ", pf_charge[i], pf_charge[i] * lep1.charge 
+			        print "isotrack" ", pf pt = ", pf_pt[i]," dr = ", dR, " id = ", pf_id[i], "charge*charge = ", pf_charge[i]," *  ", lep1.charge, pf_trackIso[i]
+				vetotracks+=1;
+
+			print "n-pf: ", n, "vetotracks = ", vetotracks
+		
+		
+		print "what's going on"
+		print "n-pf: ", n, "vetotracks = ", vetotracks
+		if vetotracks<1 :	
+		     return True;
+   		return False
+
+
+    def isoTrackVetoOld(self, event):
 		#load inf
 		n = len(event.pfcand_pt)
 		pf_pt = event.pfcand_pt
@@ -694,7 +895,7 @@ class Selection :
 		#	lep2 = self.vetoLeptons[0]
 		#	FoundLep2 = True
 		vetotracks = 0
-		for i in range(n):
+		for i in range(len(pf_isSel)):
 		#for pf in self.pfcands:
 		    # cut already applied during the producion of the tuples
 		    if not pf_isSel[i]: continue
@@ -800,12 +1001,15 @@ class Selection :
         else : 
 	    selectionCode+=1
 
+	# commented only for Marketa study
+
         # At least on selected lepton
         if (len(self.selectedLeptons) != 1) :
 	    returnBool = False
 	else : 
 	    selectionCode+=10
 	# new    
+	
 	if len(self.selectedLeptons2) != 0 :
 	    returnBool = False
         if len(self.vetoLeptons)!=  0:
