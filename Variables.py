@@ -20,9 +20,6 @@ class Variables() :
     	self.branchesForVariables = [ "met_pt", "met_phi", "met_sig"]
     	if (self.loadGenInfo_Var):
     		self.branchesForVariables.extend( ["gen_n", "gen_id", "gen_mother_index", "gen_status" ])
-		print "loadGenInfo = true"
-   	else:
-		print "loadGenInfo = false"
 
     	if(self.loadMCTruth_Var): 
     		self.branchesForVariables.extend( ["mc_truth_tWl1_status", "mc_truth_tWl2_status"])
@@ -43,9 +40,11 @@ class Variables() :
 	self.numberOfGeneratedLeptons = -999
 	if (self.loadGenInfo_Var):
 		self.numberOfGeneratedLeptons = self.getNumberOfGeneratedLeptons(event)
+                #print "filling from loadGenInfo"
 
 	if (self.loadMCTruth_Var):
 		self.numberOfGeneratedLeptons = 0
+                #print "loadMCtruthVAR"
 		if event.mc_truth_tWl1_status >=0 : self.numberOfGeneratedLeptons+=1
 		if event.mc_truth_tWl2_status >=0 : self.numberOfGeneratedLeptons+=1
 
@@ -271,21 +270,28 @@ class Variables() :
         pdgid  = event.gen_id
         mother = event.gen_mother_index
         status = event.gen_status
-       
+        tmp = 0
 
-        #for i in range(n) :
+        for i in range(n) :
             # put this requirement at the first position
-	#    if (status[i] > 3) :
-        #        continue;
-        #    mother_pdgid = pdgid[mother[i]]
-	#    if (abs(mother_pdgid) != 24) :
-        #        continue;
-        #    if ((abs(pdgid[i]) != 11) and (abs(pdgid[i]) != 13) and (abs(pdgid[i]) != 15)) :
-        #        continue;
-        #    genLeptonsFound += 1
+	    if (status[i] > 3) :
+                continue;
+            mother_pdgid = pdgid[mother[i]]
+	    if (abs(mother_pdgid) != 24) :
+                continue;
+            if ((abs(pdgid[i]) != 11) and (abs(pdgid[i]) != 13) and (abs(pdgid[i]) != 15)) :
+                continue;
+            tmp += 1
+            #print "id %d" % event.gen_id[i]
+            #print "index %d" % event.gen_index[i]
+            #print "mother index %d" % event.gen_mother_index[i]
+            #print "status %d" % event.gen_status[i]
+            #print "i: %d" % i
 
+        print tmp
 
-	res = [1 for i in range(n) if status[i]<=3 and abs(pdgid[mother[i]]) == 24 and ((abs(pdgid[i]) == 11) or (abs(pdgid[i]) == 13) or (abs(pdgid[i]) == 15))]
+	res = [1 for i in range(n) if (status[i]<=3 and abs(pdgid[mother[i]]) == 24 and ((abs(pdgid[i]) == 11) or (abs(pdgid[i]) == 13) or (abs(pdgid[i]) == 15)))]
+        #print "sum result: %d" % sum(res)
         return sum(res)
 
 

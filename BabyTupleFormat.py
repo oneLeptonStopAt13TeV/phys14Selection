@@ -16,7 +16,9 @@ class BabyTupleFormat :
     def __init__(self):
 	self.doIsoStudy = False
 	self.saveGenInfo = True
-    	self.saveAK8 = False	
+        self.loadMCTruth_Var = False
+    	self.saveAK8 = True	
+    	self.saveAK10 = True	
 	self.saveGenMET = False
 
     	self.babyTupleFormat = { 
@@ -67,8 +69,12 @@ class BabyTupleFormat :
 	      'ak4pfjets_loose_pfid'	: 'vector<bool>',
 	      'ak4pfjets_puid'		: 'vector<float>',
 	      'ak4pfjets_qgtag'		: 'vector<float>',
+	      'ak4pfjets_axis2'		: 'vector<float>',
+	      'ak4pfjets_ptD'		: 'vector<float>',
+	      'ak4pfjets_mult'		: 'vector<int>',
 	      'ak4pfjets_partonFlavour'	: 'vector<float>',
 	      'dphi_ak4pfjets_met'	:	'F',
+	      
 	
 	      #Store the following event variables: 
 	      'ak4pfjets_rho'		:	'F',
@@ -98,6 +104,9 @@ class BabyTupleFormat :
 	      #triggers
 	      'HLT_SingleMu'	:	'B',
 	      'HLT_SingleE'	:	'B',
+	      'HLT_Iso20Muon'	:	'B',
+	      'HLT_Ele23_WPLoose_Gsf'  :'B',
+	      'HLT_PFMET170'	:	'B',
 	
 	      # weights
 	      'pu_weight'	:	'F',
@@ -116,6 +125,9 @@ class BabyTupleFormat :
 	      'eventId'                  :  'I',
 	
 	      'numberOfSelectedLeptons'  :  'I',
+	      'nvertex'                  :  'I',
+	      'puIntime'                 :  'I',
+	      'puTrue'                   :  'I',
 	      
 	      'leadingLeptonId'          :  'I',
 	      'leadingLeptonPt'          :  'F',
@@ -174,7 +186,7 @@ class BabyTupleFormat :
 	#for isolation study
     
     	# Additional input branches needed during the filling of the babytuple
-    	self.branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id", "mc_weight" ]
+    	self.branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id", "mc_weight", "nvertex", "mc_pu_intime_NumInt", "mc_pu_trueNumInt" ]
     
     ##############################
     # 	END OF CONSTRUCTOR       #
@@ -212,8 +224,9 @@ class BabyTupleFormat :
 	        self.babyTupleFormat['gen_mother_index'] =	 "vector<int>"
 	        self.babyTupleFormat['gen_daughter_n'] =	 "vector<int>"
 	        self.babyTupleFormat['gen_daughter_index'] =	 "vector<vector<int> >"
-	   
-
+	        self.babyTupleFormat['gen_neutralino_m'] =	 "vector<float>"
+	        self.babyTupleFormat['gen_stop_m'] =	         "vector<float>"
+        
         if self.saveAK8:
        		self.babyTupleFormat['ak8pfjets_pt'] =  "vector<float>"
        		self.babyTupleFormat['ak8pfjets_eta'] =  "vector<float>"
@@ -223,6 +236,7 @@ class BabyTupleFormat :
        		self.babyTupleFormat['ak8pfjets_softdrop_mass'] =  "vector<float>"
        		self.babyTupleFormat['ak8pfjets_trimmed_mass'] =  "vector<float>"
        		self.babyTupleFormat['ak8pfjets_pruned_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak8pfjets_corrpruned_mass'] =  "vector<float>"
        		self.babyTupleFormat['ak8pfjets_filtered_mass'] =  "vector<float>"
        		self.babyTupleFormat['ak8pfjets_minMass'] =  "vector<float>"
        		self.babyTupleFormat['ak8pfjets_topMass'] = "vector<float>"
@@ -230,10 +244,34 @@ class BabyTupleFormat :
        		self.babyTupleFormat['ak8pfjets_tau1'] =  "vector<float>"
        		self.babyTupleFormat['ak8pfjets_tau2'] =  "vector<float>"
        		self.babyTupleFormat['ak8pfjets_tau3'] =  "vector<float>"
+        
+        if self.saveAK10:
+       		self.babyTupleFormat['ak10pfjets_pt'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_eta'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_phi'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_CSV'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_softdrop_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_trimmed_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_pruned_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_filtered_mass'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_minMass'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_topMass'] = "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_nSubJets'] =  "vector<int>"
+       		self.babyTupleFormat['ak10pfjets_tau1'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_tau2'] =  "vector<float>"
+       		self.babyTupleFormat['ak10pfjets_tau3'] =  "vector<float>"
    
 
-
-    
+        #print "self.loadMCTruth_Var %d"% self.loadMCTruth_Var
+        if self.saveGenInfo:
+                #print "loading the gen jets"    
+                # vector of gen jets are pt ordered
+	        self.babyTupleFormat['genjets_E'] = "vector<float>"
+	        self.babyTupleFormat['genjets_pt'] = "vector<float>"
+	        self.babyTupleFormat['genjets_eta'] = "vector<float>"
+	        self.babyTupleFormat['genjets_phi'] = "vector<float>"
+	        self.babyTupleFormat['genjets_mass']	= "vector<float>"
 
 
 
@@ -310,7 +348,34 @@ class BabyTupleFormat :
 	    #babyTupleTree.lep2_passMediumID = lepton2.passMediumID
 
 	babyTupleTree.runId                   = event.ev_run
-      
+        babyTupleTree.nvertex                 = event.nvertex
+        babyTupleTree.puIntime                = event.mc_pu_intime_NumInt
+        babyTupleTree.puTrue                  = event.mc_pu_trueNumInt
+        
+        # vector of jets are pt ordered
+        if self.saveGenInfo:
+            v_genjet_E = stl.vector('float')()
+            v_genjet_pt = stl.vector('float')()
+            v_genjet_eta = stl.vector('float')()
+            v_genjet_phi = stl.vector('float')()
+            v_genjet_mass = stl.vector('float')()
+            #print "filling baby tuple genjet"
+            #print "len genjet: %d" % len(self.selectedGenJets)
+	    for genjet in self.selectedGenJets:
+                #print "genjetpt: %d" %genjet.pT
+	        v_genjet_E.push_back(genjet.E)
+	        v_genjet_pt.push_back(genjet.pT)
+	        v_genjet_eta.push_back(genjet.eta)
+	        v_genjet_phi.push_back(genjet.phi)
+	        v_genjet_mass.push_back(genjet.mass)
+        
+        if self.saveGenInfo:
+	    babyTupleTree.genjets_E    = v_genjet_E
+	    babyTupleTree.genjets_pt   = v_genjet_pt
+	    babyTupleTree.genjets_eta  = v_genjet_eta
+	    babyTupleTree.genjets_phi  = v_genjet_phi
+	    babyTupleTree.genjets_mass = v_genjet_mass
+
         # vector of jets are pt ordered
         v_jet_pt = stl.vector('float')()
         v_jet_eta = stl.vector('float')()
@@ -320,8 +385,12 @@ class BabyTupleFormat :
         v_jet_loose_pfid = stl.vector('bool')()
         v_jet_puid = stl.vector('float')()
         v_jet_qgtag = stl.vector('float')()
+        v_jet_axis2 = stl.vector('float')()
+        v_jet_ptD = stl.vector('float')()
+        v_jet_mult = stl.vector('int')()
         v_jet_partonFlavour = stl.vector('float')()
 	for jet in self.selectedJets:
+            #print "jetpt: %d" %jet.pT
 	    v_jet_pt.push_back(jet.pT)
 	    v_jet_eta.push_back(jet.eta)
 	    v_jet_phi.push_back(jet.phi)
@@ -332,6 +401,9 @@ class BabyTupleFormat :
 	    v_jet_loose_pfid.push_back(bool(jet.looseID))
 	    v_jet_puid.push_back(jet.PUid)
 	    v_jet_qgtag.push_back(jet.qgtag)
+	    v_jet_axis2.push_back(jet.axis2)
+	    v_jet_ptD.push_back(jet.ptD)
+	    v_jet_mult.push_back(jet.mult)
 	    v_jet_partonFlavour.push_back(jet.partonFlavour)
         babyTupleTree.ak4pfjets_pt	 =  v_jet_pt
         babyTupleTree.ak4pfjets_eta	 =  v_jet_eta
@@ -341,6 +413,9 @@ class BabyTupleFormat :
         babyTupleTree.ak4pfjets_loose_pfid	 =  v_jet_loose_pfid
         babyTupleTree.ak4pfjets_puid	 =  v_jet_puid
         babyTupleTree.ak4pfjets_qgtag	 =  v_jet_qgtag
+        babyTupleTree.ak4pfjets_axis2	 =  v_jet_axis2
+        babyTupleTree.ak4pfjets_ptD	 =  v_jet_ptD
+        babyTupleTree.ak4pfjets_mult	 =  v_jet_mult
         babyTupleTree.ak4pfjets_partonFlavour	 =  v_jet_partonFlavour
        
 
@@ -359,6 +434,7 @@ class BabyTupleFormat :
         v_ak8jet_softdrop_mass = stl.vector('float')()
         v_ak8jet_trimmed_mass = stl.vector('float')()
         v_ak8jet_pruned_mass = stl.vector('float')()
+        v_ak8jet_corrpruned_mass = stl.vector('float')()
         v_ak8jet_filtered_mass = stl.vector('float')()
         v_ak8jet_minMass = stl.vector('float')()
         v_ak8jet_topMass = stl.vector('float')()
@@ -373,6 +449,7 @@ class BabyTupleFormat :
 		v_ak8jet_softdrop_mass.push_back(jet.softdropMass)
 		v_ak8jet_trimmed_mass.push_back(jet.trimmedMass)
 		v_ak8jet_pruned_mass.push_back(jet.prunedMass)
+		v_ak8jet_corrpruned_mass.push_back(jet.prunedMass)
 		v_ak8jet_filtered_mass.push_back(jet.filteredMass)
 		v_ak8jet_minMass.push_back(jet.minMass)
 		v_ak8jet_topMass.push_back(jet.topMass)
@@ -392,6 +469,7 @@ class BabyTupleFormat :
         	babyTupleTree.ak8pfjets_softdrop_mass	 =  v_ak8jet_softdrop_mass
         	babyTupleTree.ak8pfjets_trimmed_mass	 =  v_ak8jet_trimmed_mass
         	babyTupleTree.ak8pfjets_pruned_mass	 =  v_ak8jet_pruned_mass
+        	babyTupleTree.ak8pfjets_corrpruned_mass	 =  v_ak8jet_corrpruned_mass
         	babyTupleTree.ak8pfjets_filtered_mass	 =  v_ak8jet_filtered_mass
         	babyTupleTree.ak8pfjets_minMass	 =  v_ak8jet_minMass
         	babyTupleTree.ak8pfjets_topMass	 =  v_ak8jet_topMass
@@ -400,7 +478,65 @@ class BabyTupleFormat :
         	babyTupleTree.ak8pfjets_tau2	 =  v_ak8jet_tau2
         	babyTupleTree.ak8pfjets_tau3	 =  v_ak8jet_tau3
 
-	babyTupleTree.dphi_ak4pfjets_met	 = self.dphi_ak4pfjets_met
+	#ak10 jets
+        # vector of jets are pt ordered
+        
+	v_ak10jet_E = stl.vector('float')()
+        v_ak10jet_pt = stl.vector('float')()
+        v_ak10jet_eta = stl.vector('float')()
+        v_ak10jet_phi = stl.vector('float')()
+        v_ak10jet_mass = stl.vector('float')()
+        v_ak10jet_CSV = stl.vector('float')()
+        v_ak10jet_tau1 = stl.vector('float')()
+        v_ak10jet_tau2 = stl.vector('float')()
+        v_ak10jet_tau3 = stl.vector('float')()
+        v_ak10jet_softdrop_mass = stl.vector('float')()
+        v_ak10jet_trimmed_mass = stl.vector('float')()
+        v_ak10jet_pruned_mass = stl.vector('float')()
+        v_ak10jet_filtered_mass = stl.vector('float')()
+        v_ak10jet_minMass = stl.vector('float')()
+        v_ak10jet_topMass = stl.vector('float')()
+        v_ak10jet_nSubJets = stl.vector('int')()
+	for jet in self.ak10selectedJets:
+		v_ak10jet_pt.push_back(jet.pT)
+		v_ak10jet_eta.push_back(jet.eta)
+		v_ak10jet_phi.push_back(jet.phi)
+	        jetp4.SetPtEtaPhiE(jet.pT, jet.eta, jet.phi, jet.E)
+	        v_ak10jet_mass.push_back(jetp4.M())
+		v_ak10jet_CSV.push_back(jet.CSVv2)
+		v_ak10jet_softdrop_mass.push_back(jet.softdropMass)
+		v_ak10jet_trimmed_mass.push_back(jet.trimmedMass)
+		v_ak10jet_pruned_mass.push_back(jet.prunedMass)
+		v_ak10jet_filtered_mass.push_back(jet.filteredMass)
+		v_ak10jet_minMass.push_back(jet.minMass)
+		v_ak10jet_topMass.push_back(jet.topMass)
+		v_ak10jet_nSubJets.push_back(jet.nSubJets)
+		v_ak10jet_tau1.push_back(jet.tau1)
+		v_ak10jet_tau2.push_back(jet.tau2)
+		v_ak10jet_tau3.push_back(jet.tau3)
+                #print "jet tau 1 in filling bt %d" % jet.tau1
+
+
+        #print "in bt safe ak10: %d" % self.saveAK10
+        if self.saveAK10:
+                #print "saving ak10"
+        	babyTupleTree.ak10pfjets_pt	 =  v_ak10jet_pt
+        	babyTupleTree.ak10pfjets_eta	 =  v_ak10jet_eta
+        	babyTupleTree.ak10pfjets_phi	 =  v_ak10jet_phi
+        	babyTupleTree.ak10pfjets_mass	 =  v_ak10jet_mass
+        	babyTupleTree.ak10pfjets_CSV	 =  v_ak10jet_CSV
+        	babyTupleTree.ak10pfjets_softdrop_mass	 =  v_ak10jet_softdrop_mass
+        	babyTupleTree.ak10pfjets_trimmed_mass	 =  v_ak10jet_trimmed_mass
+        	babyTupleTree.ak10pfjets_pruned_mass	 =  v_ak10jet_pruned_mass
+        	babyTupleTree.ak10pfjets_filtered_mass	 =  v_ak10jet_filtered_mass
+        	babyTupleTree.ak10pfjets_minMass	 =  v_ak10jet_minMass
+        	babyTupleTree.ak10pfjets_topMass	 =  v_ak10jet_topMass
+        	babyTupleTree.ak10pfjets_nSubJets	 =  v_ak10jet_nSubJets
+        	babyTupleTree.ak10pfjets_tau1	 =  v_ak10jet_tau1
+        	babyTupleTree.ak10pfjets_tau2	 =  v_ak10jet_tau2
+        	babyTupleTree.ak10pfjets_tau3	 =  v_ak10jet_tau3
+	
+        babyTupleTree.dphi_ak4pfjets_met	 = self.dphi_ak4pfjets_met
 
         #Store the following event variables: 
         babyTupleTree.ak4pfjets_rho  =	event.ev_rho
@@ -434,8 +570,11 @@ class BabyTupleFormat :
         #babyTupleTree.HLT_SingleMu	= True #
         #babyTupleTree.HLT_SingleE	= True # default
 	#print self.trigger
-	babyTupleTree.HLT_SingleMu = self.trigger.setdefault("HLT_IsoMu17_eta2p1_v2",False) or self.trigger.setdefault("HLT_IsoMu20_v2",False) or self.trigger.setdefault("HLT_IsoMu17_eta2p1_v1",False) or self.trigger.setdefault("HLT_IsoMu20_v1",False)
-	babyTupleTree.HLT_SingleE = self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose_Gsf_v1",False) or self.trigger.setdefault("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1",False) or self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose_Gsf_v1",False)
+	babyTupleTree.HLT_SingleMu = self.trigger.setdefault("HLT_IsoMu20_v2",False) or self.trigger.setdefault("HLT_IsoMu20_v1",False) or self.trigger.setdefault("HLT_IsoTkMu20_v2",False) or self.trigger.setdefault("HLT_IsoTkMu20_v1",False) or self.trigger.setdefault("HLT_PFMET170_v1",False) or self.trigger.setdefault("HLT_PFMET170_v2",False)
+	babyTupleTree.HLT_SingleE = self.trigger.setdefault("HLT_Ele23_WPLoose_Gsf_v1",False) or self.trigger.setdefault("HLT_Ele23_WPLoose_Gsf_v2",False) or self.trigger.setdefault("HLT_PFMET170_v1",False) or self.trigger.setdefault("HLT_PFMET170_v2",False)
+	babyTupleTree.HLT_Iso20Muon = self.trigger.setdefault("HLT_IsoMu20_v1",False) or self.trigger.setdefault("HLT_IsoMu20_v2",False) or self.trigger.setdefault("HLT_IsoTkMu20_v1",False) or self.trigger.setdefault("HLT_IsoTkMu20_v2",False)
+	babyTupleTree.HLT_Ele23_WPLoose_Gsf = self.trigger.setdefault("HLT_Ele23_WPLoose_Gsf_v1",False) or self.trigger.setdefault("HLT_Ele23_WPLoose_Gsf_v2",False) 
+	babyTupleTree.HLT_PFMET170 = self.trigger.setdefault("HLT_PFMET170_v1",False) or self.trigger.setdefault("HLT_PFMET170_v2",False)
 
         # weights
 	# will have to be filled
@@ -452,6 +591,9 @@ class BabyTupleFormat :
         babyTupleTree.runId                   = event.ev_run
         babyTupleTree.lumiId                  = event.ev_lumi
         babyTupleTree.eventId                 = event.ev_id
+        babyTupleTree.nvertex                 = event.nvertex
+        babyTupleTree.puIntime                = event.mc_pu_intime_NumInt
+        babyTupleTree.puTrue                  = event.mc_pu_trueNumInt
         
 	babyTupleTree.numberOfSelectedMuons = self.selectedMuons
 	babyTupleTree.numberOfSelectedElectrons = self.selectedElectrons
@@ -549,17 +691,19 @@ class BabyTupleFormat :
 
 	#Add gen info
         if self.saveGenInfo:
-        	babyTupleTree.gen_n =				event.gen_n 
+        	babyTupleTree.gen_n =		        event.gen_n 
         	babyTupleTree.gen_pt = 			event.gen_pt
-        	babyTupleTree.gen_eta = 			event.gen_eta
-        	babyTupleTree.gen_phi = 			event.gen_phi
+        	babyTupleTree.gen_eta = 		event.gen_eta
+        	babyTupleTree.gen_phi = 		event.gen_phi
         	babyTupleTree.gen_m = 			event.gen_m
-        	babyTupleTree.gen_status = 			event.gen_status
+        	babyTupleTree.gen_status = 		event.gen_status
         	babyTupleTree.gen_id = 			event.gen_id
-        	babyTupleTree.gen_charge = 			event.gen_charge
-        	babyTupleTree.gen_index = 			event.gen_index
-        	babyTupleTree.gen_mother_index = 			event.gen_mother_index
-        	babyTupleTree.gen_daughter_n = 			event.gen_daughter_n
-        	babyTupleTree.gen_daughter_index = 			event.gen_daughter_index
+        	babyTupleTree.gen_charge = 		event.gen_charge
+        	babyTupleTree.gen_index = 		event.gen_index
+        	babyTupleTree.gen_mother_index = 	event.gen_mother_index
+        	babyTupleTree.gen_daughter_n = 		event.gen_daughter_n
+        	babyTupleTree.gen_daughter_index = 	event.gen_daughter_index
+        	babyTupleTree.gen_neutralino_m = 	event.gen_neutralino_m
+        	babyTupleTree.gen_stop_m =      	event.gen_stop_m
 
 	#Add pfcand. info

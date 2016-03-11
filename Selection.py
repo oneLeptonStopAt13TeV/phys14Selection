@@ -32,7 +32,9 @@ class Selection :
 	self.selectedLeptons2   = []
 	self.vetoLeptons   = []
         self.selectedJets      = []
+        self.selectedGenJets      = []
         self.ak8selectedJets      = []
+        self.ak10selectedJets      = []
 	self.pfcands = []
         self.ngoodbtags = 0
 	self.trigger = {}
@@ -64,6 +66,9 @@ class Selection :
 	
 	trig_name = event.trigger_name
 	trig_pass = event.trigger_pass
+
+        #for j in xrange(len(trig_name)):
+                #print "available trigger: %s " % trig_name[j]
 	for i in xrange(len(trig_name)):
 		if trig_name[i] == "HLT_IsoMu17_eta2p1_v1": 
 			self.trigger["HLT_IsoMu17_eta2p1_v1"] =  bool(trig_pass[i])
@@ -73,19 +78,39 @@ class Selection :
 			self.trigger["HLT_IsoMu20_v1"] = bool(trig_pass[i])
 		if trig_name[i] == "HLT_IsoMu20_v2": 
 			self.trigger["HLT_IsoMu20_v2"] = bool(trig_pass[i])
+		if trig_name[i] == "HLT_IsoTkMu20_v1": 
+			self.trigger["HLT_IsoTkMu20_v1"] = bool(trig_pass[i])
+		if trig_name[i] == "HLT_IsoTkMu20_v2": 
+			self.trigger["HLT_IsoTkMu20_v2"] = bool(trig_pass[i])
 		if trig_name[i] == "HLT_Ele27_eta2p1_WPLoose_Gsf_v1": 
 			self.trigger["HLT_Ele27_eta2p1_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
+		if trig_name[i] == "HLT_Ele23_WPLoose_Gsf_v1": 
+			self.trigger["HLT_Ele23_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
 		if trig_name[i] == "HLT_Ele23_WPLoose_Gsf_v2": 
 			self.trigger["HLT_Ele23_WPLoose_Gsf_v2"] =  bool(trig_pass[i])
 		if trig_name[i] == "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1": 
 			self.trigger["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1"] =  bool(trig_pass[i])
 		if trig_name[i] == "HLT_Ele27_eta2p1_WPLoose_Gsf_v1": 
 			self.trigger["HLT_Ele27_eta2p1_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
+		if trig_name[i] == "HLT_IsoTkMu20_v1": 
+			self.trigger["HLT_IsoTkMu20_v1"] = bool(trig_pass[i])
+                        #print "HLT_IsoTkMu20_v1"
+		if trig_name[i] == "HLT_IsoTkMu20_v2": 
+			self.trigger["HLT_IsoTkMu20_v2"] = bool(trig_pass[i])
+                        #print "HLT_IsoTkMu20_v2"
+		if trig_name[i] == "HLT_PFMET170_v1": 
+			self.trigger["HLT_PFMET170_v1"] = bool(trig_pass[i])
+                        #print "HLT_PFMET170_v1"
+		if trig_name[i] == "HLT_PFMET170_v2": 
+			self.trigger["HLT_PFMET170_v2"] = bool(trig_pass[i])
+                        #print "HLT_PFMET170_v2"
 	#print self.trigger
 
 
-    branchesForGenInfo = ["gen_n", "gen_pt", "gen_eta", "gen_phi", "gen_m", "gen_status", "gen_id", "gen_charge", "gen_index", "gen_mother_index", "gen_daughter_n", "gen_daughter_index"]
+    branchesForGenInfo = ["gen_n", "gen_pt", "gen_eta", "gen_phi", "gen_m", "gen_status", "gen_id", "gen_charge", "gen_index", "gen_mother_index", "gen_daughter_n", "gen_daughter_index", "gen_neutralino_m", "gen_stop_m"]
     branchesForGenMET = ["metGen_pt", "metGen_phi"]
+    branchesForMCTruth = ["mc_truth_tWl1_status", "mc_truth_tWl2_status"]
+
     
     ############################################################################
     #    ___  _     _           _              _           _                   #
@@ -98,8 +123,10 @@ class Selection :
 
     # Define structure for temporary objects storage
     lepton = namedtuple('lepton', ['id', 'E', 'pT', 'eta', 'phi', 'iso', 'passMediumID', 'dz', 'd0', 'charge' ])
-    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
-    ak8jet = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'softdropMass', 'trimmedMass', 'prunedMass', 'filteredMass', 'minMass', 'topMass', 'nSubJets', 'tau1', 'tau2', 'tau3' ])
+    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'axis2', 'ptD', 'mult', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
+    genjet    = namedtuple('genjet',    [ 'E', 'pT', 'eta', 'phi', 'mass'])
+    ak8jet = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'softdropMass', 'trimmedMass', 'prunedMass', 'corrprunedMass', 'filteredMass', 'minMass', 'topMass', 'nSubJets', 'tau1', 'tau2', 'tau3' ])
+    ak10jet = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'softdropMass', 'trimmedMass', 'prunedMass', 'filteredMass', 'minMass', 'topMass', 'nSubJets', 'tau1', 'tau2', 'tau3' ])
     pfc    = namedtuple('pfcand',    [ 'pT', 'eta', 'phi', 'charge', 'id' ])
 
 
@@ -107,7 +134,7 @@ class Selection :
     # pfcanfs #
     # ####### #
 
-    branchesForPfcand = ["pfcand_n", "pfcand_E", "pfcand_pt", "pfcand_eta", "pfcand_phi", "pfcand_dz", "pfcand_charge", "pfcand_id" , "pfcand_trackIso"]
+    branchesForPfcand = ["pfcand_n", "pfcand_E", "pfcand_pt", "pfcand_eta", "pfcand_phi", "pfcand_dz", "pfcand_charge", "pfcand_id", "pfcand_trackIso"]
 
     def pfCandTupling(self,event):
 	
@@ -154,7 +181,7 @@ class Selection :
     # ##### #
     
     branchesForTauSelection = [ "tau_n", "tau_pt", "tau_eta", "tau_phi", "tau_charge", 
-    				"tau_decayModeFinding",
+    				"tau_decayModeFindingNewDMs",
     				"tau_decayModeFindingOldDMs",
 				"tau_byMediumCombinedIsolationDeltaBetaCorr3Hits",
 				"tau_byMediumIsolationMVA3newDMwLT"]
@@ -171,8 +198,8 @@ class Selection :
 	charge	=  event.tau_charge
 	id 	=  event.tau_byMediumCombinedIsolationDeltaBetaCorr3Hits
 	#id 	=  event.tau_byMediumIsolationMVA3newDMwLT
-	#decayMode = event.tau_decayModeFindingOldDMs
-	decayMode = event.tau_decayModeFinding
+	#decayMode = event.tau_decayModeFindingNewDMs
+	decayMode = event.tau_decayModeFindingOldDMs #@MJ@ TODO
 
 
 	lep1 = self.lepton(0,0,0,0,0,0,0,0,0,0)
@@ -563,14 +590,14 @@ class Selection :
 
    
 
-    branchesForAk8JetSelection = [ "ak8jet_n",
-                                "ak8jet_E", "ak8jet_pt", "ak8jet_eta",   "ak8jet_phi",
-                                "ak8jet_CSVv2",
-                                "ak8jet_tau1" , "ak8jet_tau2", "ak8jet_tau3",
-				"ak8jet_softdrop_mass", "ak8jet_trimmed_mass", "ak8jet_pruned_mass", "ak8jet_filtered_mass",
-				"ak8jet_minMass", "ak8jet_topMass",
-				"ak8jet_nSubJets"
-				]
+    branchesForAk8JetSelection = ["ak8jet_n",
+                                  "ak8jet_E", "ak8jet_pt", "ak8jet_eta",   "ak8jet_phi",
+                                  "ak8jet_CSVv2",
+                                  "ak8jet_tau1" , "ak8jet_tau2", "ak8jet_tau3",
+				  "ak8jet_softdrop_mass", "ak8jet_trimmed_mass", "ak8jet_pruned_mass", "ak8jet_corrpruned_mass", "ak8jet_filtered_mass",
+				  "ak8jet_minMass", "ak8jet_topMass",
+				  "ak8jet_nSubJets"
+				 ]
     
     def ak8jetSelector(self,event) :
 
@@ -583,7 +610,8 @@ class Selection :
 	softdrop_mass	 = event.ak8jet_softdrop_mass
 	trimmed_mass	 = event.ak8jet_trimmed_mass
 	filtered_mass  	= event.ak8jet_filtered_mass
-	pruned_mass	 = event.ak8jet_pruned_mass
+	pruned_mass	= event.ak8jet_pruned_mass
+	corrpruned_mass	= event.ak8jet_corrpruned_mass
 	minMass 	= event.ak8jet_minMass
 	topMass 	= event.ak8jet_minMass
 	tau1 		= event.ak8jet_tau1
@@ -603,11 +631,103 @@ class Selection :
                                               eta[i],
                                               phi[i],
                                               CSVv2[i],
-					      softdrop_mass[i], trimmed_mass[i], filtered_mass[i], pruned_mass[i], 
+					      softdrop_mass[i], trimmed_mass[i], pruned_mass[i], corrpruned_mass[i], filtered_mass[i],
 					      minMass[i], topMass[i],
 					      nSubJets[i],
 					      tau1[i], tau2[i], tau3[i]
 					      ))
+
+
+    branchesForAk10JetSelection = ["ak10jet_n",
+                                  "ak10jet_E", "ak10jet_pt", "ak10jet_eta",   "ak10jet_phi",
+                                  "ak10jet_CSVv2",
+                                  "ak10jet_tau1" , "ak10jet_tau2", "ak10jet_tau3",
+				  "ak10jet_softdrop_mass", "ak10jet_trimmed_mass", "ak10jet_pruned_mass", "ak10jet_filtered_mass",
+				  "ak10jet_minMass", "ak10jet_topMass",
+				  "ak10jet_nSubJets"
+				 ]
+    
+    def ak10jetSelector(self,event) :
+        
+        n           = event.ak10jet_n
+        E           = event.ak10jet_E
+        pt          = event.ak10jet_pt
+        eta         = event.ak10jet_eta
+        phi         = event.ak10jet_phi
+        CSVv2       = event.ak10jet_CSVv2
+	softdrop_mass	 = event.ak10jet_softdrop_mass
+	trimmed_mass	 = event.ak10jet_trimmed_mass
+	filtered_mass  	= event.ak10jet_filtered_mass
+	pruned_mass	= event.ak10jet_pruned_mass
+	minMass 	= event.ak10jet_minMass
+	topMass 	= event.ak10jet_minMass
+	tau1 		= event.ak10jet_tau1
+	tau2 		= event.ak10jet_tau2
+	tau3 		= event.ak10jet_tau3
+	nSubJets	= event.ak10jet_nSubJets
+        
+	selectedJets = []
+	selectedJetsOrg = []
+
+
+	for i in range(len(E)) :
+
+            # No selection for the moment (Apply pT and eta later)
+	    self.ak10selectedJets.append(self.ak10jet(E[i],
+                                              pt[i],
+                                              eta[i],
+                                              phi[i],
+                                              CSVv2[i],
+					      softdrop_mass[i], trimmed_mass[i],  pruned_mass[i], filtered_mass[i],
+					      minMass[i], topMass[i],
+					      nSubJets[i],
+					      tau1[i], tau2[i], tau3[i]
+					      ))
+
+    # ######### #
+    #  Gen Jets #
+    # ######### #
+    branchesForGenJetSelection = [ "genJet_n",
+                                   "genJet_E", "genJet_pt", "genJet_eta",   "genJet_phi",
+                                   "genJet_m",
+				   ]
+
+    def genJetDump(self,event):
+        gj_n    = event.genJet_n
+        gj_E    = event.genJet_E
+        gj_pt   = event.genJet_pt
+        gj_eta  = event.genJet_eta
+        gj_phi  = event.genJet_phi
+        gj_m    = event.genJet_m
+    
+    def genJetSelector(self,event) :
+
+        gj_n    = event.genJet_n
+        gj_E    = event.genJet_E
+        gj_pt   = event.genJet_pt
+        gj_eta  = event.genJet_eta
+        gj_phi  = event.genJet_phi
+        gj_m    = event.genJet_m
+
+        #print "number of gen jets: %d" %gj_n
+        
+	selectedGenJets = []
+	
+        for i in range(gj_n) :
+
+            #print "gen get pt: %d" % gj_pt[i]
+	    selectedGenJets.append(self.genjet(gj_E[i],
+                                              gj_pt[i],
+                                              gj_eta[i],
+                                              gj_phi[i],
+					      gj_m[i]))
+
+        #print "size of selectedgenjet in selector %d" % len(selectedGenJets)
+        self.selectedGenJets = selectedGenJets
+        #print "size of self selectedgenjet in selector %d" % len(self.selectedGenJets)
+        
+           
+
     # #### #
     # Jets #
     # #### #
@@ -618,6 +738,9 @@ class Selection :
                                 "jet_E", "jet_pt", "jet_eta",   "jet_phi",
                                 "jet_CSVv2",
                                 "jet_qgtag",
+                                "jet_qgtag_axis2",
+                                "jet_qgtag_ptD",
+                                "jet_qgtag_mult",
 				"jet_pileupJetId" ,
 				"jet_looseJetID",
 				"jet_partonFlavour"
@@ -633,6 +756,9 @@ class Selection :
         CSVv2       = event.jet_CSVv2
         looseID     = event.jet_looseJetID
 	qgtag	    = event.jet_qgtag
+	axis2	    = event.jet_qgtag_axis2
+	ptD	    = event.jet_qgtag_ptD
+	mult	    = event.jet_qgtag_mult
 	partonFlavour = event.jet_partonFlavour
 
         for i in range(n):
@@ -668,6 +794,9 @@ class Selection :
         looseID     = event.jet_looseJetID
         #tightID     = event.jet_tightJetID
 	qgtag	    = event.jet_qgtag
+	axis2	    = event.jet_qgtag_axis2
+	ptD	    = event.jet_qgtag_ptD
+	mult	    = event.jet_qgtag_mult
 	partonFlavour	 = event.jet_partonFlavour
         
 	selectedJets = []
@@ -699,6 +828,9 @@ class Selection :
                                               phi[i],
                                               CSVv2[i],
 					      qgtag[i],
+                                              axis2[i],
+                                              ptD[i],
+                                              mult[i],
                                               partonFlavour[i],
 					      pileupJetId[i],
                                               (CSVv2[i] > self.btagCut),
@@ -814,6 +946,7 @@ class Selection :
 		pf_id = event.pfcand_id
 		pf_trackIso =  event.pfcand_trackIso
 
+
 		lep1 = self.lepton 
 		#lep2 = self.lepton
 		FoundLep1 = False
@@ -844,27 +977,27 @@ class Selection :
 			## inline computation of isVetoTrack
 			isVeto = True
 			print "charge, pt", lep1.charge, lep1.pT
-			print "pf pt = ", pf_pt[i]," dr = ", dR, " id = ", pf_id[i], "charge*charge = ", pf_charge[i]," *  ", lep1.charge, pf_trackIso[i]
+			print "pf pt = ", pf_pt[i]," dr = ", dR, " id = ", pf_id[i], "charge*charge = ", pf_charge[i]," *  ", #lep1.charge, pf_trackIso[i]
 			if dR < 0.4: isVeto =  False
       		        # if not electron or muon
       		        #solve a bug here !! - requirement was inverted
-			print "here"
+			#print "here"
 			if abs(pf_id[i])==11 or abs(pf_id[i])==13:  
 				continue
 				#break
 			# opposite chrage requirement btw sel lepton and pfcand
-			print "here"
+			#print "here"
 			if (pf_charge[i] * lep1.charge > 0): isVeto = False
            		 
         		if isVeto:		
 				#print "pt = ", pf_pt[i], " eta = ", pf_eta[i], " id = ", pf_id[i], " dR = ", dR, " charge = ", pf_charge[i], pf_charge[i] * lep1.charge 
-			        print "isotrack" ", pf pt = ", pf_pt[i]," dr = ", dR, " id = ", pf_id[i], "charge*charge = ", pf_charge[i]," *  ", lep1.charge, pf_trackIso[i]
+			        print "isotrack" ", pf pt = ", pf_pt[i]," dr = ", dR, " id = ", pf_id[i], "charge*charge = ", pf_charge[i]," *  ", lep1.charge, pf_trackIso[i] 
 				vetotracks+=1;
 
 			print "n-pf: ", n, "vetotracks = ", vetotracks
 		
 		
-		print "what's going on"
+		#print "what's going on"
 		print "n-pf: ", n, "vetotracks = ", vetotracks
 		if vetotracks<1 :	
 		     return True;
@@ -1037,6 +1170,7 @@ class Selection :
 	# tupling of pfcands => No, just check for basic selection (charge, pt, dz)
 	# required to compute isoTrackVeto
 	# should be called before doingn isoTrackVeto
+            #print "this should not be called"
 	    self.pfCandTupling(event)
 	
 	    # Test TrackVeto
@@ -1071,6 +1205,8 @@ class Selection :
 	    self.leadingLepton.SetPtEtaPhiE(self.selectedLeptons[0].pT, self.selectedLeptons[0].eta, self.selectedLeptons[0].phi, self.selectedLeptons[0].E)
 	    self.leadingLeptonIso = self.selectedLeptons[0].iso
 
+        # selectedGenJets
+	#selectedGenJets = self.selectedGenJets
         # selectedJets
 	# create tuple (TLorentzVector, btagDiscri, btagBool, DR(l,jet), DPhi(l,jet), DPhi(jet, MET)
 	self.selJetsP4 = []

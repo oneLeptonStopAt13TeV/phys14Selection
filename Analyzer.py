@@ -4,8 +4,10 @@ from BabyTupleFormat import *
 from Variables       import *
 import ConfigParser
 
-saveGenInfo = False
-#loadAK8 = True
+saveGenInfo = True
+loadGenInfo = True
+loadAK8 = True
+loadAK10 = True
 
 class Analyzer(Selection,BabyTupleFormat,Variables) :
     
@@ -58,9 +60,11 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	#self.doIsoStudy = False
 	#self.saveGenInfo = True
 	self.saveAK8 = True
+	self.saveAK10 = True
 	self.doIsoStudy 	= config.getboolean('DEFAULT','doIsoStudy')
 	self.saveGenInfo 	= config.getboolean('DEFAULT','saveGenInfo')
 	self.saveAK8 		= config.getboolean('DEFAULT','saveAK8')
+	self.saveAK10 		= config.getboolean('DEFAULT','saveAK10')
     	
 	# loading of certain branches
 	# member of Analyze class
@@ -68,9 +72,10 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     	#self.loadGenInfo = True
 	#self.loadGenMET = True
 	self.loadAK8 		= config.getboolean('DEFAULT','loadAK8')
+	self.loadAK10 		= config.getboolean('DEFAULT','loadAK10')
 	self.loadGenInfo 	= config.getboolean('DEFAULT','loadGenInfo')
-	print 'value = ', config.get('DEFAULT','loadGenInfo',12)
-	print "GenInfo = ", self.loadGenInfo
+	#print 'value = ', config.get('DEFAULT','loadGenInfo',12)
+	#print "GenInfo = ", self.loadGenInfo
 	self.loadGenMET		= config.getboolean('DEFAULT','loadGenMET')
 	self.UpdateVarBranchLoad()
 	
@@ -103,13 +108,18 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
                      + Selection.branchesForEventSelection    \
                      + Selection.branchesForTauSelection
     	if self.loadGenInfo:
-    		print "here or not "
+    		#print "here or not "
 		self.requiredBranches+= Selection.branchesForGenInfo
+                self.requiredBranches+= Selection.branchesForGenJetSelection  #@MJ@ TODO make special requirement for this
         if self.loadGenMET:
 		self.requiredBranches+= Selection.branchesForGenMET  
-
+        if self.loadMCTruth_Var:
+                #print "reading truth var"
+		self.requiredBranches+= Selection.branchesForMCTruth
 	if self.loadAK8:
     		self.requiredBranches +=  Selection.branchesForAk8JetSelection
+	if self.loadAK10:
+    		self.requiredBranches +=  Selection.branchesForAk10JetSelection
 	if self.loadPFcand:
 		self.requiredBranches += Selection.branchesForPfcand
     
@@ -117,6 +127,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     	self.hWeights = ROOT.TH1D("hWeights","Sum of weights",1,0.5,1.5)
     	self.hWeightsPlus = ROOT.TH1D("hWeightsPlus","Sum of positive  weights",1,0.5,1.5)
     	self.hWeightsMinus = ROOT.TH1D("hWeightsMinus","Sum of negative weights",1,0.5,1.5)
+    	self.hStopNeutralino = ROOT.TH2F("hStopNeutralino","Weights for cross section computation",1000,0,1000,500,0,500)
 
 
 
@@ -177,6 +188,8 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	print "lepton iso = ",self.leadingLeptonIso 
 	self.jetDump(event)
 	self.selJetDump(event)
+	if self.loadMCTruth_Var:
+            self.genJetDump(event)
 	
 	id2 = self.selectedLeptons2[0].id if len(self.selectedLeptons2) else 0 
 	idloose = self.vetoLeptons[0].id if len(self.vetoLeptons) else 0 
@@ -205,9 +218,12 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     #                              |_|                                         |___/  #
     ###################################################################################
 
-    def process(self,event,babyTupleTree, isoStudy = False) :
+    def process(self,event,babyTupleTree,isoStudy = False) :
 
         self.reset()
+        if len(event.gen_neutralino_m) > 0:
+            #print "neutralino m %d" % event.gen_neutralino_m[1]
+            self.hStopNeutralino.Fill(event.gen_stop_m[1], event.gen_neutralino_m[1]);
 	#if (event.ev_lumi != 2756 or event.ev_id != 75567):
 	#    return
 
@@ -223,6 +239,14 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         # Sort selected leptons by pT
         self.selectedLeptons = sorted(self.selectedLeptons, key=lambda lepton: lepton.pT, reverse=True)
      
+        # Selected gen jets
+        if self.loadGenInfo:
+            self.genJetSelector(event)
+        
+            #print "gen jet length in Analyzer: %d" % len(self.selectedGenJets)
+            # Sort selected gen jets by pT
+            self.selectedGenJets = sorted(self.selectedGenJets, key=lambda genjet: genjet.pT, reverse=True)
+        
         # Selected jets
         self.jetSelector(event)
 
@@ -232,6 +256,9 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 
 	# Selected AK8 jets
 	if(self.loadAK8):  self.ak8jetSelector(event)
+	
+        # Selected AK10 jets
+	if(self.loadAK10):  self.ak10jetSelector(event)
 
 	# tupling of pfcands => No, just check for basic selection (charge, pt, dz)
 	# required to compute isoTrackVeto
@@ -257,7 +284,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	self.computeVariables(event)
    
 
-	print "##@@ sync exec'"
+	#print "##@@ sync exec'"
  	###   sync exercise   ####
  	if self.pvSelection(event) 			\
 		and len(self.selectedLeptons) == 1	\
