@@ -319,7 +319,7 @@ class BabyTupleFormat :
 	    babyTupleTree.lep2_passVeto = True	# by definition
 	    foundLep2 = True
 	if len(self.vetoLeptons) > 0:
-	    lepton2 = vetoLeptons[0]
+	    lepton2 = self.vetoLeptons[0]
 	    babyTupleTree.lep2_passVeto = False	# by definition
 	    foundLep2 = True
 
@@ -400,10 +400,11 @@ class BabyTupleFormat :
 	    v_jet_CSV.push_back(jet.CSVv2)
 	    v_jet_loose_pfid.push_back(bool(jet.looseID))
 	    v_jet_puid.push_back(jet.PUid)
-	    v_jet_qgtag.push_back(jet.qgtag)
-	    v_jet_axis2.push_back(jet.axis2)
-	    v_jet_ptD.push_back(jet.ptD)
-	    v_jet_mult.push_back(jet.mult)
+	    ### to be cheanged [ERIC]
+	    #v_jet_qgtag.push_back(jet.qgtag)
+	    #v_jet_axis2.push_back(jet.axis2)
+	    #v_jet_ptD.push_back(jet.ptD)
+	    #v_jet_mult.push_back(jet.mult)
 	    v_jet_partonFlavour.push_back(jet.partonFlavour)
         babyTupleTree.ak4pfjets_pt	 =  v_jet_pt
         babyTupleTree.ak4pfjets_eta	 =  v_jet_eta

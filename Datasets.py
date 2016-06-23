@@ -4,6 +4,11 @@ from core import genericDataset
 Dataset = genericDataset.Dataset
 datasets = [
 
+Dataset("SingleElectron",wildcard="dpm:echabert/FlatTree/triggerV1/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160622_212229/0000/")
+Dataset("SingleMuon",wildcard="dpm:echabert/FlatTree/triggerV1/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160622_212210/0000/")
+
+#Dataset("SMS_T2tt_850_100", wildcard="dpm:mjansova/FlatTree/sync0616-v2/SMS-T2tt_mStop-850_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v1_MINIAODSIM/160614_141121/0000/merged")
+
 #Dataset("sync", wildcard="local:/opt/sbg/data/data1/cms/echabert/Stop2015/Prod1Nov/CMSSW_7_4_12_patch4/src/IPHCFlatTree/FlatTreeProducer/test/sync/output3.root"),
 #Dataset("sync", wildcard="local:/opt/sbg/data/data1/cms/echabert/Stop2015/Prod1Nov/CMSSW_7_4_12_patch4/src/IPHCFlatTree/FlatTreeProducer/test/output0.root"),
 #Dataset("sync", wildcard="local:/opt/sbg/data/data1/cms/echabert/Stop2015/Prod1Nov/CMSSW_7_4_12_patch4/src/IPHCFlatTree/FlatTreeProducer/test/output_miniIso.root"),
@@ -18,8 +23,9 @@ datasets = [
 #Dataset("250_1to175", wildcard="dpm:/mjansova/MantaRay-patch7-v25012016/SMS-T2tt_mStop-250_mLSP-1to175_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_FastAsympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160125_102609/0000"),
 #Dataset("275_75to200", wildcard="dpm:/mjansova/MantaRay-patch7-v25012016/SMS-T2tt_mStop-275_mLSP-75to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_FastAsympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160125_102624/0000"),
 #Dataset("400-475_1to400", wildcard="dpm:/mjansova/MantaRay-patch7-v25012016/SMS-T2tt_mStop-400to475_mLSP-1to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_FastAsympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160125_102638/0000"),
-Dataset("TTjets_M5_0", wildcard="dpm:mjansova/MantaRay-patch7-v16022016/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15MiniAODv2_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160217_124452/0000/merged"),
-Dataset("TTjets_M5_1", wildcard="dpm:mjansova/MantaRay-patch7-v16022016/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15MiniAODv2_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160217_124452/0000/merged"),
+#Dataset("SMS_T2tt_850_100", wildcard="dpm:echabert/FlatTree/sync0616-v1/SMS-T2tt_mStop-850_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v1_MINIAODSIM/160606_154027/0000/")
+#Dataset("TTjets_M5_0", wildcard="dpm:mjansova/MantaRay-patch7-v16022016/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15MiniAODv2_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160217_124452/0000/merged"),
+#Dataset("TTjets_M5_1", wildcard="dpm:mjansova/MantaRay-patch7-v16022016/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15MiniAODv2_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160217_124452/0000/merged"),
 #Dataset("600-950_1to450_0", wildcard="dpm2:/mjansova/MantaRay-patch7-v16022016/SMS-T2tt_mStop-600-950_mLSP-1to450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_FastAsympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160216_141121/0000" , min = 0, max = 200),
 #Dataset("600-950_1to450_2", wildcard="dpm2:/mjansova/MantaRay-patch7-v16022016/SMS-T2tt_mStop-600-950_mLSP-1to450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_FastAsympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160216_141121/0000" , min =201, max = 500),
 #Dataset("600-950_1to450_3", wildcard="dpm2:/mjansova/MantaRay-patch7-v16022016/SMS-T2tt_mStop-600-950_mLSP-1to450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_FastAsympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160216_141121/0000" , min =501, max = 750),

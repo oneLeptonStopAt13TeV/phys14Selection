@@ -4,8 +4,8 @@ from BabyTupleFormat import *
 from Variables       import *
 import ConfigParser
 
-saveGenInfo = True
-loadGenInfo = True
+saveGenInfo = False
+loadGenInfo = False
 loadAK8 = True
 loadAK10 = True
 
@@ -22,7 +22,8 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     def loadList(self):
     
         self.eventList=[]
-        f = open("eventList");
+        #f = open("eventList"); #@MJ@ TODO different name
+        f = open("RijuRestAfterCutInvest"); #@MJ@ TODO different name
         for line in f:
            print line
 	   print len(line)
@@ -69,11 +70,11 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	# loading of certain branches
 	# member of Analyze class
 	#self.loadAK8 = True	
-    	#self.loadGenInfo = True
 	#self.loadGenMET = True
 	self.loadAK8 		= config.getboolean('DEFAULT','loadAK8')
 	self.loadAK10 		= config.getboolean('DEFAULT','loadAK10')
 	self.loadGenInfo 	= config.getboolean('DEFAULT','loadGenInfo')
+    	#self.loadGenInfo = False
 	#print 'value = ', config.get('DEFAULT','loadGenInfo',12)
 	#print "GenInfo = ", self.loadGenInfo
 	self.loadGenMET		= config.getboolean('DEFAULT','loadGenMET')
@@ -109,7 +110,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
                      + Selection.branchesForTauSelection
     	if self.loadGenInfo:
     		#print "here or not "
-		self.requiredBranches+= Selection.branchesForGenInfo
+		#self.requiredBranches+= Selection.branchesForGenInfo
                 self.requiredBranches+= Selection.branchesForGenJetSelection  #@MJ@ TODO make special requirement for this
         if self.loadGenMET:
 		self.requiredBranches+= Selection.branchesForGenMET  
@@ -221,9 +222,9 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     def process(self,event,babyTupleTree,isoStudy = False) :
 
         self.reset()
-        if len(event.gen_neutralino_m) > 0:
+        #if len(event.gen_neutralino_m) > 0:
             #print "neutralino m %d" % event.gen_neutralino_m[1]
-            self.hStopNeutralino.Fill(event.gen_stop_m[1], event.gen_neutralino_m[1]);
+        #    self.hStopNeutralino.Fill(event.gen_stop_m[1], event.gen_neutralino_m[1]);
 	#if (event.ev_lumi != 2756 or event.ev_id != 75567):
 	#    return
 
@@ -286,15 +287,15 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 
 	#print "##@@ sync exec'"
  	###   sync exercise   ####
- 	if self.pvSelection(event) 			\
-		and len(self.selectedLeptons) == 1	\
-		and len(self.selectedJets) >=4		\
-		and event.met_pt > 50			\
-		and len(self.selectedLeptons2) == 0 	\
-		and len(self.vetoLeptons)==0	\
-		and self.isoTrackVeto(event)	\
-		and self.isTauVeto(event):
-		self.syncDump(event)	
+# 	if self.pvSelection(event) 			\
+#		and len(self.selectedLeptons) == 1	\
+#		and len(self.selectedJets) >=4		\
+#		and event.met_pt > 50			\
+#		and len(self.selectedLeptons2) == 0 	\
+#		and len(self.vetoLeptons)==0	\
+#		and self.isoTrackVeto(event)	\
+#		and self.isTauVeto(event):
+#		self.syncDump(event)	
 		#print "debug: ",len(self.selectedLeptons2), len(self.vetoLeptons), self.isoTrackVeto(event), self.isTauVeto(event)
 
 	# fill trigger info
@@ -314,10 +315,10 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 		print self.selectedLeptons
 		print self.selectedLeptons2
 	 	print self.vetoLeptons
-		print "muon Dump"
-		self.muonDump(event)
-		print "electron Dump"
-		self.electronDump(event)
+		#print "muon Dump"
+		#self.muonDump(event)
+		#print "electron Dump"
+		#self.electronDump(event)
 	#self.eventDump(event)
 
 
@@ -338,10 +339,14 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 		self.hWeightsMinus.Fill(1,-event.mc_weight)
 
         # Fill event in babytuple
-	if passEventSelection:
+        if passEventSelection: #@MJ@ comment this for sync
 	    self.fill(event,babyTupleTree) #,self.addGenInfo)
+	#just for synchronization	
+	if (event.ev_lumi,event.ev_id)  in self.eventList:
+            print "lost event found"
+	    #self.fill(event,babyTupleTree) #,self.addGenInfo) #@MJ@ TODO commented this
         
         #return True
-        return passEventSelection
+        return passEventSelection #@MJ@ TODO return this
 
 

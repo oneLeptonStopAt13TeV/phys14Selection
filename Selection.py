@@ -12,7 +12,8 @@ class Selection :
 	self.electronPtCut = 20
 	self.muoonPtCut = 20
 	self.jet_multiplicity = 3
-	self.btagCut = 0.89
+	#self.btagCut = 0.89
+	self.btagCut = 0.8
 
     # ######################################## #
     # matching leptons with gen prompt lepton  #
@@ -123,7 +124,9 @@ class Selection :
 
     # Define structure for temporary objects storage
     lepton = namedtuple('lepton', ['id', 'E', 'pT', 'eta', 'phi', 'iso', 'passMediumID', 'dz', 'd0', 'charge' ])
-    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'axis2', 'ptD', 'mult', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
+    #jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'axis2', 'ptD', 'mult', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
+    #to be corrected
+    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
     genjet    = namedtuple('genjet',    [ 'E', 'pT', 'eta', 'phi', 'mass'])
     ak8jet = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'softdropMass', 'trimmedMass', 'prunedMass', 'corrprunedMass', 'filteredMass', 'minMass', 'topMass', 'nSubJets', 'tau1', 'tau2', 'tau3' ])
     ak10jet = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'softdropMass', 'trimmedMass', 'prunedMass', 'filteredMass', 'minMass', 'topMass', 'nSubJets', 'tau1', 'tau2', 'tau3' ])
@@ -737,10 +740,10 @@ class Selection :
     branchesForJetSelection = [ "jet_n",
                                 "jet_E", "jet_pt", "jet_eta",   "jet_phi",
                                 "jet_CSVv2",
-                                "jet_qgtag",
-                                "jet_qgtag_axis2",
-                                "jet_qgtag_ptD",
-                                "jet_qgtag_mult",
+                                #"jet_qgtag",
+                                #"jet_qgtag_axis2",
+                                #"jet_qgtag_ptD",
+                                #"jet_qgtag_mult",
 				"jet_pileupJetId" ,
 				"jet_looseJetID",
 				"jet_partonFlavour"
@@ -755,10 +758,10 @@ class Selection :
         phi         = event.jet_phi
         CSVv2       = event.jet_CSVv2
         looseID     = event.jet_looseJetID
-	qgtag	    = event.jet_qgtag
-	axis2	    = event.jet_qgtag_axis2
-	ptD	    = event.jet_qgtag_ptD
-	mult	    = event.jet_qgtag_mult
+	#qgtag	    = event.jet_qgtag
+	#axis2	    = event.jet_qgtag_axis2
+	#ptD	    = event.jet_qgtag_ptD
+	#mult	    = event.jet_qgtag_mult
 	partonFlavour = event.jet_partonFlavour
 
         for i in range(n):
@@ -767,7 +770,7 @@ class Selection :
 	    dr = j.DeltaR(self.leadingLepton)
 	    dphi = j.DeltaPhi(self.leadingLepton)
 	    dphiMET = j.DeltaPhi(self.METP4)
-	    print "jet pt: ", pt[i], " eta: ", eta[i], " phi: ", phi[i], " E: ", E[i], " CSV: ",CSVv2[i], "QGT: ", qgtag[i], "DR(j,l): ",dr, "dphi(j.l:)",dphi, "dphi(j,MET):", dphiMET
+	    #print "jet pt: ", pt[i], " eta: ", eta[i], " phi: ", phi[i], " E: ", E[i], " CSV: ",CSVv2[i], "QGT: ", qgtag[i], "DR(j,l): ",dr, "dphi(j.l:)",dphi, "dphi(j,MET):", dphiMET
    
 
    
@@ -779,7 +782,7 @@ class Selection :
 	    dphi = j.DeltaPhi(self.leadingLepton)
 	    dphiMET = j.DeltaPhi(self.METP4)
 	    #print "jet pt: ", j.Pt(), " eta: ", j.Eta(), " phi: ", j.Phi(), " E: ", j.E(), " DR(j,l) : ",dr, " dphi(j,l): ",dphi, " dphi(j,MET): ", dphiMET
-	    print "jet pt: ", j.Pt(), " eta: ", j.Eta(), " phi: ", j.Phi(), " E: ", j.E(), "CSVv2: ", mytuple[1], "QGT: ", qgtag[i], " DR(j,l) : ",dr, " dphi(j,l): ",dphi, " dphi(j,MET): ", dphiMET
+	    #print "jet pt: ", j.Pt(), " eta: ", j.Eta(), " phi: ", j.Phi(), " E: ", j.E(), "CSVv2: ", mytuple[1], "QGT: ", qgtag[i], " DR(j,l) : ",dr, " dphi(j,l): ",dphi, " dphi(j,MET): ", dphiMET
             #print "CVS: ", mytuple[1]
 	
     def jetSelector(self,event) :
@@ -793,10 +796,10 @@ class Selection :
         pileupJetId = event.jet_pileupJetId
         looseID     = event.jet_looseJetID
         #tightID     = event.jet_tightJetID
-	qgtag	    = event.jet_qgtag
-	axis2	    = event.jet_qgtag_axis2
-	ptD	    = event.jet_qgtag_ptD
-	mult	    = event.jet_qgtag_mult
+	#qgtag	    = event.jet_qgtag
+	#axis2	    = event.jet_qgtag_axis2
+	#ptD	    = event.jet_qgtag_ptD
+	#mult	    = event.jet_qgtag_mult
 	partonFlavour	 = event.jet_partonFlavour
         
 	selectedJets = []
@@ -812,13 +815,13 @@ class Selection :
 	    #if not tightID[i]: continue
             
 	    #compute self.dphi_ak4pfjets_met
-	    j= TLorentzVector ()
-	    j.SetPtEtaPhiE(pt[i],eta[i],phi[i],E[i])
-	    self.METP4 = TLorentzVector()
-	    self.METP4.SetPtEtaPhiE(event.met_pt,0,event.met_phi,event.met_pt)
-	    dphiMET = j.DeltaPhi(self.METP4)
-	    if abs(dphiMET) < self.dphi_ak4pfjets_met:
-	    	self.dphi_ak4pfjets_met = abs(dphiMET)
+	    #j = TLorentzVector ()
+	    #j.SetPtEtaPhiE(pt[i],eta[i],phi[i],E[i])
+	    #self.METP4 = TLorentzVector()
+	    #self.METP4.SetPtEtaPhiE(event.met_pt,0,event.met_phi,event.met_pt)
+	    #dphiM = j.DeltaPhi(self.METP4)
+	    #if abs(dphiM) < self.dphi_ak4pfjets_met:
+	    	#print "final old dphi: ", abs(dphiM)
 
 	    #end
 
@@ -827,15 +830,18 @@ class Selection :
                                               eta[i],
                                               phi[i],
                                               CSVv2[i],
-					      qgtag[i],
-                                              axis2[i],
-                                              ptD[i],
-                                              mult[i],
+					      #qgtag[i],
+                                              #axis2[i],
+                                              #ptD[i],
+                                              #mult[i],
                                               partonFlavour[i],
 					      pileupJetId[i],
                                               (CSVv2[i] > self.btagCut),
 					      looseID[i]))
-           
+          
+
+
+        
 	# build a collection of leptons (selected, loose and veto)
 	leptons = self.selectedLeptons+self.selectedLeptons2+self.vetoLeptons
 	    
@@ -858,6 +864,24 @@ class Selection :
 			#print "remove jet: ", j[0].pT, dRs
 	    if keep_it:
 		self.selectedJets.append(j[0])
+
+
+        counter = 0
+	for jts in self.selectedJets:
+	    #compute self.dphi_ak4pfjets_met
+            if counter == 0 or counter == 1:
+	        j= TLorentzVector ()
+	        j.SetPtEtaPhiE(jts.pT, jts.eta, jts.phi, jts.E)
+	        self.METP4 = TLorentzVector()
+	        self.METP4.SetPtEtaPhiE(event.met_pt,0,event.met_phi,event.met_pt)
+	        dphiMET = j.DeltaPhi(self.METP4)
+                #print "counter: ", counter
+                #print "dphi: ", dphiMET
+                counter += 1
+	        if abs(dphiMET) < self.dphi_ak4pfjets_met:
+	    	    self.dphi_ak4pfjets_met = abs(dphiMET)
+                    #print "dphi final: ", self.dphi_ak4pfjets_met
+
 
 	
 	#print "jet collections: ", len(selectedJets), len(self.selectedJets), len(event.jet_pt)
@@ -969,15 +993,15 @@ class Selection :
 		    if abs(pf_eta[i])>2.4: continue
 		    if abs(pf_dz[i]) >0.1: continue
 
-		    print i, " over ", n
+		    #print i, " over ", n
 		    if (FoundLep1): 
-		    	print "found"
+		    	#print "found"
 			dR = common.deltaR(pf_phi[i], pf_eta[i], lep1.phi, lep1.eta)
 			#if dR < 0.1: continue  
 			## inline computation of isVetoTrack
 			isVeto = True
-			print "charge, pt", lep1.charge, lep1.pT
-			print "pf pt = ", pf_pt[i]," dr = ", dR, " id = ", pf_id[i], "charge*charge = ", pf_charge[i]," *  ", #lep1.charge, pf_trackIso[i]
+			#print "charge, pt", lep1.charge, lep1.pT
+			#print "pf pt = ", pf_pt[i]," dr = ", dR, " id = ", pf_id[i], "charge*charge = ", pf_charge[i]," *  ", #lep1.charge, pf_trackIso[i]
 			if dR < 0.4: isVeto =  False
       		        # if not electron or muon
       		        #solve a bug here !! - requirement was inverted
@@ -991,14 +1015,14 @@ class Selection :
            		 
         		if isVeto:		
 				#print "pt = ", pf_pt[i], " eta = ", pf_eta[i], " id = ", pf_id[i], " dR = ", dR, " charge = ", pf_charge[i], pf_charge[i] * lep1.charge 
-			        print "isotrack" ", pf pt = ", pf_pt[i]," dr = ", dR, " id = ", pf_id[i], "charge*charge = ", pf_charge[i]," *  ", lep1.charge, pf_trackIso[i] 
+			        #print "isotrack" ", pf pt = ", pf_pt[i]," dr = ", dR, " id = ", pf_id[i], "charge*charge = ", pf_charge[i]," *  ", lep1.charge, pf_trackIso[i] 
 				vetotracks+=1;
 
-			print "n-pf: ", n, "vetotracks = ", vetotracks
+			#print "n-pf: ", n, "vetotracks = ", vetotracks
 		
 		
 		#print "what's going on"
-		print "n-pf: ", n, "vetotracks = ", vetotracks
+		#print "n-pf: ", n, "vetotracks = ", vetotracks
 		if vetotracks<1 :	
 		     return True;
    		return False
@@ -1134,28 +1158,28 @@ class Selection :
         else : 
 	    selectionCode+=1
 
-	# commented only for Marketa study
+	# commented only for Marketa study //@MJ@ TODO use this again!!!!
 
         # At least on selected lepton
-        if (len(self.selectedLeptons) != 1) :
-	    returnBool = False
-	else : 
-	    selectionCode+=10
+        #if (len(self.selectedLeptons) != 1) :
+	#    returnBool = False
+	#else : 
+	#    selectionCode+=10
 	# new    
 	
-	if len(self.selectedLeptons2) != 0 :
-	    returnBool = False
-        if len(self.vetoLeptons)!=  0:
-	    returnBool = False
+	#if len(self.selectedLeptons2) != 0 :
+	#    returnBool = False
+        #if len(self.vetoLeptons)!=  0:
+	#    returnBool = False
 	
 	##############
 	# At least three jets
         # CHANGE
 	#if (len(self.selectedJets)     < 2) : 
-        if (len(self.selectedJets)     < self.jet_multiplicity) : 
-	    returnBool =  False
-        else : 
-	    selectionCode+=100
+        #if (len(self.selectedJets)     < self.jet_multiplicity) : 
+	#    returnBool =  False
+        #else : 
+	#    selectionCode+=100
 
         #print "sel-Code = ", selectionCode
         sCode.append(selectionCode)
