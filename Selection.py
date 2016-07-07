@@ -186,8 +186,8 @@ class Selection :
     branchesForTauSelection = [ "tau_n", "tau_pt", "tau_eta", "tau_phi", "tau_charge", 
     				"tau_decayModeFindingNewDMs",
     				"tau_decayModeFindingOldDMs",
-				"tau_byMediumCombinedIsolationDeltaBetaCorr3Hits",
-				"tau_byMediumIsolationMVA3newDMwLT"]
+				"tau_byMediumCombinedIsolationDeltaBetaCorr3Hits"]
+				#"tau_byMediumIsolationMVA3newDMwLT"] #@EC@ not found in Medusa-patch1-20160615#
 
     #######################
     # 	Tau Veto          #
