@@ -39,6 +39,10 @@ double mt2w_value = mt2w_event.get_mt2w();
 using namespace std;
 
 // *******************************************************************************
+void MyPrint(float* pt1, float* pt2){
+	std::cout<<"@@ "<<pt1[0]<<" "<<pt1[1]<<" "<<pt1[2]<<" "<<pt1[3]<<" | ";
+	std::cout<<pt2[0]<<" "<<pt2[1]<<" "<<pt2[2]<<" "<<pt2[3]<<std::endl;
+}
 
 // Using extern "C" for compiler to not mangle the name of the function
 extern "C" float computeMT2W(int nJets,
@@ -74,12 +78,34 @@ double MT2W::compute(int nJets,
     // Method assumes there's at least two jets
     if (nJets < 2) return 9999; 
 
+    /*
+    for(int i=0;i<nJets;i++){
+    	std::cout<<jetsPt[i]<<" "<<jetsPhi[i]<<" "<<jetsEta[i]<<" "<<jetsEnergy[i]<<std::endl;
+    }
+    */
+
+    //-----------------------------------/
+    // Compute cos, sin, sinh only once //
+    //  help to save time               //
+    //-----------------------------------/
+    float* Px = new float[nJets];
+    float* Py = new float[nJets];
+    float* Pz = new float[nJets];
+    for(int i=0;i<nJets;i++){
+    	Px[i] = jetsPt[i] * (float) cos(jetsPhi[i]);
+    	Py[i] = jetsPt[i] * (float) sin(jetsPhi[i]);
+    	Pz[i] = jetsPt[i] * (float) sinh(jetsEta[i]);
+    }
+
+    // ----------------------------------
+
     // Check number of b-tagged jets
     int nBTag = 0;
     for (int i = 0 ; i < nJets ; i++)
     {
         if (jetsBTagged[i] == true) nBTag++;
     }
+    //std::cout<<"nBtag = "<<nBTag << " / "<< nJets << std::endl;
 
     // Inits tabs to be feeded to MT2W function
     float p_lepton[4] = { leptonEnergy, leptonPt * (float) cos(leptonPhi),  leptonPt * (float) sin(leptonPhi),  leptonPt * (float) sinh(leptonEta) };
@@ -88,6 +114,8 @@ double MT2W::compute(int nJets,
     // We do different things depending on the number of b-tagged jets
     // arXiv:1203.4813 recipe
     int nMax = 3;
+    //@EC@ nMax depends on nJets when nJets<3
+    if(nJets<nMax) nMax = nJets;
 
     float mt2w = 9999;
     // -------
@@ -101,12 +129,13 @@ double MT2W::compute(int nJets,
 
         for (int i = 0 ; i < nMax ; i++)
         {
-            float p_jet1[4] = { jetsEnergy[i], jetsPt[i] * (float) cos(jetsPhi[i]),  jetsPt[i] * (float) sin(jetsPhi[i]),  jetsPt[i] * (float) sinh(jetsEta[i]) };
+            float p_jet1[4] = { jetsEnergy[i], Px[i], Py[i], Pz[i]};
             for (int j = 0 ; j < nMax ; j++)
             {
                 if (i == j) continue;
-                float p_jet2[4] = { jetsEnergy[j], jetsPt[j] * (float) cos(jetsPhi[j]),  jetsPt[j] * (float) sin(jetsPhi[j]),  jetsPt[j] * (float) sinh(jetsEta[j]) };
+                float p_jet2[4] = { jetsEnergy[j], Px[j], Py[j], Pz[j]};
                 set_momenta(p_lepton, p_jet1, p_jet2, p_MET);
+                //MyPrint(p_jet1, p_jet2);
                 float r = get_mt2w();
                 if (mt2w > r)
                     mt2w = r;
@@ -126,22 +155,25 @@ double MT2W::compute(int nJets,
             if (jetsBTagged[i] == true)
             {
                 p_jet1[0] = jetsEnergy[i];
-                p_jet1[1] = jetsPt[i] * (float) cos(jetsPhi[i]);
-                p_jet1[2] = jetsPt[i] * (float) sin(jetsPhi[i]);
-                p_jet1[3] = jetsPt[i] * (float) sinh(jetsEta[i]);
+                p_jet1[1] = Px[i];
+                p_jet1[2] = Py[i];
+                p_jet1[3] = Pz[i];
                 break;
             }
         }
 
         int i = 0;
         int jetsUsed = 0;
+    	//@EC@ as the b-tag jets is choosen, then nMax = nJets-1
+	if(nJets<=nMax) nMax = nJets-1;
         while (jetsUsed < nMax)
         {
             if (jetsBTagged[i] == true) { i++; continue; }
 
-            float p_jet2[4] = { jetsEnergy[i], jetsPt[i] * (float) cos(jetsPhi[i]),  jetsPt[i] * (float) sin(jetsPhi[i]),  jetsPt[i] * (float) sinh(jetsEta[i]) };
+            float p_jet2[4] = { jetsEnergy[i], Px[i], Py[i], Pz[i]};
 
             set_momenta(p_lepton, p_jet1, p_jet2, p_MET);
+            //MyPrint(p_jet1, p_jet2);
             float r = get_mt2w();
             if (mt2w > r)
                 mt2w = r;
@@ -164,16 +196,17 @@ double MT2W::compute(int nJets,
         for (int i = 0; i < nJets; i++)
         {
             if (jetsBTagged[i] != true) continue;
-            float p_jet1[4] = { jetsEnergy[i], jetsPt[i] * (float) cos(jetsPhi[i]),  jetsPt[i] * (float) sin(jetsPhi[i]),  jetsPt[i] * (float) sinh(jetsEta[i]) };
+            float p_jet1[4] = { jetsEnergy[i],Px[i], Py[i], Pz[i]};
 
             for (int j = 0; j < nJets; j++)
             {
                 if (i == j) continue;
                 if (jetsBTagged[j] != true) continue;
                 
-                float p_jet2[4] = { jetsEnergy[j], jetsPt[j] * (float) cos(jetsPhi[j]),  jetsPt[j] * (float) sin(jetsPhi[j]),  jetsPt[j] * (float) sinh(jetsEta[j]) };
+                float p_jet2[4] = { jetsEnergy[j], Px[j], Py[j], Pz[j]};
 
                 set_momenta(p_lepton, p_jet1, p_jet2, p_MET);
+                //MyPrint(p_jet1, p_jet2);
                 float r = get_mt2w();
                 if (mt2w > r)
                     mt2w = r;
