@@ -8,6 +8,7 @@ saveGenInfo = False
 loadGenInfo = False
 loadAK8 = True
 loadAK10 = True
+loadTriggerBranches = True
 
 class Analyzer(Selection,BabyTupleFormat,Variables) :
     
@@ -23,12 +24,12 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     
         self.eventList=[]
         #f = open("eventList"); #@MJ@ TODO different name
-        f = open("RijuRestAfterCutInvest"); #@MJ@ TODO different name
-        for line in f:
-           print line
-	   print len(line)
-	   array = [int(x) for x in line.split()]
-	   self.eventList.append(tuple(array))
+        #f = open("RijuRestAfterCutInvest"); #@MJ@ TODO different name
+        #for line in f:
+        #   print line
+	#   print len(line)
+	#   array = [int(x) for x in line.split()]
+	#   self.eventList.append(tuple(array))
 
         #print eventList
 
@@ -51,6 +52,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 
 	config = ConfigParser.ConfigParser()
 	config.read('config/config_mc.init')
+	#config.read('config/config_data.init')
 
 	self.dataset = dataset
 	# only used for sync' exercise
@@ -62,11 +64,13 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	#self.saveGenInfo = True
 	self.saveAK8 = True
 	self.saveAK10 = True
+	self.isData 		= config.getboolean('DEFAULT','isData')
 	self.doIsoStudy 	= config.getboolean('DEFAULT','doIsoStudy')
 	self.saveGenInfo 	= config.getboolean('DEFAULT','saveGenInfo')
 	self.saveAK8 		= config.getboolean('DEFAULT','saveAK8')
 	self.saveAK10 		= config.getboolean('DEFAULT','saveAK10')
-    	
+    	self.computeVar		= config.getboolean('DEFAULT','computeVar')
+
 	# loading of certain branches
 	# member of Analyze class
 	#self.loadAK8 = True	
@@ -90,19 +94,23 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	#self.loadMCTruth_Var = False
 	self.loadMCTruth_Var = config.getboolean('DEFAULT','loadMCTruth_Var')
 
+	self.loadTriggerBranches = config.getboolean('DEFAULT','loadTriggerBranches')
+	self.saveTriggerInfos = config.getboolean('DEFAULT','saveTriggerInfo')
 
 	# Configuable selection variable
 	self.electronPtCut = config.getfloat('SELECTION','electronPtCut')
 	self.muonPtCut = config.getfloat('SELECTION','muonPtCut')
 	self.jet_multiplicity = config.getint('SELECTION','jet_multiplicity')
 
+	# Branches for trigger study
+	branchesForTrigger = ['trigger_name', 'trigger_pass']
+
+
     	# ####################################### #
    	# Define branches needed for the analysis #
     	# ####################################### #
-        
     	self.requiredBranches = self.branchesForMiscInfos   \
                      + self.branchesForVariables         \
-		     + Selection.branchesForTrigger \
 		     + Selection.branchesForElectronSelection \
                      + Selection.branchesForMuonSelection     \
                      + Selection.branchesForJetSelection      \
@@ -123,7 +131,11 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     		self.requiredBranches +=  Selection.branchesForAk10JetSelection
 	if self.loadPFcand:
 		self.requiredBranches += Selection.branchesForPfcand
-    
+    	if self.loadTriggerBranches:
+		self.requiredBranches += Selection.branchesForTrigger
+	if not self.isData:
+		self.requiredBranches += self.branchesMC_PU
+
 
     	self.hWeights = ROOT.TH1D("hWeights","Sum of weights",1,0.5,1.5)
     	self.hWeightsPlus = ROOT.TH1D("hWeightsPlus","Sum of positive  weights",1,0.5,1.5)
@@ -282,7 +294,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	
         # Compute variables
 	# NB: this part is the most CPU intensive part of the code
-	self.computeVariables(event)
+	if self.computeVar: self.computeVariables(event)
    
 
 	#print "##@@ sync exec'"
@@ -299,7 +311,8 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 		#print "debug: ",len(self.selectedLeptons2), len(self.vetoLeptons), self.isoTrackVeto(event), self.isTauVeto(event)
 
 	# fill trigger info
-	self.FillTriggerInfo(event)
+	if self.saveTriggerInfos:
+		self.FillTriggerInfo(event)
 
 	#######################
         # for synchronisation #
