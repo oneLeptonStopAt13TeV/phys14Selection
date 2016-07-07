@@ -10,11 +10,24 @@ loadGenInfo = True
 loadMCTruth = True
 
 class Variables() :
+    
 
     def __init__(self):
    	self.loadGenInfo_Var = False
 	self.loadMCTruth_Var = False
 	self.branchesForVariables = []
+        #put default value
+        self.MT = 0
+        self.MT2W = 0
+        self.topness = 0
+        self.hadchi2 = 0
+        self.M3b = 0
+        self.Mlb_leadb = 0
+        self.dphi_Wlep = 0
+	self.numberOfGeneratedLeptons = 0
+	self.HT = 0
+	self.HTOSM = 0
+	self.HTSSM = 0
 
     def UpdateVarBranchLoad(self):
     	self.branchesForVariables = [ "met_pt", "met_phi", "met_sig"]
