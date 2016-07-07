@@ -4,7 +4,7 @@ ROOTLIBS      = $(shell root-config --libs)
 
 CXX           = g++
 CXXFLAGS      = -std=c++0x
-CXXFLAGS     += -O -Wall -fPIC $(DEFINES) -Wno-unused-result -Wshadow
+CXXFLAGS     += -O3 -Wall -fPIC $(DEFINES) -Wno-unused-result -Wshadow
 CXXFLAGS     += $(ROOTCFLAGS) -I./
 
 LD            = g++ 
