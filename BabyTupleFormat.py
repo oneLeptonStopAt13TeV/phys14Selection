@@ -20,6 +20,7 @@ class BabyTupleFormat :
     	self.saveAK8 = True	
     	self.saveAK10 = True	
 	self.saveGenMET = False
+	self.saveTriggerInfos = True
 
     	self.babyTupleFormat = { 
 	
@@ -186,7 +187,8 @@ class BabyTupleFormat :
 	#for isolation study
     
     	# Additional input branches needed during the filling of the babytuple
-    	self.branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id", "mc_weight", "nvertex", "mc_pu_intime_NumInt", "mc_pu_trueNumInt" ]
+    	self.branchesForMiscInfos = [ "ev_run", "ev_lumi", "ev_id", "mc_weight", "nvertex"]
+	self.branchesMC_PU = [ "mc_pu_intime_NumInt", "mc_pu_trueNumInt" ]
     
     ##############################
     # 	END OF CONSTRUCTOR       #
@@ -272,7 +274,10 @@ class BabyTupleFormat :
 	        self.babyTupleFormat['genjets_eta'] = "vector<float>"
 	        self.babyTupleFormat['genjets_phi'] = "vector<float>"
 	        self.babyTupleFormat['genjets_mass']	= "vector<float>"
-
+	
+	if self.saveTriggerInfos:
+		self.babyTupleFormat['trigger_name'] = "vector<string>"
+		self.babyTupleFormat['trigger_pass'] = "vector<bool>"
 
 
     def fill(self,event,babyTupleTree) : #,saveGenInfo = False) :
@@ -349,194 +354,145 @@ class BabyTupleFormat :
 
 	babyTupleTree.runId                   = event.ev_run
         babyTupleTree.nvertex                 = event.nvertex
-        babyTupleTree.puIntime                = event.mc_pu_intime_NumInt
-        babyTupleTree.puTrue                  = event.mc_pu_trueNumInt
+        if not self.isData:
+		babyTupleTree.puIntime                = event.mc_pu_intime_NumInt
+       		babyTupleTree.puTrue                  = event.mc_pu_trueNumInt
         
-        # vector of jets are pt ordered
         if self.saveGenInfo:
-            v_genjet_E = stl.vector('float')()
-            v_genjet_pt = stl.vector('float')()
-            v_genjet_eta = stl.vector('float')()
-            v_genjet_phi = stl.vector('float')()
-            v_genjet_mass = stl.vector('float')()
-            #print "filling baby tuple genjet"
-            #print "len genjet: %d" % len(self.selectedGenJets)
+	    babyTupleTree.genjets_E.clear()
+	    babyTupleTree.genjets_pt.clear()
+	    babyTupleTree.genjets_eta.clear()
+	    babyTupleTree.genjets_phi.clear()
+	    babyTupleTree.genjets_mass.clear()
+	    
 	    for genjet in self.selectedGenJets:
                 #print "genjetpt: %d" %genjet.pT
-	        v_genjet_E.push_back(genjet.E)
-	        v_genjet_pt.push_back(genjet.pT)
-	        v_genjet_eta.push_back(genjet.eta)
-	        v_genjet_phi.push_back(genjet.phi)
-	        v_genjet_mass.push_back(genjet.mass)
-        
-        if self.saveGenInfo:
-	    babyTupleTree.genjets_E    = v_genjet_E
-	    babyTupleTree.genjets_pt   = v_genjet_pt
-	    babyTupleTree.genjets_eta  = v_genjet_eta
-	    babyTupleTree.genjets_phi  = v_genjet_phi
-	    babyTupleTree.genjets_mass = v_genjet_mass
+	        babyTupleTree.genjets_E.push_back(genjet.E)
+	        babyTupleTree.genjets_pt.push_back(genjet.pT)
+	        babyTupleTree.genjets_eta.push_back(genjet.eta)
+	        babyTupleTree.genjets_phi.push_back(genjet.phi)
+	        babyTupleTree.genjets_mass.push_back(genjet.mass)
 
         # vector of jets are pt ordered
-        v_jet_pt = stl.vector('float')()
-        v_jet_eta = stl.vector('float')()
-        v_jet_phi = stl.vector('float')()
-        v_jet_mass = stl.vector('float')()
-        v_jet_CSV = stl.vector('float')()
-        v_jet_loose_pfid = stl.vector('bool')()
-        v_jet_puid = stl.vector('float')()
-        v_jet_qgtag = stl.vector('float')()
-        v_jet_axis2 = stl.vector('float')()
-        v_jet_ptD = stl.vector('float')()
-        v_jet_mult = stl.vector('int')()
-        v_jet_partonFlavour = stl.vector('float')()
+	babyTupleTree.ak4pfjets_pt.clear()
+        babyTupleTree.ak4pfjets_eta.clear()
+        babyTupleTree.ak4pfjets_phi.clear()
+        babyTupleTree.ak4pfjets_mass.clear()
+        babyTupleTree.ak4pfjets_CSV.clear()
+        babyTupleTree.ak4pfjets_loose_pfid.clear()
+        babyTupleTree.ak4pfjets_puid.clear()
+        babyTupleTree.ak4pfjets_qgtag.clear()
+        babyTupleTree.ak4pfjets_axis2.clear()
+        babyTupleTree.ak4pfjets_ptD.clear()
+        babyTupleTree.ak4pfjets_mult.clear()
+        babyTupleTree.ak4pfjets_partonFlavour.clear()
 	for jet in self.selectedJets:
             #print "jetpt: %d" %jet.pT
-	    v_jet_pt.push_back(jet.pT)
-	    v_jet_eta.push_back(jet.eta)
-	    v_jet_phi.push_back(jet.phi)
+	    babyTupleTree.ak4pfjets_pt.push_back(jet.pT)
+	    babyTupleTree.ak4pfjets_eta.push_back(jet.eta)
+	    babyTupleTree.ak4pfjets_phi.push_back(jet.phi)
 	    jetp4 = TLorentzVector()
 	    jetp4.SetPtEtaPhiE(jet.pT, jet.eta, jet.phi, jet.E)
-	    v_jet_mass.push_back(jetp4.M())
-	    v_jet_CSV.push_back(jet.CSVv2)
-	    v_jet_loose_pfid.push_back(bool(jet.looseID))
-	    v_jet_puid.push_back(jet.PUid)
+	    babyTupleTree.ak4pfjets_mass.push_back(jetp4.M())
+	    babyTupleTree.ak4pfjets_CSV.push_back(jet.CSVv2)
+	    babyTupleTree.ak4pfjets_loose_pfid.push_back(bool(jet.looseID))
+	    babyTupleTree.ak4pfjets_puid.push_back(jet.PUid)
 	    ### to be cheanged [ERIC]
 	    #v_jet_qgtag.push_back(jet.qgtag)
 	    #v_jet_axis2.push_back(jet.axis2)
 	    #v_jet_ptD.push_back(jet.ptD)
 	    #v_jet_mult.push_back(jet.mult)
-	    v_jet_partonFlavour.push_back(jet.partonFlavour)
-        babyTupleTree.ak4pfjets_pt	 =  v_jet_pt
-        babyTupleTree.ak4pfjets_eta	 =  v_jet_eta
-        babyTupleTree.ak4pfjets_phi	 =  v_jet_phi
-        babyTupleTree.ak4pfjets_mass	 =  v_jet_mass
-        babyTupleTree.ak4pfjets_CSV	 =  v_jet_CSV
-        babyTupleTree.ak4pfjets_loose_pfid	 =  v_jet_loose_pfid
-        babyTupleTree.ak4pfjets_puid	 =  v_jet_puid
-        babyTupleTree.ak4pfjets_qgtag	 =  v_jet_qgtag
-        babyTupleTree.ak4pfjets_axis2	 =  v_jet_axis2
-        babyTupleTree.ak4pfjets_ptD	 =  v_jet_ptD
-        babyTupleTree.ak4pfjets_mult	 =  v_jet_mult
-        babyTupleTree.ak4pfjets_partonFlavour	 =  v_jet_partonFlavour
-       
+	    babyTupleTree.ak4pfjets_partonFlavour.push_back(jet.partonFlavour)
 
 	#ak8 jets
         # vector of jets are pt ordered
-        
-	v_ak8jet_E = stl.vector('float')()
-        v_ak8jet_pt = stl.vector('float')()
-        v_ak8jet_eta = stl.vector('float')()
-        v_ak8jet_phi = stl.vector('float')()
-        v_ak8jet_mass = stl.vector('float')()
-        v_ak8jet_CSV = stl.vector('float')()
-        v_ak8jet_tau1 = stl.vector('float')()
-        v_ak8jet_tau2 = stl.vector('float')()
-        v_ak8jet_tau3 = stl.vector('float')()
-        v_ak8jet_softdrop_mass = stl.vector('float')()
-        v_ak8jet_trimmed_mass = stl.vector('float')()
-        v_ak8jet_pruned_mass = stl.vector('float')()
-        v_ak8jet_corrpruned_mass = stl.vector('float')()
-        v_ak8jet_filtered_mass = stl.vector('float')()
-        v_ak8jet_minMass = stl.vector('float')()
-        v_ak8jet_topMass = stl.vector('float')()
-        v_ak8jet_nSubJets = stl.vector('int')()
-	for jet in self.ak8selectedJets:
-		v_ak8jet_pt.push_back(jet.pT)
-		v_ak8jet_eta.push_back(jet.eta)
-		v_ak8jet_phi.push_back(jet.phi)
-	        jetp4.SetPtEtaPhiE(jet.pT, jet.eta, jet.phi, jet.E)
-	        v_ak8jet_mass.push_back(jetp4.M())
-		v_ak8jet_CSV.push_back(jet.CSVv2)
-		v_ak8jet_softdrop_mass.push_back(jet.softdropMass)
-		v_ak8jet_trimmed_mass.push_back(jet.trimmedMass)
-		v_ak8jet_pruned_mass.push_back(jet.prunedMass)
-		v_ak8jet_corrpruned_mass.push_back(jet.prunedMass)
-		v_ak8jet_filtered_mass.push_back(jet.filteredMass)
-		v_ak8jet_minMass.push_back(jet.minMass)
-		v_ak8jet_topMass.push_back(jet.topMass)
-		v_ak8jet_nSubJets.push_back(jet.nSubJets)
-		v_ak8jet_tau1.push_back(jet.tau1)
-		v_ak8jet_tau2.push_back(jet.tau2)
-		v_ak8jet_tau3.push_back(jet.tau3)
-
 
 
         if self.saveAK8:
-        	babyTupleTree.ak8pfjets_pt	 =  v_ak8jet_pt
-        	babyTupleTree.ak8pfjets_eta	 =  v_ak8jet_eta
-        	babyTupleTree.ak8pfjets_phi	 =  v_ak8jet_phi
-        	babyTupleTree.ak8pfjets_mass	 =  v_ak8jet_mass
-        	babyTupleTree.ak8pfjets_CSV	 =  v_ak8jet_CSV
-        	babyTupleTree.ak8pfjets_softdrop_mass	 =  v_ak8jet_softdrop_mass
-        	babyTupleTree.ak8pfjets_trimmed_mass	 =  v_ak8jet_trimmed_mass
-        	babyTupleTree.ak8pfjets_pruned_mass	 =  v_ak8jet_pruned_mass
-        	babyTupleTree.ak8pfjets_corrpruned_mass	 =  v_ak8jet_corrpruned_mass
-        	babyTupleTree.ak8pfjets_filtered_mass	 =  v_ak8jet_filtered_mass
-        	babyTupleTree.ak8pfjets_minMass	 =  v_ak8jet_minMass
-        	babyTupleTree.ak8pfjets_topMass	 =  v_ak8jet_topMass
-        	babyTupleTree.ak8pfjets_nSubJets	 =  v_ak8jet_nSubJets
-        	babyTupleTree.ak8pfjets_tau1	 =  v_ak8jet_tau1
-        	babyTupleTree.ak8pfjets_tau2	 =  v_ak8jet_tau2
-        	babyTupleTree.ak8pfjets_tau3	 =  v_ak8jet_tau3
+        	
+		babyTupleTree.ak8pfjets_pt.clear()	
+        	babyTupleTree.ak8pfjets_eta.clear()	
+        	babyTupleTree.ak8pfjets_phi.clear()	
+        	babyTupleTree.ak8pfjets_mass.clear()	
+        	babyTupleTree.ak8pfjets_CSV.clear()	
+        	babyTupleTree.ak8pfjets_softdrop_mass.clear()	
+        	babyTupleTree.ak8pfjets_trimmed_mass.clear()	
+        	babyTupleTree.ak8pfjets_pruned_mass.clear()	
+        	babyTupleTree.ak8pfjets_corrpruned_mass.clear()	
+        	babyTupleTree.ak8pfjets_filtered_mass.clear()	
+        	babyTupleTree.ak8pfjets_minMass.clear()	
+        	babyTupleTree.ak8pfjets_topMass.clear()	
+        	babyTupleTree.ak8pfjets_nSubJet.clear()	
+        	babyTupleTree.ak8pfjets_tau1.clear()	
+        	babyTupleTree.ak8pfjets_tau2.clear()	
+        	babyTupleTree.ak8pfjets_tau3.clear()	
+	
+	
+		for jet in self.ak8selectedJets:
+			babyTupleTree.ak8pfjets_pt.push_back(jet.pT)
+			babyTupleTree.ak8pfjets_eta.push_back(jet.eta)
+			v_ak8jet_phi.push_back(jet.phi)
+	    		jetp4 = TLorentzVector()
+	       	 	jetp4.SetPtEtaPhiE(jet.pT, jet.eta, jet.phi, jet.E)
+	       	 	v_ak8jet_mass.push_back(jetp4.M())
+			v_ak8jet_CSV.push_back(jet.CSVv2)
+			v_ak8jet_softdrop_mass.push_back(jet.softdropMass)
+			v_ak8jet_trimmed_mass.push_back(jet.trimmedMass)
+			v_ak8jet_pruned_mass.push_back(jet.prunedMass)
+			v_ak8jet_corrpruned_mass.push_back(jet.prunedMass)
+			v_ak8jet_filtered_mass.push_back(jet.filteredMass)
+			v_ak8jet_minMass.push_back(jet.minMass)
+			v_ak8jet_topMass.push_back(jet.topMass)
+			v_ak8jet_nSubJets.push_back(jet.nSubJets)
+			v_ak8jet_tau1.push_back(jet.tau1)
+			v_ak8jet_tau2.push_back(jet.tau2)
+			v_ak8jet_tau3.push_back(jet.tau3)
+		
 
 	#ak10 jets
         # vector of jets are pt ordered
-        
-	v_ak10jet_E = stl.vector('float')()
-        v_ak10jet_pt = stl.vector('float')()
-        v_ak10jet_eta = stl.vector('float')()
-        v_ak10jet_phi = stl.vector('float')()
-        v_ak10jet_mass = stl.vector('float')()
-        v_ak10jet_CSV = stl.vector('float')()
-        v_ak10jet_tau1 = stl.vector('float')()
-        v_ak10jet_tau2 = stl.vector('float')()
-        v_ak10jet_tau3 = stl.vector('float')()
-        v_ak10jet_softdrop_mass = stl.vector('float')()
-        v_ak10jet_trimmed_mass = stl.vector('float')()
-        v_ak10jet_pruned_mass = stl.vector('float')()
-        v_ak10jet_filtered_mass = stl.vector('float')()
-        v_ak10jet_minMass = stl.vector('float')()
-        v_ak10jet_topMass = stl.vector('float')()
-        v_ak10jet_nSubJets = stl.vector('int')()
-	for jet in self.ak10selectedJets:
-		v_ak10jet_pt.push_back(jet.pT)
-		v_ak10jet_eta.push_back(jet.eta)
-		v_ak10jet_phi.push_back(jet.phi)
-	        jetp4.SetPtEtaPhiE(jet.pT, jet.eta, jet.phi, jet.E)
-	        v_ak10jet_mass.push_back(jetp4.M())
-		v_ak10jet_CSV.push_back(jet.CSVv2)
-		v_ak10jet_softdrop_mass.push_back(jet.softdropMass)
-		v_ak10jet_trimmed_mass.push_back(jet.trimmedMass)
-		v_ak10jet_pruned_mass.push_back(jet.prunedMass)
-		v_ak10jet_filtered_mass.push_back(jet.filteredMass)
-		v_ak10jet_minMass.push_back(jet.minMass)
-		v_ak10jet_topMass.push_back(jet.topMass)
-		v_ak10jet_nSubJets.push_back(jet.nSubJets)
-		v_ak10jet_tau1.push_back(jet.tau1)
-		v_ak10jet_tau2.push_back(jet.tau2)
-		v_ak10jet_tau3.push_back(jet.tau3)
-                #print "jet tau 1 in filling bt %d" % jet.tau1
-
 
         #print "in bt safe ak10: %d" % self.saveAK10
         if self.saveAK10:
-                #print "saving ak10"
-        	babyTupleTree.ak10pfjets_pt	 =  v_ak10jet_pt
-        	babyTupleTree.ak10pfjets_eta	 =  v_ak10jet_eta
-        	babyTupleTree.ak10pfjets_phi	 =  v_ak10jet_phi
-        	babyTupleTree.ak10pfjets_mass	 =  v_ak10jet_mass
-        	babyTupleTree.ak10pfjets_CSV	 =  v_ak10jet_CSV
-        	babyTupleTree.ak10pfjets_softdrop_mass	 =  v_ak10jet_softdrop_mass
-        	babyTupleTree.ak10pfjets_trimmed_mass	 =  v_ak10jet_trimmed_mass
-        	babyTupleTree.ak10pfjets_pruned_mass	 =  v_ak10jet_pruned_mass
-        	babyTupleTree.ak10pfjets_filtered_mass	 =  v_ak10jet_filtered_mass
-        	babyTupleTree.ak10pfjets_minMass	 =  v_ak10jet_minMass
-        	babyTupleTree.ak10pfjets_topMass	 =  v_ak10jet_topMass
-        	babyTupleTree.ak10pfjets_nSubJets	 =  v_ak10jet_nSubJets
-        	babyTupleTree.ak10pfjets_tau1	 =  v_ak10jet_tau1
-        	babyTupleTree.ak10pfjets_tau2	 =  v_ak10jet_tau2
-        	babyTupleTree.ak10pfjets_tau3	 =  v_ak10jet_tau3
+		
+		babyTupleTree.ak10pfjets_pt.clear()	
+        	babyTupleTree.ak10pfjets_eta.clear()	
+        	babyTupleTree.ak10pfjets_phi.clear()	
+        	babyTupleTree.ak10pfjets_mass.clear()	
+        	babyTupleTree.ak10pfjets_CSV.clear()	
+        	babyTupleTree.ak10pfjets_softdrop_mass.clear()	
+        	babyTupleTree.ak10pfjets_trimmed_mass.clear()	
+        	babyTupleTree.ak10pfjets_pruned_mass.clear()	
+        	babyTupleTree.ak10pfjets_corrpruned_mass.clear()	
+        	babyTupleTree.ak10pfjets_filtered_mass.clear()	
+        	babyTupleTree.ak10pfjets_minMass.clear()	
+        	babyTupleTree.ak10pfjets_topMass.clear()	
+        	babyTupleTree.ak10pfjets_nSubJet.clear()	
+        	babyTupleTree.ak10pfjets_tau1.clear()	
+        	babyTupleTree.ak10pfjets_tau2.clear()	
+        	babyTupleTree.ak10pfjets_tau3.clear()	
 	
+		for jet in self.ak8selectedJets:
+			babyTupleTree.ak10pfjets_pt.push_back(jet.pT)
+			babyTupleTree.ak10pfjets_eta.push_back(jet.eta)
+			v_ak10jet_phi.push_back(jet.phi)
+	    		jetp4 = TLorentzVector()
+	       	 	jetp4.SetPtEtaPhiE(jet.pT, jet.eta, jet.phi, jet.E)
+	       	 	v_ak10jet_mass.push_back(jetp4.M())
+			v_ak10jet_CSV.push_back(jet.CSVv2)
+			v_ak10jet_softdrop_mass.push_back(jet.softdropMass)
+			v_ak10jet_trimmed_mass.push_back(jet.trimmedMass)
+			v_ak10jet_pruned_mass.push_back(jet.prunedMass)
+			v_ak10jet_corrpruned_mass.push_back(jet.prunedMass)
+			v_ak10jet_filtered_mass.push_back(jet.filteredMass)
+			v_ak10jet_minMass.push_back(jet.minMass)
+			v_ak10jet_topMass.push_back(jet.topMass)
+			v_ak10jet_nSubJets.push_back(jet.nSubJets)
+			v_ak10jet_tau1.push_back(jet.tau1)
+			v_ak10jet_tau2.push_back(jet.tau2)
+			v_ak10jet_tau3.push_back(jet.tau3)
+                
+
         babyTupleTree.dphi_ak4pfjets_met	 = self.dphi_ak4pfjets_met
 
         #Store the following event variables: 
@@ -555,6 +511,7 @@ class BabyTupleFormat :
         babyTupleTree.genlepsfromtop	 = self.numberOfGeneratedLeptons
 
         # discriminating variables
+	#print self.MT2W
         babyTupleTree.MT2W		= self.MT2W
         babyTupleTree.chi2		= self.hadchi2
         babyTupleTree.topness		= self.topness
@@ -593,8 +550,9 @@ class BabyTupleFormat :
         babyTupleTree.lumiId                  = event.ev_lumi
         babyTupleTree.eventId                 = event.ev_id
         babyTupleTree.nvertex                 = event.nvertex
-        babyTupleTree.puIntime                = event.mc_pu_intime_NumInt
-        babyTupleTree.puTrue                  = event.mc_pu_trueNumInt
+        if not self.isData:
+		babyTupleTree.puIntime                = event.mc_pu_intime_NumInt
+       	 	babyTupleTree.puTrue                  = event.mc_pu_trueNumInt
         
 	babyTupleTree.numberOfSelectedMuons = self.selectedMuons
 	babyTupleTree.numberOfSelectedElectrons = self.selectedElectrons
@@ -706,5 +664,10 @@ class BabyTupleFormat :
         	babyTupleTree.gen_daughter_index = 	event.gen_daughter_index
         	babyTupleTree.gen_neutralino_m = 	event.gen_neutralino_m
         	babyTupleTree.gen_stop_m =      	event.gen_stop_m
+
+
+	if self.loadTriggerBranches  and self.saveTriggerInfos:
+		babyTupleTree.trigger_name	 = 	event.trigger_name
+		babyTupleTree.trigger_pass	 = 	event.trigger_pass
 
 	#Add pfcand. info
