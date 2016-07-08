@@ -38,7 +38,8 @@ class Selection :
         self.ak10selectedJets      = []
 	self.pfcands = []
         self.ngoodbtags = 0
-	self.trigger = {}
+	#self.trigger = {}
+	self.trigger = {"HLT_IsoMu":False,"HLT_El":False,"HLT_PFMET170":False,"HLT_PFMET100_PFMHT100_IDTight":False}
 
 	self.dphi_ak4pfjets_met = 999
 
@@ -70,6 +71,7 @@ class Selection :
 
         #for j in xrange(len(trig_name)):
                 #print "available trigger: %s " % trig_name[j]
+	'''
 	for i in xrange(len(trig_name)):
 		if trig_name[i] == "HLT_IsoMu17_eta2p1_v1": 
 			self.trigger["HLT_IsoMu17_eta2p1_v1"] =  bool(trig_pass[i])
@@ -105,6 +107,22 @@ class Selection :
 		if trig_name[i] == "HLT_PFMET170_v2": 
 			self.trigger["HLT_PFMET170_v2"] = bool(trig_pass[i])
                         #print "HLT_PFMET170_v2"
+	'''
+	#for i in xrange(len(trig_name)):
+	for i, name in enumerate(trig_name):
+		#if trig_name[i].find("HLT_IsoMu")>=0: 
+		if "HLT_IsoMu" in name:
+			if bool(trig_pass[i]): self.trigger["HLT_IsoMu"] =  bool(trig_pass[i])
+		#if trig_name[i].find("HLT_El")>=0: 
+		if "HLT_El" in name: 
+			if bool(trig_pass[i]): self.trigger["HLT_El"] =  bool(trig_pass[i])
+		#if trig_name[i].find("HLT_PFMET170")>=0: 
+		if "HLT_PFMET170" in name:
+			if bool(trig_pass[i]): self.trigger["HLT_PFMET170"] =  bool(trig_pass[i])
+		#if trig_name[i].find("HLT_PFMET100_PFMHT100_IDTight")>=0: 
+		if "HLT_PFMET100_PFMHT100_IDTight" in name:
+			if bool(trig_pass[i]): self.trigger["HLT_PFMET100_PFMHT100_IDTight"] =  bool(trig_pass[i])
+	
 	#print self.trigger
 
 
