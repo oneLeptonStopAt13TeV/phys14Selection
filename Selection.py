@@ -8,6 +8,7 @@ class Selection :
     def __init__(self):
     	self.resetSelectedObjects()
 	self.loadPFcand = True
+	self.load_qg_tag = False
 	self.dphi_ak4pfjets_met = 9999
 	self.electronPtCut = 20
 	self.muoonPtCut = 20
@@ -39,7 +40,7 @@ class Selection :
 	self.pfcands = []
         self.ngoodbtags = 0
 	#self.trigger = {}
-	self.trigger = {"HLT_IsoMu":False,"HLT_El":False,"HLT_PFMET170":False,"HLT_PFMET100_PFMHT100_IDTight":False}
+	self.trigger = {"HLT_IsoMu":False,"HLT_El":False,"HLT_PFMET":False,"HLT_PFMET100_PFMHT100_IDTight":False,"HLT_PFMET170":False}
 
 	self.dphi_ak4pfjets_met = 999
 
@@ -81,31 +82,27 @@ class Selection :
 			self.trigger["HLT_IsoMu20_v1"] = bool(trig_pass[i])
 		if trig_name[i] == "HLT_IsoMu20_v2": 
 			self.trigger["HLT_IsoMu20_v2"] = bool(trig_pass[i])
-		if trig_name[i] == "HLT_IsoTkMu20_v1": 
-			self.trigger["HLT_IsoTkMu20_v1"] = bool(trig_pass[i])
-		if trig_name[i] == "HLT_IsoTkMu20_v2": 
-			self.trigger["HLT_IsoTkMu20_v2"] = bool(trig_pass[i])
+		if trig_name[i] == "HLT_IsoMu22_v1": 
+			self.trigger["HLT_IsoMu22_v1"] = bool(trig_pass[i])
+		if trig_name[i] == "HLT_IsoMu22_v2": 
+			self.trigger["HLT_IsoMu22_v2"] = bool(trig_pass[i])
+		if trig_name[i] == "HLT_Ele25_eta2p1_WPLoose_Gsf_v1": 
+			self.trigger["HLT_Ele25_eta2p1_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
+		if trig_name[i] == "HLT_Ele25_eta2p1_WPLoose_Gsf_v2": 
+			self.trigger["HLT_Ele25_eta2p1_WPLoose_Gsf_v2"] =  bool(trig_pass[i])
 		if trig_name[i] == "HLT_Ele27_eta2p1_WPLoose_Gsf_v1": 
 			self.trigger["HLT_Ele27_eta2p1_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_Ele23_WPLoose_Gsf_v1": 
-			self.trigger["HLT_Ele23_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_Ele23_WPLoose_Gsf_v2": 
-			self.trigger["HLT_Ele23_WPLoose_Gsf_v2"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1": 
-			self.trigger["HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v1"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_Ele27_eta2p1_WPLoose_Gsf_v1": 
-			self.trigger["HLT_Ele27_eta2p1_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_IsoTkMu20_v1": 
-			self.trigger["HLT_IsoTkMu20_v1"] = bool(trig_pass[i])
-                        #print "HLT_IsoTkMu20_v1"
-		if trig_name[i] == "HLT_IsoTkMu20_v2": 
-			self.trigger["HLT_IsoTkMu20_v2"] = bool(trig_pass[i])
-                        #print "HLT_IsoTkMu20_v2"
+		if trig_name[i] == "HLT_Ele27_eta2p1_WPLoose_Gsf_v2": 
+			self.trigger["HLT_Ele27_eta2p1_WPLoose_Gsf_v2"] =  bool(trig_pass[i])
 		if trig_name[i] == "HLT_PFMET170_v1": 
 			self.trigger["HLT_PFMET170_v1"] = bool(trig_pass[i])
                         #print "HLT_PFMET170_v1"
 		if trig_name[i] == "HLT_PFMET170_v2": 
 			self.trigger["HLT_PFMET170_v2"] = bool(trig_pass[i])
+		if trig_name[i] == "HLT_PFMET100_PFMHT100_IDTight_v1": 
+			self.trigger["HLT_PFMET100_PFMHT100_IDTight_v1"] = bool(trig_pass[i])
+		if trig_name[i] == "HLT_PFMET100_PFMHT100_IDTight_v2": 
+			self.trigger["HLT_PFMET100_PFMHT100_IDTight_v2"] = bool(trig_pass[i])
                         #print "HLT_PFMET170_v2"
 	'''
 	#for i in xrange(len(trig_name)):
@@ -142,9 +139,10 @@ class Selection :
 
     # Define structure for temporary objects storage
     lepton = namedtuple('lepton', ['id', 'E', 'pT', 'eta', 'phi', 'iso', 'passMediumID', 'dz', 'd0', 'charge' ])
+    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'axis2', 'ptD', 'mult', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
     #jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'axis2', 'ptD', 'mult', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
     #to be corrected
-    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
+    #jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
     genjet    = namedtuple('genjet',    [ 'E', 'pT', 'eta', 'phi', 'mass'])
     ak8jet = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'softdropMass', 'trimmedMass', 'prunedMass', 'corrprunedMass', 'filteredMass', 'minMass', 'topMass', 'nSubJets', 'tau1', 'tau2', 'tau3' ])
     ak10jet = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'softdropMass', 'trimmedMass', 'prunedMass', 'filteredMass', 'minMass', 'topMass', 'nSubJets', 'tau1', 'tau2', 'tau3' ])
@@ -758,14 +756,17 @@ class Selection :
     branchesForJetSelection = [ "jet_n",
                                 "jet_E", "jet_pt", "jet_eta",   "jet_phi",
                                 "jet_CSVv2",
-                                #"jet_qgtag",
-                                #"jet_qgtag_axis2",
-                                #"jet_qgtag_ptD",
-                                #"jet_qgtag_mult",
 				"jet_pileupJetId" ,
 				"jet_looseJetID",
 				"jet_partonFlavour"
 				#"jet_tightJetID"
+				]
+
+    branchesForQGJetSelection = [
+                                "jet_qgtag",
+                                "jet_qgtag_axis2",
+                                "jet_qgtag_ptD",
+                                "jet_qgtag_mult",
 				]
     
     def jetDump(self,event):
@@ -776,10 +777,15 @@ class Selection :
         phi         = event.jet_phi
         CSVv2       = event.jet_CSVv2
         looseID     = event.jet_looseJetID
-	#qgtag	    = event.jet_qgtag
-	#axis2	    = event.jet_qgtag_axis2
-	#ptD	    = event.jet_qgtag_ptD
-	#mult	    = event.jet_qgtag_mult
+	qgtag = [-999]*n
+	axis2 = [-999]*n
+	ptD = [-999]*n
+	mult = [-999]*n
+        if self.load_qg_tag:
+	    qgtag	    = event.jet_qgtag
+	    axis2	    = event.jet_qgtag_axis2
+	    ptD	    = event.jet_qgtag_ptD
+	    mult	    = event.jet_qgtag_mult
 	partonFlavour = event.jet_partonFlavour
 
         for i in range(n):
@@ -814,10 +820,15 @@ class Selection :
         pileupJetId = event.jet_pileupJetId
         looseID     = event.jet_looseJetID
         #tightID     = event.jet_tightJetID
-	#qgtag	    = event.jet_qgtag
-	#axis2	    = event.jet_qgtag_axis2
-	#ptD	    = event.jet_qgtag_ptD
-	#mult	    = event.jet_qgtag_mult
+	qgtag = [-999]*n
+	axis2 = [-999]*n
+	ptD = [-999]*n
+	mult = [-999]*n
+        if self.load_qg_tag:
+	    qgtag	    = event.jet_qgtag
+	    axis2	    = event.jet_qgtag_axis2
+	    ptD	    = event.jet_qgtag_ptD
+	    mult	    = event.jet_qgtag_mult
 	partonFlavour	 = event.jet_partonFlavour
         
 	selectedJets = []
@@ -848,10 +859,10 @@ class Selection :
                                               eta[i],
                                               phi[i],
                                               CSVv2[i],
-					      #qgtag[i],
-                                              #axis2[i],
-                                              #ptD[i],
-                                              #mult[i],
+					      qgtag[i],
+                                              axis2[i],
+                                              ptD[i],
+                                              mult[i],
                                               partonFlavour[i],
 					      pileupJetId[i],
                                               (CSVv2[i] > self.btagCut),

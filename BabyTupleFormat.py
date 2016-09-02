@@ -106,6 +106,7 @@ class BabyTupleFormat :
 	      'HLT_SingleMu'	:	'B',
 	      'HLT_SingleE'	:	'B',
 	      'HLT_Iso20Muon'	:	'B',
+              'HLT_PFMET'	:	'B',
 	      'HLT_Ele23_WPLoose_Gsf'  :'B',
 	      'HLT_PFMET170'	:	'B',
 	
@@ -528,8 +529,10 @@ class BabyTupleFormat :
         #babyTupleTree.HLT_SingleMu	= True #
         #babyTupleTree.HLT_SingleE	= True # default
 	#print self.trigger
-	babyTupleTree.HLT_SingleMu = self.trigger.setdefault("HLT_IsoMu20_v2",False) or self.trigger.setdefault("HLT_IsoMu20_v1",False) or self.trigger.setdefault("HLT_IsoTkMu20_v2",False) or self.trigger.setdefault("HLT_IsoTkMu20_v1",False) or self.trigger.setdefault("HLT_PFMET170_v1",False) or self.trigger.setdefault("HLT_PFMET170_v2",False)
-	babyTupleTree.HLT_SingleE = self.trigger.setdefault("HLT_Ele23_WPLoose_Gsf_v1",False) or self.trigger.setdefault("HLT_Ele23_WPLoose_Gsf_v2",False) or self.trigger.setdefault("HLT_PFMET170_v1",False) or self.trigger.setdefault("HLT_PFMET170_v2",False)
+        babyTupleTree.HLT_SingleMu = self.trigger.setdefault("HLT_IsoMu20_v2",False) or self.trigger.setdefault("HLT_IsoMu20_v1",False) or self.trigger.setdefault("HLT_IsoMu22_v2",False) or self.trigger.setdefault("HLT_IsoMu22_v1",False)
+	babyTupleTree.HLT_SingleE = self.trigger.setdefault("HLT_Ele25_eta2p1_WPLoose_Gsf_v1",False) or  self.trigger.setdefault("HLT_Ele25_eta2p1_WPLoose_Gsf_v2",False) or self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose_Gsf_v1",False) or  self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose_Gsf_v2",False)
+	babyTupleTree.HLT_PFMET = self.trigger.setdefault("HLT_PFMET170_v1",False) or self.trigger.setdefault("HLT_PFMET170_v2",False) or self.trigger.setdefault("HLT_PFMET100_PFMHT100_IDTight_v1",False) or self.trigger.setdefault("HLT_PFMET100_PFMHT100_IDTight_v2",False)
+
 	babyTupleTree.HLT_Iso20Muon = self.trigger.setdefault("HLT_IsoMu20_v1",False) or self.trigger.setdefault("HLT_IsoMu20_v2",False) or self.trigger.setdefault("HLT_IsoTkMu20_v1",False) or self.trigger.setdefault("HLT_IsoTkMu20_v2",False)
 	babyTupleTree.HLT_Ele23_WPLoose_Gsf = self.trigger.setdefault("HLT_Ele23_WPLoose_Gsf_v1",False) or self.trigger.setdefault("HLT_Ele23_WPLoose_Gsf_v2",False) 
 	babyTupleTree.HLT_PFMET170 = self.trigger.setdefault("HLT_PFMET170_v1",False) or self.trigger.setdefault("HLT_PFMET170_v2",False)

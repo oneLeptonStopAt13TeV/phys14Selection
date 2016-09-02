@@ -4,8 +4,8 @@ from core import genericDataset
 Dataset = genericDataset.Dataset
 datasets = [
 
-Dataset("SingleElectron",wildcard="dpm:echabert/FlatTree/triggerV1/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160622_212229/0000/")
-Dataset("SingleMuon",wildcard="dpm:echabert/FlatTree/triggerV1/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160622_212210/0000/")
+#Dataset("SingleElectron",wildcard="dpm:echabert/FlatTree/triggerV1/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160622_212229/0000/")
+#Dataset("SingleMuon",wildcard="dpm:echabert/FlatTree/triggerV1/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160622_212210/0000/")
 
 #Dataset("SMS_T2tt_850_100", wildcard="dpm:mjansova/FlatTree/sync0616-v2/SMS-T2tt_mStop-850_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v1_MINIAODSIM/160614_141121/0000/merged")
 
@@ -16,6 +16,79 @@ Dataset("SingleMuon",wildcard="dpm:echabert/FlatTree/triggerV1/SingleMuon/Run201
 #Dataset("sync", wildcard="dpm:/kskovpen/FlatTree/Akoula-patch1-v20151217/TTJets_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/151218_083845/0000"),
 #Dataset("ST_s", wildcard="dpm:/kskovpen/FlatTree/Akoula-patch1-v20151217/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/151217_233558/0000"),
 #Dataset("ST_t-top", wildcard="dpm:/kskovpen/FlatTree/Akoula-patch1-v20151217/ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15MiniAODv2_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/151217_233820/0000"),
+
+#Dataset("TTjets", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180950/0000"),
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+#DATA
+Dataset("SE_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160725_204148/0001"),
+#Dataset("SE_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160725_204148/0000"),
+#Dataset("SM_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160725_204321/0000"),
+Dataset("SM_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160725_204321/0001"),
+#Dataset("MET_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/MET/Run2016B_PromptReco_v2_MINIAOD/160725_203926/0000"),
+#Dataset("MET_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/MET/Run2016B_PromptReco_v2_MINIAOD/160725_203926/0001"),
+
+#MC
+#Dataset("WJetsToLNuTune", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_182216/0000"),
+#Dataset("WJetsToLNuPt100to250", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160729_123952/0000"),
+#Dataset("WJetsToLNuPt250to400", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160729_124016/0000"),
+#Dataset("WJetsToLNuPt400to600", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160728_165026/0000"),
+#Dataset("WJetsToLNuPt600toInf", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160728_165053/0000"),
+#Dataset("WJetsToLNuHT100To200ext", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext1_v2_MINIAODSIM/160726_183703/0000"),
+#Dataset("WJetsToLNuHT200To400ext", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext1_v1_MINIAODSIM/160726_183833/0000"),
+#Dataset("WJetsToLNuHT200To400v3v2", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v2_MINIAODSIM/160726_183811/0000"),
+#Dataset("WJetsToLNuHT400To600ext", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext1_v1_MINIAODSIM/160727_135345/0000"),
+#Dataset("WJetsToLNuHT400To600v3v2", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v2_MINIAODSIM/160726_184004/0000"),
+#Dataset("WJetsToLNuHT600To800v3v2", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v2_MINIAODSIM/160726_184110/0000"),
+#Dataset("WJetsToLNuHT800To1200ext", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext1_v1_MINIAODSIM/160726_184226/0000"),
+#Dataset("WJetsToLNuHT800To1200v3v1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v1_MINIAODSIM/160726_184150/0000"),
+#Dataset("WJetsToLNuHT1200To2500ext", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext1_v1_MINIAODSIM/160726_183745/0000"),
+#Dataset("WJetsToLNuHT1200To2500v3v2", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v2_MINIAODSIM/160726_183723/0000"),
+#Dataset("WJetsToLNuHT2500ToInfv3v1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v1_MINIAODSIM/160727_135527/0000"),
+#Dataset("W1JetsToLNuTune", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v1_MINIAODSIM/160726_184246/0000"),
+#Dataset("W2JetsToLNuTune", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v1_MINIAODSIM/160726_184308/0000"),
+#Dataset("W3JetsToLNuTune", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v1_MINIAODSIM/160726_184335/0000"),
+#Dataset("W4JetsToLNuTune", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v1_MINIAODSIM/160726_184356/0000"),
+#Dataset("W1JetsToLNuPt200", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W1JetsToLNu_NuPt-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160728_165117/0000"),
+#Dataset("W2JetsToLNuPt200", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W2JetsToLNu_NuPt-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160728_165139/0000"),
+#Dataset("W3JetsToLNuPt200", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W3JetsToLNu_NuPt-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160728_165205/0000"),
+#Dataset("W4JetsToLNuPt200", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W4JetsToLNu_NuPt-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160729_123930/0000"),
+
+#Dataset("TTJetsSLtop", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180843/0000"),
+#Dataset("TTJetsSLatopv1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180903/0000"),
+#Dataset("TTJetsSLatopext", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1_v1_MINIAODSIM/160726_180929/0000"),
+#Dataset("TTJetsDLv0v4", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v4_MINIAODSIM/160726_180756/0000"),
+#Dataset("TTJetsDLext", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1_v1_MINIAODSIM/160726_180821/0000"),
+
+#Dataset("ST_s", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160727_143227/0000"),
+#Dataset("ST_tW_top", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180521/0000"),
+#Dataset("ST_tW_atop", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180432/0000"),
+#Dataset("ST_t", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180411/0000"),
+
+#Dataset("TTWtoQQ", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_190306/0000"),
+#Dataset("TTWtoLNu", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_190231/0000"),
+#Dataset("TTT", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTToSemiLeptonic_13TeV-powheg/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1_v2_MINIAODSIM/160726_181358/0000"),
+#Dataset("ttZ", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ttZJets_13TeV_madgraphMLM/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_190600/0000"),
+#Dataset("VV", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/VVTo2L2Nu_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_182237/0000"),
+#Dataset("tZq", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_183614/0000"),
+#Dataset("WZ", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_182856/0000"),
+#Dataset("ZZ", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ZZTo2L2Nu_13TeV_powheg_pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_183321/0000"),
+
+#Dataset("T2tt_150to250", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SMS-T2tt_mStop-150to250_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_184449/0000"),
+#Dataset("T2tt_250to350", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SMS-T2tt_mStop-250to350_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_184513/0000"),
+#Dataset("T2tt_350to400", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SMS-T2tt_mStop-350to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_184534/0000"),
+#Dataset("T2tt_400to1200", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SMS-T2tt_mStop-400to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_184600/0000"),
+
+
+#------------------OLD------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Dataset("Wjets", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1_PUSpring16_80X_mcRun2_asymptotic_2016_v3_v2_MINIAODSIM/160726_183723/0000"),
+#Dataset("W1Jets", wildcard="dpm:/mjansova/MantaRay-patch7-v16022016/W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_Asympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160511_134915/0000"),
+#Dataset("W2Jets", wildcard="dpm:/mjansova/MantaRay-patch7-v16022016/W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160422_121518/0000"),
+#Dataset("W3Jets", wildcard="dpm:/mjansova/MantaRay-patch7-v16022016/W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_Asympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160422_121532/0000"),
+#Dataset("W4Jets", wildcard="dpm:/mjansova/MantaRay-patch7-v16022016/W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_Asympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160422_121549/0000"),
+
+##first merge needed
+#Dataset("T2bW_625to950_0to300", wildcard="dpm:mjansova/MantaRay-patch7-v16022016/SMS-T2bW_X05_mStop-625to950_0to350_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_FastAsympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160420_082553/0000/merged"),
 
 #Dataset("100-125_1to50", wildcard="dpm:/mjansova/MantaRay-patch7-v25012016/SMS-T2tt_mStop-100-125_mLSP-1to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_FastAsympt25ns_74X_mcRun2_asymptotic_v2_v2_MINIAODSIM/160125_102519/0000"),
 #Dataset("200_1to125", wildcard="dpm:/mjansova/MantaRay-patch7-v25012016/SMS-T2tt_mStop-200_mLSP-1to125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2_FastAsympt25ns_74X_mcRun2_asymptotic_v2_v1_MINIAODSIM/160125_102535/0000"),

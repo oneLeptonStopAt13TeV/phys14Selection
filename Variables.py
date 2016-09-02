@@ -287,7 +287,7 @@ class Variables() :
 
         for i in range(n) :
             # put this requirement at the first position
-	    if (status[i] > 3) :
+	    if (status[i]!=1) :
                 continue;
             mother_pdgid = pdgid[mother[i]]
 	    if (abs(mother_pdgid) != 24) :
@@ -301,10 +301,10 @@ class Variables() :
             #print "status %d" % event.gen_status[i]
             #print "i: %d" % i
 
-        print tmp
+        #print "sum result 1: %d" % tmp
 
-	res = [1 for i in range(n) if (status[i]<=3 and abs(pdgid[mother[i]]) == 24 and ((abs(pdgid[i]) == 11) or (abs(pdgid[i]) == 13) or (abs(pdgid[i]) == 15)))]
-        #print "sum result: %d" % sum(res)
+	res = [1 for i in range(n) if (status[i]==1 and abs(pdgid[mother[i]]) == 24 and ((abs(pdgid[i]) == 11) or (abs(pdgid[i]) == 13) or (abs(pdgid[i]) == 15)))]
+        #print "sum result 2: %d" % sum(res)
         return sum(res)
 
 

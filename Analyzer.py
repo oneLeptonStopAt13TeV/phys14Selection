@@ -9,6 +9,7 @@ loadGenInfo = False
 loadAK8 = True
 loadAK10 = True
 loadTriggerBranches = True
+load_qg_tag = False
 
 class Analyzer(Selection,BabyTupleFormat,Variables) :
     
@@ -87,6 +88,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	# member of Selection
 	#self.loadPFcand = False
 	self.loadPFcand 	= config.getboolean('DEFAULT','loadPFcand')
+        self.load_qg_tag        = config.getboolean('DEFAULT', 'load_qg_tag')
 
 	#do not forget to update the format once the boolean have been set
 	self.UpdateFormat()
@@ -118,7 +120,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
                      + Selection.branchesForTauSelection
     	if self.loadGenInfo:
     		#print "here or not "
-		#self.requiredBranches+= Selection.branchesForGenInfo
+		self.requiredBranches+= Selection.branchesForGenInfo
                 self.requiredBranches+= Selection.branchesForGenJetSelection  #@MJ@ TODO make special requirement for this
         if self.loadGenMET:
 		self.requiredBranches+= Selection.branchesForGenMET  
@@ -135,6 +137,8 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 		self.requiredBranches += Selection.branchesForTrigger
 	if not self.isData:
 		self.requiredBranches += self.branchesMC_PU
+        if self.load_qg_tag: 
+		self.requiredBranches += Selection.Selection.branchesForQGJetSelection
 
 
     	self.hWeights = ROOT.TH1D("hWeights","Sum of weights",1,0.5,1.5)
@@ -234,9 +238,9 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     def process(self,event,babyTupleTree,isoStudy = False) :
 
         self.reset()
-        #if len(event.gen_neutralino_m) > 0:
+        if len(event.gen_neutralino_m) > 0:
             #print "neutralino m %d" % event.gen_neutralino_m[1]
-        #    self.hStopNeutralino.Fill(event.gen_stop_m[1], event.gen_neutralino_m[1]);
+            self.hStopNeutralino.Fill(event.gen_stop_m[1], event.gen_neutralino_m[1]);
 	#if (event.ev_lumi != 2756 or event.ev_id != 75567):
 	#    return
 
@@ -352,7 +356,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 		self.hWeightsMinus.Fill(1,-event.mc_weight)
 
         # Fill event in babytuple
-        if passEventSelection: #@MJ@ comment this for sync
+        if passEventSelection:
 	    self.fill(event,babyTupleTree) #,self.addGenInfo)
 	#just for synchronization	
 	if (event.ev_lumi,event.ev_id)  in self.eventList:
@@ -360,6 +364,6 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	    #self.fill(event,babyTupleTree) #,self.addGenInfo) #@MJ@ TODO commented this
         
         #return True
-        return passEventSelection #@MJ@ TODO return this
+        return passEventSelection
 
 
