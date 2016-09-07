@@ -6,6 +6,7 @@ import ConfigParser
 
 saveGenInfo = False
 loadGenInfo = False
+loadStop = False
 loadAK8 = True
 loadAK10 = True
 loadTriggerBranches = True
@@ -79,6 +80,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 	self.loadAK8 		= config.getboolean('DEFAULT','loadAK8')
 	self.loadAK10 		= config.getboolean('DEFAULT','loadAK10')
 	self.loadGenInfo 	= config.getboolean('DEFAULT','loadGenInfo')
+	self.loadStop   	= config.getboolean('DEFAULT','loadStop')
     	#self.loadGenInfo = False
 	#print 'value = ', config.get('DEFAULT','loadGenInfo',12)
 	#print "GenInfo = ", self.loadGenInfo
@@ -139,12 +141,15 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 		self.requiredBranches += self.branchesMC_PU
         if self.load_qg_tag: 
 		self.requiredBranches += Selection.Selection.branchesForQGJetSelection
+    	if self.loadStop:
+    		#print "here or not "
+		self.requiredBranches+= Selection.branchesForStop
 
 
     	self.hWeights = ROOT.TH1D("hWeights","Sum of weights",1,0.5,1.5)
     	self.hWeightsPlus = ROOT.TH1D("hWeightsPlus","Sum of positive  weights",1,0.5,1.5)
     	self.hWeightsMinus = ROOT.TH1D("hWeightsMinus","Sum of negative weights",1,0.5,1.5)
-    	self.hStopNeutralino = ROOT.TH2F("hStopNeutralino","Weights for cross section computation",1000,0,1000,500,0,500)
+    	self.hStopNeutralino = ROOT.TH2F("hStopNeutralino","Weights for cross section computation",2000,0,2000,1000,0,1000)
 
 
 
@@ -238,9 +243,11 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     def process(self,event,babyTupleTree,isoStudy = False) :
 
         self.reset()
+        if event.met_pt < 200:
+            return False
         if len(event.gen_neutralino_m) > 0:
             #print "neutralino m %d" % event.gen_neutralino_m[1]
-            self.hStopNeutralino.Fill(event.gen_stop_m[1], event.gen_neutralino_m[1]);
+            self.hStopNeutralino.Fill(event.gen_stop_m[0], event.gen_neutralino_m[0]);
 	#if (event.ev_lumi != 2756 or event.ev_id != 75567):
 	#    return
 
@@ -315,7 +322,7 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
 		#print "debug: ",len(self.selectedLeptons2), len(self.vetoLeptons), self.isoTrackVeto(event), self.isTauVeto(event)
 
 	# fill trigger info
-	if self.saveTriggerInfos:
+	if self.saveTriggerInfos and self.isData:
 		self.FillTriggerInfo(event)
 
 	#######################

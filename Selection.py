@@ -40,7 +40,7 @@ class Selection :
 	self.pfcands = []
         self.ngoodbtags = 0
 	#self.trigger = {}
-	self.trigger = {"HLT_IsoMu":False,"HLT_El":False,"HLT_PFMET":False,"HLT_PFMET100_PFMHT100_IDTight":False,"HLT_PFMET170":False}
+	self.trigger = {"HLT_IsoMu20":False,"HLT_IsoMu22":False,"HLT_Ele25_eta2p1_WPLoose":False,"HLT_Ele27_eta2p1_WPLoose":False,"HLT_PFMET100_PFMHT100_IDTight":False,"HLT_PFMET170":False}
 
 	self.dphi_ak4pfjets_met = 999
 
@@ -66,57 +66,23 @@ class Selection :
     branchesForTrigger = ["trigger_name", "trigger_pass"]
 
     def FillTriggerInfo(self, event):
+        #print "filling trigger info"
 	
 	trig_name = event.trigger_name
 	trig_pass = event.trigger_pass
-
-        #for j in xrange(len(trig_name)):
-                #print "available trigger: %s " % trig_name[j]
-	'''
-	for i in xrange(len(trig_name)):
-		if trig_name[i] == "HLT_IsoMu17_eta2p1_v1": 
-			self.trigger["HLT_IsoMu17_eta2p1_v1"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_IsoMu17_eta2p1_v2": 
-			self.trigger["HLT_IsoMu17_eta2p1_v2"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_IsoMu20_v1": 
-			self.trigger["HLT_IsoMu20_v1"] = bool(trig_pass[i])
-		if trig_name[i] == "HLT_IsoMu20_v2": 
-			self.trigger["HLT_IsoMu20_v2"] = bool(trig_pass[i])
-		if trig_name[i] == "HLT_IsoMu22_v1": 
-			self.trigger["HLT_IsoMu22_v1"] = bool(trig_pass[i])
-		if trig_name[i] == "HLT_IsoMu22_v2": 
-			self.trigger["HLT_IsoMu22_v2"] = bool(trig_pass[i])
-		if trig_name[i] == "HLT_Ele25_eta2p1_WPLoose_Gsf_v1": 
-			self.trigger["HLT_Ele25_eta2p1_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_Ele25_eta2p1_WPLoose_Gsf_v2": 
-			self.trigger["HLT_Ele25_eta2p1_WPLoose_Gsf_v2"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_Ele27_eta2p1_WPLoose_Gsf_v1": 
-			self.trigger["HLT_Ele27_eta2p1_WPLoose_Gsf_v1"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_Ele27_eta2p1_WPLoose_Gsf_v2": 
-			self.trigger["HLT_Ele27_eta2p1_WPLoose_Gsf_v2"] =  bool(trig_pass[i])
-		if trig_name[i] == "HLT_PFMET170_v1": 
-			self.trigger["HLT_PFMET170_v1"] = bool(trig_pass[i])
-                        #print "HLT_PFMET170_v1"
-		if trig_name[i] == "HLT_PFMET170_v2": 
-			self.trigger["HLT_PFMET170_v2"] = bool(trig_pass[i])
-		if trig_name[i] == "HLT_PFMET100_PFMHT100_IDTight_v1": 
-			self.trigger["HLT_PFMET100_PFMHT100_IDTight_v1"] = bool(trig_pass[i])
-		if trig_name[i] == "HLT_PFMET100_PFMHT100_IDTight_v2": 
-			self.trigger["HLT_PFMET100_PFMHT100_IDTight_v2"] = bool(trig_pass[i])
-                        #print "HLT_PFMET170_v2"
-	'''
+	
 	#for i in xrange(len(trig_name)):
 	for i, name in enumerate(trig_name):
-		#if trig_name[i].find("HLT_IsoMu")>=0: 
-		if "HLT_IsoMu" in name:
-			if bool(trig_pass[i]): self.trigger["HLT_IsoMu"] =  bool(trig_pass[i])
-		#if trig_name[i].find("HLT_El")>=0: 
-		if "HLT_El" in name: 
-			if bool(trig_pass[i]): self.trigger["HLT_El"] =  bool(trig_pass[i])
-		#if trig_name[i].find("HLT_PFMET170")>=0: 
+		if "HLT_IsoMu20" in name:
+			if bool(trig_pass[i]): self.trigger["HLT_IsoMu20"] =  bool(trig_pass[i])
+		if "HLT_IsoMu22" in name:
+			if bool(trig_pass[i]): self.trigger["HLT_IsoMu22"] =  bool(trig_pass[i])
+		if "HLT_Ele25_eta2p1_WPLoose" in name: 
+			if bool(trig_pass[i]): self.trigger["HLT_Ele25_eta2p1_WPLoose"] =  bool(trig_pass[i])
+		if "HLT_Ele27_eta2p1_WPLoose" in name: 
+			if bool(trig_pass[i]): self.trigger["HLT_Ele27_eta2p1_WPLoose"] =  bool(trig_pass[i])
 		if "HLT_PFMET170" in name:
 			if bool(trig_pass[i]): self.trigger["HLT_PFMET170"] =  bool(trig_pass[i])
-		#if trig_name[i].find("HLT_PFMET100_PFMHT100_IDTight")>=0: 
 		if "HLT_PFMET100_PFMHT100_IDTight" in name:
 			if bool(trig_pass[i]): self.trigger["HLT_PFMET100_PFMHT100_IDTight"] =  bool(trig_pass[i])
 	
@@ -124,6 +90,7 @@ class Selection :
 
 
     branchesForGenInfo = ["gen_n", "gen_pt", "gen_eta", "gen_phi", "gen_m", "gen_status", "gen_id", "gen_charge", "gen_index", "gen_mother_index", "gen_daughter_n", "gen_daughter_index", "gen_neutralino_m", "gen_stop_m"]
+    branchesForStop = ["gen_neutralino_m", "gen_stop_m"]
     branchesForGenMET = ["metGen_pt", "metGen_phi"]
     branchesForMCTruth = ["mc_truth_tWl1_status", "mc_truth_tWl2_status"]
 
@@ -139,7 +106,7 @@ class Selection :
 
     # Define structure for temporary objects storage
     lepton = namedtuple('lepton', ['id', 'E', 'pT', 'eta', 'phi', 'iso', 'passMediumID', 'dz', 'd0', 'charge' ])
-    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'axis2', 'ptD', 'mult', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
+    jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'axis2', 'ptD', 'mult', 'partonFlavour', 'hadronFlavour' , 'PUid', 'bTag', 'looseID' ])
     #jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'qgtag', 'axis2', 'ptD', 'mult', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
     #to be corrected
     #jet    = namedtuple('jet',    [ 'E', 'pT', 'eta', 'phi', 'CSVv2', 'partonFlavour', 'PUid', 'bTag', 'looseID' ])
@@ -758,7 +725,8 @@ class Selection :
                                 "jet_CSVv2",
 				"jet_pileupJetId" ,
 				"jet_looseJetID",
-				"jet_partonFlavour"
+				"jet_partonFlavour",
+				"jet_hadronFlavour"
 				#"jet_tightJetID"
 				]
 
@@ -787,6 +755,7 @@ class Selection :
 	    ptD	    = event.jet_qgtag_ptD
 	    mult	    = event.jet_qgtag_mult
 	partonFlavour = event.jet_partonFlavour
+	hadronFlavour = event.jet_hadronFlavour
 
         for i in range(n):
 	    j= TLorentzVector ()
@@ -830,6 +799,7 @@ class Selection :
 	    ptD	    = event.jet_qgtag_ptD
 	    mult	    = event.jet_qgtag_mult
 	partonFlavour	 = event.jet_partonFlavour
+	hadronFlavour	 = event.jet_hadronFlavour
         
 	selectedJets = []
 	selectedJetsOrg = []
@@ -864,6 +834,7 @@ class Selection :
                                               ptD[i],
                                               mult[i],
                                               partonFlavour[i],
+                                              hadronFlavour[i],
 					      pileupJetId[i],
                                               (CSVv2[i] > self.btagCut),
 					      looseID[i]))

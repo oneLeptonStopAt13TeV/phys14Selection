@@ -74,6 +74,7 @@ class BabyTupleFormat :
 	      'ak4pfjets_ptD'		: 'vector<float>',
 	      'ak4pfjets_mult'		: 'vector<int>',
 	      'ak4pfjets_partonFlavour'	: 'vector<float>',
+	      'ak4pfjets_hadronFlavour'	: 'vector<float>',
 	      'dphi_ak4pfjets_met'	:	'F',
 	      
 	
@@ -103,11 +104,11 @@ class BabyTupleFormat :
 	      'dR_lep_leadb'	:	'F',  # DeltaR(l,lead_b)  
 	
 	      #triggers
-	      'HLT_SingleMu'	:	'B',
-	      'HLT_SingleE'	:	'B',
-	      'HLT_Iso20Muon'	:	'B',
-              'HLT_PFMET'	:	'B',
-	      'HLT_Ele23_WPLoose_Gsf'  :'B',
+	      'HLT_IsoMu20'	:	'B',
+	      'HLT_IsoMu22'	:	'B',
+	      'HLT_Ele25_eta2p1_WPLoose'	:	'B',
+	      'HLT_Ele27_eta2p1_WPLoose'	:	'B',
+              'HLT_PFMET100_PFMHT100_IDTight'	:	'B',
 	      'HLT_PFMET170'	:	'B',
 	
 	      # weights
@@ -227,6 +228,8 @@ class BabyTupleFormat :
 	        self.babyTupleFormat['gen_mother_index'] =	 "vector<int>"
 	        self.babyTupleFormat['gen_daughter_n'] =	 "vector<int>"
 	        self.babyTupleFormat['gen_daughter_index'] =	 "vector<vector<int> >"
+      
+    	if self.loadStop:
 	        self.babyTupleFormat['gen_neutralino_m'] =	 "vector<float>"
 	        self.babyTupleFormat['gen_stop_m'] =	         "vector<float>"
         
@@ -276,9 +279,9 @@ class BabyTupleFormat :
 	        self.babyTupleFormat['genjets_phi'] = "vector<float>"
 	        self.babyTupleFormat['genjets_mass']	= "vector<float>"
 	
-	if self.saveTriggerInfos:
-		self.babyTupleFormat['trigger_name'] = "vector<string>"
-		self.babyTupleFormat['trigger_pass'] = "vector<bool>"
+	#if self.saveTriggerInfos:
+	#	self.babyTupleFormat['trigger_name'] = "vector<string>"
+	#	self.babyTupleFormat['trigger_pass'] = "vector<bool>"
 
 
     def fill(self,event,babyTupleTree) : #,saveGenInfo = False) :
@@ -387,6 +390,7 @@ class BabyTupleFormat :
         babyTupleTree.ak4pfjets_ptD.clear()
         babyTupleTree.ak4pfjets_mult.clear()
         babyTupleTree.ak4pfjets_partonFlavour.clear()
+        babyTupleTree.ak4pfjets_hadronFlavour.clear()
 	for jet in self.selectedJets:
             #print "jetpt: %d" %jet.pT
 	    babyTupleTree.ak4pfjets_pt.push_back(jet.pT)
@@ -404,6 +408,7 @@ class BabyTupleFormat :
 	    #v_jet_ptD.push_back(jet.ptD)
 	    #v_jet_mult.push_back(jet.mult)
 	    babyTupleTree.ak4pfjets_partonFlavour.push_back(jet.partonFlavour)
+	    babyTupleTree.ak4pfjets_hadronFlavour.push_back(jet.hadronFlavour)
 
 	#ak8 jets
         # vector of jets are pt ordered
@@ -529,13 +534,23 @@ class BabyTupleFormat :
         #babyTupleTree.HLT_SingleMu	= True #
         #babyTupleTree.HLT_SingleE	= True # default
 	#print self.trigger
-        babyTupleTree.HLT_SingleMu = self.trigger.setdefault("HLT_IsoMu20_v2",False) or self.trigger.setdefault("HLT_IsoMu20_v1",False) or self.trigger.setdefault("HLT_IsoMu22_v2",False) or self.trigger.setdefault("HLT_IsoMu22_v1",False)
-	babyTupleTree.HLT_SingleE = self.trigger.setdefault("HLT_Ele25_eta2p1_WPLoose_Gsf_v1",False) or  self.trigger.setdefault("HLT_Ele25_eta2p1_WPLoose_Gsf_v2",False) or self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose_Gsf_v1",False) or  self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose_Gsf_v2",False)
-	babyTupleTree.HLT_PFMET = self.trigger.setdefault("HLT_PFMET170_v1",False) or self.trigger.setdefault("HLT_PFMET170_v2",False) or self.trigger.setdefault("HLT_PFMET100_PFMHT100_IDTight_v1",False) or self.trigger.setdefault("HLT_PFMET100_PFMHT100_IDTight_v2",False)
-
-	babyTupleTree.HLT_Iso20Muon = self.trigger.setdefault("HLT_IsoMu20_v1",False) or self.trigger.setdefault("HLT_IsoMu20_v2",False) or self.trigger.setdefault("HLT_IsoTkMu20_v1",False) or self.trigger.setdefault("HLT_IsoTkMu20_v2",False)
-	babyTupleTree.HLT_Ele23_WPLoose_Gsf = self.trigger.setdefault("HLT_Ele23_WPLoose_Gsf_v1",False) or self.trigger.setdefault("HLT_Ele23_WPLoose_Gsf_v2",False) 
-	babyTupleTree.HLT_PFMET170 = self.trigger.setdefault("HLT_PFMET170_v1",False) or self.trigger.setdefault("HLT_PFMET170_v2",False)
+        
+        if self.isData:
+            #print "info for data"
+            babyTupleTree.HLT_IsoMu20 = self.trigger.setdefault("HLT_IsoMu20",False)
+            babyTupleTree.HLT_IsoMu22 = self.trigger.setdefault("HLT_IsoMu22",False)
+            babyTupleTree.HLT_Ele25_eta2p1_WPLoose = self.trigger.setdefault("HLT_Ele25_eta2p1_WPLoose",False)
+            babyTupleTree.HLT_Ele27_eta2p1_WPLoose = self.trigger.setdefault("HLT_Ele27_eta2p1_WPLoose",False)
+            babyTupleTree.HLT_PFMET100_PFMHT100_IDTight = self.trigger.setdefault("HLT_PFMET100_PFMHT100_IDTight",False)
+            babyTupleTree.HLT_PFMET170 = self.trigger.setdefault("HLT_PFMET170",False)
+        else:
+            #print "info for mc"
+            babyTupleTree.HLT_IsoMu20 = False
+            babyTupleTree.HLT_IsoMu22 = False 
+            babyTupleTree.HLT_Ele25_eta2p1_WPLoose = False
+            babyTupleTree.HLT_Ele27_eta2p1_WPLoose = False
+            babyTupleTree.HLT_PFMET100_PFMHT100_IDTight = False
+            babyTupleTree.HLT_PFMET170 = False
 
         # weights
 	# will have to be filled
@@ -665,12 +680,14 @@ class BabyTupleFormat :
         	babyTupleTree.gen_mother_index = 	event.gen_mother_index
         	babyTupleTree.gen_daughter_n = 		event.gen_daughter_n
         	babyTupleTree.gen_daughter_index = 	event.gen_daughter_index
+
+        if self.loadStop:
         	babyTupleTree.gen_neutralino_m = 	event.gen_neutralino_m
         	babyTupleTree.gen_stop_m =      	event.gen_stop_m
 
 
-	if self.loadTriggerBranches  and self.saveTriggerInfos:
-		babyTupleTree.trigger_name	 = 	event.trigger_name
-		babyTupleTree.trigger_pass	 = 	event.trigger_pass
+	#if self.loadTriggerBranches  and self.saveTriggerInfos:
+	#	babyTupleTree.trigger_name	 = 	event.trigger_name
+	#	babyTupleTree.trigger_pass	 = 	event.trigger_pass
 
 	#Add pfcand. info

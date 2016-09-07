@@ -8,6 +8,7 @@ from inputs.hadchi2 import hadchi2
 
 loadGenInfo = True
 loadMCTruth = True
+loadStop = True
 
 class Variables() :
     
@@ -285,16 +286,16 @@ class Variables() :
         status = event.gen_status
         tmp = 0
 
-        for i in range(n) :
+        #for i in range(n) :
             # put this requirement at the first position
-	    if (status[i]!=1) :
-                continue;
-            mother_pdgid = pdgid[mother[i]]
-	    if (abs(mother_pdgid) != 24) :
-                continue;
-            if ((abs(pdgid[i]) != 11) and (abs(pdgid[i]) != 13) and (abs(pdgid[i]) != 15)) :
-                continue;
-            tmp += 1
+	#    if (status[i]!=1) :
+        #        continue;
+        #    mother_pdgid = pdgid[mother[i]]
+	#    if (abs(mother_pdgid) != 24) :
+        #        continue;
+        #    if ((abs(pdgid[i]) != 11) and (abs(pdgid[i]) != 13) and (abs(pdgid[i]) != 15)) :
+        #        continue;
+        #    tmp += 1
             #print "id %d" % event.gen_id[i]
             #print "index %d" % event.gen_index[i]
             #print "mother index %d" % event.gen_mother_index[i]
