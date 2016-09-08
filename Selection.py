@@ -184,8 +184,8 @@ class Selection :
 	charge	=  event.tau_charge
 	id 	=  event.tau_byMediumCombinedIsolationDeltaBetaCorr3Hits
 	#id 	=  event.tau_byMediumIsolationMVA3newDMwLT
-	#decayMode = event.tau_decayModeFindingNewDMs
-	decayMode = event.tau_decayModeFindingOldDMs #@MJ@ TODO
+	decayMode = event.tau_decayModeFindingNewDMs
+	#decayMode = event.tau_decayModeFindingOldDMs #@MJ@ TODO old or new???
 
 
 	lep1 = self.lepton(0,0,0,0,0,0,0,0,0,0)
@@ -304,7 +304,7 @@ class Selection :
 		
 		#CHANGE
 		#if abs(eta[i]) < 2.1 and pt[i] >= 30:
-		if abs(eta[i]) < 2.1 and pt[i] > self.muonPtCut:
+		if abs(eta[i]) < 2.4 and pt[i] > self.muonPtCut:
 		    #print "sel"
 		    veto = False
 		    self.selectedLeptons.append( self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], isMediumMuon[i], dz[i], dxy[i], charge[i]) )
@@ -518,7 +518,7 @@ class Selection :
 #		     selected = True
 #
 #            if not (passConversionVeto[i] )  : selected = False
-#	    passMediumID = selected
+	    passMediumID = selected
 
 	    veto = True
 	    if selected:
@@ -1006,7 +1006,7 @@ class Selection :
       		        # if not electron or muon
       		        #solve a bug here !! - requirement was inverted
 			#print "here"
-			if abs(pf_id[i])==11 or abs(pf_id[i])==13:  
+			if abs(pf_id[i])==11 or abs(pf_id[i])==13: #@MJ@ not required anymore the req for dR<0.3, pt<>60 
 				continue
 				#break
 			# opposite chrage requirement btw sel lepton and pfcand

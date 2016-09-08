@@ -243,6 +243,14 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
     def process(self,event,babyTupleTree,isoStudy = False) :
 
         self.reset()
+
+	#fill the weight (treat separately positive and negative - needed for correction stat. uncert.
+	self.hWeights.Fill(1,event.mc_weight)
+	if event.mc_weight>0:   
+		self.hWeightsPlus.Fill(1,event.mc_weight)
+	else:
+		self.hWeightsMinus.Fill(1,-event.mc_weight)
+
         if event.met_pt < 200:
             return False
         if len(event.gen_neutralino_m) > 0:
@@ -355,12 +363,6 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
             self.noIsoSelectedElectrons = sorted(self.noIsoSelectedElectrons, key=lambda lepton: lepton['pt'], reverse=True)
 
 
-	#fill the weight (treat separately positive and negative - needed for correction stat. uncert.
-	self.hWeights.Fill(1,event.mc_weight)
-	if event.mc_weight>0:   
-		self.hWeightsPlus.Fill(1,event.mc_weight)
-	else:
-		self.hWeightsMinus.Fill(1,-event.mc_weight)
 
         # Fill event in babytuple
         if passEventSelection:
