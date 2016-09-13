@@ -21,12 +21,12 @@ datasets = [
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 #DATA
-Dataset("SE_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160725_204148/0001"),
-Dataset("SE_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160725_204148/0000"),
-Dataset("SM_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160725_204321/0000"),
-Dataset("SM_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160725_204321/0001"),
+#Dataset("SE_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160725_204148/0001"),
+#Dataset("SE_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160725_204148/0000"),
+#Dataset("SM_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160725_204321/0000"),
+#Dataset("SM_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160725_204321/0001"),
 Dataset("MET_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/MET/Run2016B_PromptReco_v2_MINIAOD/160725_203926/0000"),
-Dataset("MET_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/MET/Run2016B_PromptReco_v2_MINIAOD/160725_203926/0001"),
+#Dataset("MET_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/MET/Run2016B_PromptReco_v2_MINIAOD/160725_203926/0001"),
 
 #MC
 #Dataset("WJetsToLNuTune", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_182216/0000"),

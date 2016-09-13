@@ -304,7 +304,7 @@ class Selection :
 		
 		#CHANGE
 		#if abs(eta[i]) < 2.1 and pt[i] >= 30:
-		if abs(eta[i]) < 2.4 and pt[i] > self.muonPtCut:
+		if abs(eta[i]) < 2.4 and pt[i] > self.muonPtCut: #@MJ@ TODO this is according to current AN
 		    #print "sel"
 		    veto = False
 		    self.selectedLeptons.append( self.lepton(id[i], E[i], pt[i], eta[i], phi[i], miniIso[i], isMediumMuon[i], dz[i], dxy[i], charge[i]) )
@@ -989,7 +989,7 @@ class Selection :
 		vetotracks = 0
 		for i in range(n):
 	 	    #pt, eta, dz, iso has been applied on production
-		    if pf_pt[i]< 10: continue
+		    if pf_pt[i]<= 10: continue
 		    if abs(pf_eta[i])>2.4: continue
 		    if abs(pf_dz[i]) >0.1: continue
 
@@ -1006,8 +1006,10 @@ class Selection :
       		        # if not electron or muon
       		        #solve a bug here !! - requirement was inverted
 			#print "here"
-			if abs(pf_id[i])==11 or abs(pf_id[i])==13: #@MJ@ not required anymore the req for dR<0.3, pt<>60 
+			if abs(pf_id[i])==11 or abs(pf_id[i])==13: 
 				continue
+                        if (pf_trackIso<6 and pf_pt[i]>60)  or (pf_trackIso/pf_pt[i]<0.1 and pf_pt[i]<=60):
+                                continue
 				#break
 			# opposite chrage requirement btw sel lepton and pfcand
 			#print "here"

@@ -19,7 +19,6 @@ extern "C" float topnessMinimization( TLorentzVecto
 */
 double topnessFunction(double pwx_, double pwy_, double pwz_, double pnz_,
                        double plx_, double ply_, double plz_, double ple_,
-                       double pb1x_, double pb1y_, double pb1z_, double pb1e_,
                        double pb2x_, double pb2y_, double pb2z_, double pb2e_,
                        double pmx_, double pmy_, double pmz_, double pme_);
 
@@ -27,7 +26,6 @@ void minuitFunctionWrapper(int& nDim, double* gout, double& result, double* par,
   result = topnessFunction(par[0],par[1],par[2],par[3],
                            par[4],par[5],par[6],par[7],
                            par[8],par[9],par[10],par[11],
-                           par[12],par[13],par[14],par[15],
-                           par[16],par[17],par[18],par[19]
+                           par[12],par[13],par[14],par[15]
                            );
 }

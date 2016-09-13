@@ -93,13 +93,11 @@ class Variables() :
 	if self.oneLepton == False:
 	    return -999
 	# jet
-	if len(self.selectedJets)<=2:
+	if len(self.selectedJets)<2:
 	    return -888
 
 	# lepton
 	leadingLepton = self.leadingLepton
-        
-
 	selJets = self.selectedJets
 
 	#############################
@@ -115,8 +113,8 @@ class Variables() :
 	for j in jets:
  	    if j[2] == True:
  	        bjets.append(j[0])
-            elif len(bjets)<2 and len(bjets)+len(addjets)<3:
-	        addjets.append(j[0])
+            #elif len(bjets)<1 and len(addjets)<3:
+	    #    addjets.append(j[0])
   
 	topnvalues = [];
   	#default value
@@ -124,66 +122,29 @@ class Variables() :
 	#print "njets = ",len(bjets), len(addjets)
 	if len(bjets)>0:
     	    for n in range(len(bjets)):
-	        for m in range(n+1,len(bjets)):
-		    #print bjets[n].Pt(),bjets[m].Pt()
-		    tmptop = topness.computeTopness(\
-	     		leadingLepton.Pt(), leadingLepton.Eta(), leadingLepton.Phi(), leadingLepton.E(),\
-	   		bjets[n].Pt(), bjets[n].Eta(), bjets[n].Phi(), bjets[n].E(),\
-	   		bjets[m].Pt(), bjets[m].Eta(), bjets[m].Phi(), bjets[m].E(),\
-	    		event.met_pt, event.met_phi)
+		#print bjets[n].Pt(),bjets[m].Pt()
+		tmptop = topness.computeTopness(\
+	     	 leadingLepton.Pt(), leadingLepton.Eta(), leadingLepton.Phi(), leadingLepton.E(),\
+	   	 bjets[n].Pt(), bjets[n].Eta(), bjets[n].Phi(), bjets[n].E(),\
+	    	 event.met_pt, event.met_phi)
 		    #print n,m,tmptop
-		    topnvalues.append(tmptop)
-		    # permutation
-		    #print "bjet1"
-		    #print bjets[m].Px(), bjets[m].Py(),bjets[m].Pz(),bjets[m].E()
-		    #print bjets[m].Pt(), bjets[m].Eta(),bjets[m].Phi(),bjets[m].E()
-		    #print "bjet2"
-		    #print bjets[n].Px(), bjets[n].Py(),bjets[n].Pz(),bjets[n].E()
-		    #print bjets[n].Pt(), bjets[n].Eta(),bjets[n].Phi(),bjets[n].E()
-		    tmptop = topness.computeTopness(\
-	     		leadingLepton.Pt(), leadingLepton.Eta(), leadingLepton.Phi(), leadingLepton.E(),\
-	   		bjets[m].Pt(), bjets[m].Eta(), bjets[m].Phi(), bjets[m].E(),\
-	   		bjets[n].Pt(), bjets[n].Eta(), bjets[n].Phi(), bjets[n].E(),\
-	    		event.met_pt, event.met_phi)
-		    #print n,m,tmptop
-		    topnvalues.append(tmptop)
+		topnvalues.append(tmptop)
+        
+	else:
+            return -1111
+
+	return min(topnvalues)
 		
-		
-      		for m in range(len(addjets)):
-		    tmptop = topness.computeTopness(\
-	     		leadingLepton.Pt(), leadingLepton.Eta(), leadingLepton.Phi(), leadingLepton.E(),\
-	   		bjets[n].Pt(), bjets[n].Eta(), bjets[n].Phi(), bjets[n].E(),\
-	   		addjets[m].Pt(), addjets[m].Eta(), addjets[m].Phi(), addjets[m].E(),\
-	    		event.met_pt, event.met_phi)
-		    topnvalues.append(tmptop)
-		    #permutation
-		    tmptop = topness.computeTopness(\
-	     		leadingLepton.Pt(), leadingLepton.Eta(), leadingLepton.Phi(), leadingLepton.E(),\
-	   		addjets[m].Pt(), addjets[m].Eta(), addjets[m].Phi(), addjets[m].E(),\
-	   		bjets[n].Pt(), bjets[n].Eta(), bjets[n].Phi(), bjets[n].E(),\
-	    		event.met_pt, event.met_phi)
-		    topnvalues.append(tmptop)
-		
-		
-	elif len(addjets)>=2:
-	     for m in range(1,len(addjets)):
-		    tmptop = topness.computeTopness(\
-	     		leadingLepton.Pt(), leadingLepton.Eta(), leadingLepton.Phi(), leadingLepton.E(),\
-	   		addjets[0].Pt(), addjets[0].Eta(), addjets[0].Phi(), addjets[0].E(),\
-	   		addjets[m].Pt(), addjets[m].Eta(), addjets[m].Phi(), addjets[m].E(),\
-	    		event.met_pt, event.met_phi)
-		    topnvalues.append(tmptop)
-		    #permutation
-		    tmptop = topness.computeTopness(\
-	     		leadingLepton.Pt(), leadingLepton.Eta(), leadingLepton.Phi(), leadingLepton.E(),\
-	   		addjets[m].Pt(), addjets[m].Eta(), addjets[m].Phi(), addjets[m].E(),\
-	   		addjets[0].Pt(), addjets[0].Eta(), addjets[0].Phi(), addjets[0].E(),\
-	    		event.met_pt, event.met_phi)
-		    topnvalues.append(tmptop)
+	#elif len(bjets)==0 and len(addjets)>0:
+	#     for m in range(1,len(addjets)):
+	#	    tmptop = topness.computeTopness(\
+	#     		leadingLepton.Pt(), leadingLepton.Eta(), leadingLepton.Phi(), leadingLepton.E(),\
+	#   		addjets[m].Pt(), addjets[m].Eta(), addjets[m].Phi(), addjets[m].E(),\
+	#    		event.met_pt, event.met_phi)
+	#	    topnvalues.append(tmptop)
 	
 	
 	#print "topness values", topness
-	return min(topnvalues)
 
 
 
