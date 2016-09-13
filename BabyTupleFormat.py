@@ -180,7 +180,19 @@ class BabyTupleFormat :
 		
 	      'numberOfSelectedElectrons' : 'I',
 	      'numberOfSelectedMuons' : 'I',
-	
+
+	      # mc information needed for lepton sf
+	      'genLostLeptons_pt': 'vector<float>',
+	      'genLostLeptons_eta': 'vector<float>',
+	      'genLostLeptons_pdgid': 'vector<int>',
+
+	      # new test variables
+	      'ST': 'F',
+	      'LP': 'F',
+	      'Meff': 'F',
+	      'MTdeco_Q': 'F',
+	      'DeltaPtbb': 'F',
+
 	      'metGen_pt' : 'F',
 	      'metGen_phi': 'F'
 	}
@@ -627,6 +639,23 @@ class BabyTupleFormat :
         babyTupleTree.hadronic_top_chi2 = self.hadchi2
         babyTupleTree.met_sig	        = event.met_sig
 
+
+	# new test variables
+	babyTupleTree.ST 	 = self.ST 
+	babyTupleTree.LP	 = self.LP 
+	babyTupleTree.Meff	 = self.Meff 
+	babyTupleTree.MTdeco_Q   = self.MTdeco_Q 
+	babyTupleTree.DeltaPtbb  = self.DeltaPtbb
+
+	# gen lost lepton variables
+
+	babyTupleTree.genLostLeptons_pt.clear()
+	babyTupleTree.genLostLeptons_eta.clear()
+	babyTupleTree.genLostLeptons_pdgid.clear()
+	for lep in self.genLostLeptons:
+	    babyTupleTree.genLostLeptons_pt.push_back(lep[0])
+ 	    babyTupleTree.genLostLeptons_eta.push_back(lep[1])
+	    babyTupleTree.genLostLeptons_pdgid.push_back(lep[2])
 
         #isoStudy
 	if self.doIsoStudy:

@@ -314,7 +314,9 @@ class Analyzer(Selection,BabyTupleFormat,Variables) :
         # Compute variables
 	# NB: this part is the most CPU intensive part of the code
 	if self.computeVar: self.computeVariables(event)
-   
+  
+  	# Retrieve gen lost leptons
+	self.genLostLeptons = self.getGenLostLeptons(event, self.leadingLepton)
 
 	#print "##@@ sync exec'"
  	###   sync exercise   ####

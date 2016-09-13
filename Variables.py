@@ -29,6 +29,12 @@ class Variables() :
 	self.HT = 0
 	self.HTOSM = 0
 	self.HTSSM = 0
+	self.ST = 0 
+	self.LP = 0
+	self.Meff = 0 
+	self.MTdeco_Q = 0 
+	self.DeltaPtbb = 0
+
 
     def UpdateVarBranchLoad(self):
     	self.branchesForVariables = [ "met_pt", "met_phi", "met_sig"]
@@ -82,6 +88,21 @@ class Variables() :
 	    self.dphi_Wlep = -999.
 
 
+	###################
+	# new variables   #
+	###################
+	if len(self.selectedLeptons)>=1:
+	   self.ST = self.leadingLepton.Pt()+event.met_pt
+	   self.LP = self.computeLP(event)
+	   self.Meff = self.computeMeff(event) 
+	   self.MTdeco_Q = sqrt(self.leadingLepton.Pt()*self.METP4.Pt()) 
+	else:
+	   self.ST = -999. 
+	   self.LP = -999.
+	   self.Meff = -999.
+	   self.MTdeco_Q = -999.
+	self.DeltaPtbb = self.computeDeltaPtbb(event)
+	
 
     ##################
     #      topness   #
@@ -199,6 +220,15 @@ class Variables() :
 	    #compute the mass based on the 3 most back-to-back to the lepton
 	    return (selectedJets[0][0] + selectedJets[1][0] + selectedJets[2][0]).M()
 
+    # ###########
+    # # DPtbb   #
+    # ###########
+    def computeDeltaPtbb(self, event):
+        if len(self.selJetsBtagOrdered)>=2:	  
+	  return (abs(self.selJetsBtagOrdered[0].Pt()-self.selJetsBtagOrdered[1].Pt()))/(self.selJetsBtagOrdered[0].Pt()+self.selJetsBtagOrdered[1].Pt())
+	else: 
+	  return -999.
+
     # ########
     # #  MT  # 
     # ########
@@ -211,6 +241,32 @@ class Variables() :
         MT = sqrt(2 * leadingLeptonPt * event.met_pt * (1 - cos(deltaPhi) ))
         
         return MT
+  
+
+    # ######
+    # # LP #
+    # ######
+
+    def computeLP(self, event):
+	Wcand = self.METP4+self.leadingLepton
+	LP = -999.
+	if Wcand.Pt()!=0:
+	  LP = (self.leadingLepton.Pt()*Wcand.Pt()*cos(self.leadingLepton.Phi()-Wcand.Phi()))/(Wcand.Pt()*Wcand.Pt())
+	return LP
+
+
+    # ############
+    # # Meff     #
+    # ############
+    
+    def computeMeff(self, event):
+    	cand = TLorentzVector();
+	cand+=self.leadingLepton
+	cand+=self.METP4
+	for jet in self.selJetsP4:
+	  cand+=jet[0]
+
+        return cand.M()
 
     # ####################
     # #  HT HTSSM HTOSM  #
@@ -270,4 +326,25 @@ class Variables() :
         return sum(res)
 
 
+     # return a list of tuple (pt, eta, pdgid)
+    def getGenLostLeptons(self, event, leadingLepton):
+        n      = event.gen_n
+	pt     = event.gen_pt
+	eta    = event.gen_eta
+	phi    = event.gen_phi
+	m      = event.gen_m
+        pdgid  = event.gen_id
+        mother = event.gen_mother_index
+        status = event.gen_status
+	
+	output = []
 
+	res = [(pt[i],eta[i], phi[i], m[i],pdgid[i])for i in range(n) if(status[i]==1 and abs(pdgid[mother[i]]) == 24 and ((abs(pdgid[i]) == 11) or (abs(pdgid[i]) == 13) or (abs(pdgid[i]) == 15)))]
+	for p in res:
+	   if(p[0]>=5 and abs(p[1])<2.4):
+	     p4 = TLorentzVector()
+	     p4.SetPtEtaPhiM(p[0],p[1], p[2], p[3]) 
+	     if(p4.DeltaR(leadingLepton)>0.1):
+		 output.append((p[0], p[1], p[4]))
+
+        return output
