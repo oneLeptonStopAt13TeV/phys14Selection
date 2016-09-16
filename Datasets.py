@@ -21,15 +21,23 @@ datasets = [
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 #DATA
-#Dataset("SE_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160725_204148/0001"),
-#Dataset("SE_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160725_204148/0000"),
-#Dataset("SM_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160725_204321/0000"),
-#Dataset("SM_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160725_204321/0001"),
-Dataset("MET_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/MET/Run2016B_PromptReco_v2_MINIAOD/160725_203926/0000"),
+Dataset("SE_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160725_204148/0001"),
+Dataset("SE_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160725_204148/0000"),
+Dataset("SE_C", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016C_PromptReco_v2_MINIAOD/160725_204218/0000"),
+Dataset("SE_D", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016D_PromptReco_v2_MINIAOD/160725_204242/0000"),
+
+#kskovpen/FlatTree/Medusa-patch4-v20160726/SingleElectron/Run2016B_PromptReco_v2_MINIAOD/160726_20d4148/0001"
+Dataset("SM_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160725_204321/0000"),
+Dataset("SM_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016B_PromptReco_v2_MINIAOD/160725_204321/0001"),
+Dataset("SM_C", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016C_PromptReco_v2_MINIAOD/160725_204345/0000"),
+Dataset("SM_D", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SingleMuon/Run2016D_PromptReco_v2_MINIAOD/160725_204404/0000"),
+
+
+#Dataset("MET_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/MET/Run2016B_PromptReco_v2_MINIAOD/160725_203926/0000"),
 #Dataset("MET_1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/MET/Run2016B_PromptReco_v2_MINIAOD/160725_203926/0001"),
 
-#MC
-#Dataset("WJetsToLNuTune", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_182216/0000"),
+##MC
+#Dataset("WJetsToLNuTune",                   wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_182216/0000"),
 #Dataset("WJetsToLNuPt100to250", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160729_123952/0000"),
 #Dataset("WJetsToLNuPt250to400", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160729_124016/0000"),
 #Dataset("WJetsToLNuPt400to600", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160728_165026/0000"),
@@ -53,18 +61,18 @@ Dataset("MET_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/MET/Run
 #Dataset("W2JetsToLNuPt200", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W2JetsToLNu_NuPt-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160728_165139/0000"),
 #Dataset("W3JetsToLNuPt200", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W3JetsToLNu_NuPt-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160728_165205/0000"),
 #Dataset("W4JetsToLNuPt200", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/W4JetsToLNu_NuPt-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160729_123930/0000"),
-
+#
 #Dataset("TTJetsSLtop", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180843/0000"),
 #Dataset("TTJetsSLatopv1", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180903/0000"),
 #Dataset("TTJetsSLatopext", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1_v1_MINIAODSIM/160726_180929/0000"),
 #Dataset("TTJetsDLv0v4", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v4_MINIAODSIM/160726_180756/0000"),
 #Dataset("TTJetsDLext", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1_v1_MINIAODSIM/160726_180821/0000"),
-
+#
 #Dataset("ST_s", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160727_143227/0000"),
 #Dataset("ST_tW_top", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180521/0000"),
 #Dataset("ST_tW_atop", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180432/0000"),
 #Dataset("ST_t", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_180411/0000"),
-
+#
 #Dataset("TTWtoQQ", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_190306/0000"),
 #Dataset("TTWtoLNu", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_190231/0000"),
 #Dataset("TTT", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/TTToSemiLeptonic_13TeV-powheg/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1_v2_MINIAODSIM/160726_181358/0000"),
@@ -73,7 +81,7 @@ Dataset("MET_0", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/MET/Run
 #Dataset("tZq", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_183614/0000"),
 #Dataset("WZ", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_182856/0000"),
 #Dataset("ZZ", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/ZZTo2L2Nu_13TeV_powheg_pythia8/RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_183321/0000"),
-
+#
 #Dataset("T2tt_150to250", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SMS-T2tt_mStop-150to250_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_184449/0000"),
 #Dataset("T2tt_250to350", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SMS-T2tt_mStop-250to350_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_184513/0000"),
 #Dataset("T2tt_350to400", wildcard="dpm:kskovpen/FlatTree/Medusa-patch4-v20160726/SMS-T2tt_mStop-350to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2_PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0_v1_MINIAODSIM/160726_184534/0000"),
